@@ -1,0 +1,44 @@
+# Cadence and cohort selection for the sweep. Scheduling only.
+#
+# Nothing in this file may change what a flag SAYS — that would belong in the
+# pipeline (architectural rule 11). Severity thresholds live in thresholds.yaml.
+
+schema_version: 1
+
+cadence:
+  # Off-peak, so results exist before the morning shift and SIMRS load is low.
+  run_at: "02:00"
+  timezone: "Asia/Jakarta"
+
+cohort:
+  payer: BPJS
+  setting: inpatient
+  status: admitted
+  # Day 0-1 carries too little signal to be worth a run, and flagging on
+  # arrival trains the koder to ignore the queue.
+  min_los_so_far: 2
+  max_episodes_per_night: 2000
+
+diff:
+  # Unchanged flags never re-enter the queue (sweep rule 3).
+  emit: [new, resolved, escalated]
+  # Suppression is keyed on the hash of the cited span, never expired by a
+  # timer (sweep rule 4).
+  suppression_key: evidence_hash
+
+queue:
+  # Expected recoverable value weighted by remaining repair window.
+  order_by: [remedy_decay_rank, expected_value, day_of_stay]
+
+failure:
+  # One episode raising is logged and skipped; the sweep continues.
+  isolate_per_episode: true
+  # A sweep that could not complete its cohort is `partial`, and the queue
+  # shows the timestamp of its last SUCCESSFUL run. A stale queue must never
+  # render as a fresh one.
+  mark_incomplete_as: partial
+  max_retries_per_episode: 1
+
+degradation:
+  # Model layer down -> rules-only, output marked advisory. Never skip a night.
+  on_model_failure: advisory

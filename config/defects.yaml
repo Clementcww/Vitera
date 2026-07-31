@@ -1,0 +1,85 @@
+# Defect injection rates for the generator.
+#
+# HARD RULE: every rate carries a `citation`. A rate with
+# `citation: TODO` fails `make data` — the generator refuses to run on
+# uncited rates, because an uncited injection rate silently becomes a
+# fabricated prevalence claim in the paper.
+#
+# Bucket 3 fills these from the literature synthesis table. Until then this
+# file is a schema, not data.
+#
+# Site quality is NOT here. Sparse documentation is a property of the hospital
+# (config/sites.yaml); a wrong code is an injected defect (this file). Two
+# generators, two ground-truth labels — conflating them makes the fairness
+# analysis unattributable.
+
+schema_version: 1
+
+defects:
+  D1:
+    label: "Berkas tidak lengkap"
+    rate: null
+    citation: TODO
+    remedy: OBTAIN
+
+  D2:
+    label: "Wrong code specificity (sibling code)"
+    rate: null
+    citation: TODO
+    remedy: RECODE
+
+  D3:
+    label: "Diagnosis unsupported by narrative"
+    rate: null
+    citation: TODO
+    remedy: RECODE
+
+  D4:
+    label: "Severity unsupported by comorbidity documentation"
+    rate: null
+    citation: TODO
+    remedy: QUERY
+
+  D5:
+    label: "Missing required supporting examination"
+    rate: null
+    citation: TODO
+    remedy: OBTAIN
+
+  D6:
+    label: "Procedure-diagnosis incoherence"
+    rate: null
+    citation: TODO
+    remedy: RECODE
+
+  D7:
+    label: "Upcoding pattern (valid individually, inflates CBG)"
+    rate: null
+    citation: TODO
+    remedy: RECODE
+
+  D8:
+    label: "Administrative mismatch (SEP, identity, dates)"
+    rate: null
+    citation: TODO
+    remedy: OBTAIN
+
+# Negatives are created by CHANGING CODES, never by regenerating text.
+# Regenerated text carries stylistic fingerprints and the model learns those
+# instead of clinical reasoning. This flag exists so the choice is explicit and
+# reviewable rather than buried in generator code.
+negative_construction: code_mutation_only
+
+temporal:
+  # Each secondary diagnosis carries signal_day and documented_day. These
+  # parameters decide the gap between them, which is the window Vitera claims
+  # to operate in — so `detection_lead_time` is partly an artifact of what is
+  # set here. Every parameter needs a citation for the same reason the rates
+  # do. See intent-anchor.md honesty note 1.
+  signal_to_doc_gap_days:
+    distribution: null
+    citation: TODO
+  undocumented_rate:
+    # Share of clinically-visible secondary diagnoses never documented at all.
+    rate: null
+    citation: TODO

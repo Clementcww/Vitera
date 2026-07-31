@@ -1,0 +1,40 @@
+# Hospital sites. Documentation quality varies by hospital class, and that
+# variation is a property of the SITE, not a defect. Kept separate from
+# defects.yaml so the fairness analysis can attribute an error to one or the
+# other.
+#
+# Holdout is BY HOSPITAL, never by row. `split` below is authoritative.
+
+schema_version: 1
+
+classes:
+  # Indonesian hospital classification. `doc_quality` scales narrative
+  # completeness in the generator; it does not inject defects.
+  A:
+    doc_quality: null
+    citation: TODO
+  B:
+    doc_quality: null
+    citation: TODO
+  C:
+    doc_quality: null
+    citation: TODO
+  D:
+    doc_quality: null
+    citation: TODO
+
+sites:
+  # Bucket 3 populates. Shape shown for review.
+  # - id: RS001
+  #   class: B
+  #   region: Jawa
+  #   ownership: private
+  #   split: train
+  []
+
+split_policy:
+  by: site_id       # never by row
+  train: []
+  test: []
+  # Stratification reported in bucket 10: by hospital class and by region.
+  report_strata: [class, region]

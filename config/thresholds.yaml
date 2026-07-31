@@ -1,0 +1,45 @@
+# Every threshold in Vitera. None of these values may appear in code or in a
+# prompt. The router reads this file; models never see it.
+#
+# Values below are PLACEHOLDERS. They are set for real in bucket 8 from the
+# calibration curve, and corrected for the deployment prior (~90% of codes are
+# already correct) so that training on balanced classes does not produce
+# over-flagging in deployment.
+
+schema_version: 1
+
+deployment_prior:
+  # Share of codes correct in the wild. Used to correct decision thresholds
+  # away from the balanced-training operating point.
+  codes_correct: 0.90
+  source: "TODO bucket 3 — cite or mark as assumption in docs/CLAIMS.md"
+
+router:
+  default:
+    flag_at: 0.60          # score >= this becomes a Flag
+    abstain_below: 0.40    # score in [abstain_below, flag_at) -> Verdict.ABSTAIN
+    max_flags_per_episode: 12
+
+  high_precision:
+    # Used when the clean-claim false positive rate matters more than recall,
+    # e.g. the first weeks of a hospital deployment.
+    flag_at: 0.80
+    abstain_below: 0.55
+    max_flags_per_episode: 6
+
+severity:
+  # Minimum score for a flag to be treated as escalated by the sweep diff.
+  escalate_at: 0.75
+
+alert_fatigue:
+  # A breach is a defect, not a tuning opportunity. See CLAUDE.md, sweep metrics.
+  max_alerts_per_episode_per_day: 3
+  max_flag_churn_rate: 0.15
+
+budget:
+  # rule 9, per episode
+  max_tool_calls: 8
+  max_reflections: 1
+  wall_clock_seconds: 20.0
+  # cohort-level ceiling, per sweep night. Breach ends the sweep as `partial`.
+  max_llm_calls_per_sweep: 500

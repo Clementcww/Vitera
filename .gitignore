@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+.DS_Store
+.idea/
+.vscode/
+
+# Generated data is reproducible from a seed; do not commit it.
+data/generated/*
+!data/generated/.gitkeep
+!data/generated/MANIFEST.json
+
+# The LLM cache IS committed — demo-offline depends on it.
+!data/generated/llm_cache/
+
+# Model weights go to HuggingFace, not to git.
+*.pt
+*.safetensors
+*.bin
+
+# results/ IS committed: every paper figure and metrics JSON lives there.

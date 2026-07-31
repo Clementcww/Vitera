@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+
+      - name: Lint
+        run: |
+          python -m ruff check src tests experiments
+          python -m ruff format --check src tests experiments
+
+      - name: Type check
+        run: python -m mypy src
+
+      - name: Tests
+        run: python -m pytest -q
+
+      # data/adversarial/ is sealed until final evaluation. Commit dates
+      # substantiate the blinding claim, so CI refuses changes to it on any
+      # branch that is not explicitly named for unsealing.
+      - name: Adversarial set is sealed
+        if: github.ref != 'refs/heads/unseal-final-eval'
+        run: |
+          if ! git diff --quiet origin/main -- data/adversarial/ 2>/dev/null; then
+            echo "::error::data/adversarial/ is sealed until final evaluation"
+            exit 1
+          fi
+          echo "adversarial set intact"

@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vitera"
+version = "0.1.0"
+description = "Concurrent BPJS claim verification for Indonesian hospital inpatient episodes"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6.0",
+    "numpy>=1.26",
+    "pandas>=2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+ml = [
+    "torch>=2.4",
+    "transformers>=4.44",
+    "scikit-learn>=1.5",
+    "rank-bm25>=0.2.2",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vitera"]
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests", "experiments"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src"]
+# Contracts are the point of this package; do not let stubs erode them.
+disallow_untyped_defs = true
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = ["yaml", "pandas.*", "numpy.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
