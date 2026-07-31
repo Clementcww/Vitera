@@ -19,12 +19,21 @@ Status values: `literature` · `measured` · `projected` · `not yet supported` 
 
 ## Problem-size claims (literature)
 
-| # | Claim | Source | Status |
-|---|---|---|---|
-| L1 | Only 5–15% of claims receive pre-submission review at hospitals above 1,000 claims/month | TODO — bucket 3 | literature |
-| L2 | Claims pend at ~15% | TODO — bucket 3 | literature |
-| L3 | Undercoding costs ~4.2% of claim revenue | TODO — bucket 3, verify against primary source | literature |
-| L4 | Hospital bad debt from pended claims runs 8–12% | TODO — bucket 3, **verify against primary source before use** | literature |
+Sources and evidence grades in `docs/LITERATURE.md`.
+
+| # | Permitted phrasing | Source | Grade | Status |
+|---|---|---|---|---|
+| L1 | ~~"Only 5–15% of claims receive pre-submission review"~~ → **"A casemix unit of 2–5 staff cannot review 30–50 claims a day at volume — our estimate from staffing arithmetic, not a measured figure"** | vendor blog only | D | **downgraded to our own estimate** |
+| L2 | "Inpatient claims pend at 12–17% across single-site Indonesian studies" — never "~15% nationally" | Maulida & Djunawan 2022; Dewi & Wirajaya 2024 | A / B | literature |
+| L3 | "Incomplete discharge summaries and inaccurate coding cost one South Jakarta hospital ~4% of INA-CBG claim value (n=105)" | Opitasari & Nurwahyuni 2018, Table 4 | A | literature |
+| L4 | ~~"Bad debt from pended claims runs 8–12%"~~ | **not located** | — | **unsupported — do not use** |
+| L5 | "Secondary diagnoses fail to carry from the medical record into the discharge summary in 68.6% of inpatient episodes" | Opitasari & Nurwahyuni 2018, Table 2 | A | literature |
+| L6 | "Undercoding outnumbers overcoding roughly 2:1 (13.3% vs 6.7% of episodes)" | Opitasari & Nurwahyuni 2018, Table 4 | A | literature |
+| L7 | "ICD-10 coding accuracy in Indonesian hospitals ranges 21–81% across 45 studies" | systematic review, RMIK 2021 | C | literature |
+
+**L5 and L6 are the strongest cards we hold.** They are grade A, inpatient,
+Indonesian, and they establish the undercoding narrative from primary data
+rather than assertion. Lead with them, not with L1.
 
 ## Product claims (must be measured)
 

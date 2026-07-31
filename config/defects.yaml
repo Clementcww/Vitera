@@ -1,85 +1,187 @@
 # Defect injection rates for the generator.
 #
-# HARD RULE: every rate carries a `citation`. A rate with
-# `citation: TODO` fails `make data` — the generator refuses to run on
-# uncited rates, because an uncited injection rate silently becomes a
-# fabricated prevalence claim in the paper.
+# HARD RULE: every rate carries a `citation`. A rate with `citation: TODO`
+# fails `make data` — see src/vitera/config.py. An uncited injection rate
+# silently becomes a fabricated prevalence claim in the paper.
 #
-# Bucket 3 fills these from the literature synthesis table. Until then this
-# file is a schema, not data.
+# Every rate below traces to a row in docs/LITERATURE.md. Add a row there
+# before changing a number here.
+#
+# `derivation` says how the rate was obtained from the source:
+#   measured    - the source reports this exact quantity
+#   apportioned - a subset of a measured quantity, split by our judgment
+#   assumed     - no source exists; a modelling choice, reported as such
+#
+# Rates are prevalence among SUBMITTED inpatient claims, not share-of-pended.
+# Those differ by a lot: pend rates run 12-17% while observed defect prevalence
+# runs 12-69%. Most defects never pend — they are absorbed as underpayment.
+# That gap is the product's reason to exist and it is measured, not assumed.
 #
 # Site quality is NOT here. Sparse documentation is a property of the hospital
-# (config/sites.yaml); a wrong code is an injected defect (this file). Two
-# generators, two ground-truth labels — conflating them makes the fairness
-# analysis unattributable.
+# (config/sites.yaml); a wrong code is an injected defect (this file).
 
 schema_version: 1
 
 defects:
   D1:
     label: "Berkas tidak lengkap"
-    rate: null
-    citation: TODO
+    rate: 0.041
+    range: [0.04, 0.06]
+    derivation: apportioned
+    citation: >-
+      Maulida & Djunawan (2022) MKMI 21(6):374-379, DOI 10.14710/mkmi.21.6.374-379.
+      Inpatient, RS Universitas Airlangga, Dec 2021, n=720. Pend rate 12.2%;
+      berkas tidak lengkap = 34% of pended claims (30/88). 0.122 x 0.34 = 0.041.
+      Upper bound 0.06 from a multi-site study reporting 61.4% of pends.
     remedy: OBTAIN
 
   D2:
     label: "Wrong code specificity (sibling code)"
-    rate: null
-    citation: TODO
+    rate: 0.100
+    range: [0.08, 0.15]
+    derivation: apportioned
+    citation: >-
+      Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, DOI 10.22435/hsji.v9i1.464,
+      Table 3. Primary diagnosis coded inaccurately vs. standard coder: 21.9%
+      (23/105). D2 is the sibling-code subset of that 21.9%; the remainder is
+      D3. Split 45/55 by our judgment — APPORTIONED, not measured. If the split
+      matters to a result, run it as an ablation.
     remedy: RECODE
 
   D3:
     label: "Diagnosis unsupported by narrative"
-    rate: null
-    citation: TODO
+    rate: 0.086
+    range: [0.086, 0.120]
+    derivation: measured
+    citation: >-
+      Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, Table 2. Primary diagnosis
+      non-conformity between medical record and discharge summary: 8.6% (9/105).
     remedy: RECODE
 
   D4:
     label: "Severity unsupported by comorbidity documentation"
-    rate: null
-    citation: TODO
+    rate: 0.240
+    range: [0.15, 0.35]
+    derivation: apportioned
+    citation: >-
+      Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, Table 2. Secondary diagnosis
+      non-conformity: 68.6% (72/105) — see temporal.undocumented_rate, which
+      carries the full figure. D4 is the subset where the missing comorbidity
+      actually changes INA-CBG severity level. Not separately measured anywhere;
+      set at roughly one third of 68.6%. APPORTIONED. The paper reports the
+      68.6% and this apportionment side by side, never the apportionment alone.
     remedy: QUERY
 
   D5:
     label: "Missing required supporting examination"
-    rate: null
-    citation: TODO
+    rate: 0.122
+    range: [0.016, 0.122]
+    derivation: measured
+    citation: >-
+      Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, Table 1. Laboratory and
+      other supporting medical examination incomplete in discharge summary:
+      12.2% (13/105). Lower bound 1.6% from Guslianti (2016), RSUD Cempaka
+      Putih, cited within that paper — the authors attribute the difference to
+      case complexity, which is why sites.yaml varies this by hospital class.
     remedy: OBTAIN
 
   D6:
     label: "Procedure-diagnosis incoherence"
-    rate: null
-    citation: TODO
+    rate: 0.050
+    range: [0.039, 0.056]
+    derivation: measured
+    citation: >-
+      Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, Tables 2 and 3. Procedure
+      non-conformity 5.6% (4/105); procedure coding inaccuracy 3.9% (3/105).
+      Midpoint 5.0%.
     remedy: RECODE
 
   D7:
     label: "Upcoding pattern (valid individually, inflates CBG)"
-    rate: null
-    citation: TODO
+    rate: 0.067
+    range: [0.05, 0.08]
+    derivation: measured
+    citation: >-
+      Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, Table 4. Cases where the
+      hospital coder's claim EXCEEDED the standard coder's: 6.7% (7/105).
+      Note the asymmetry this creates with undercoding at 13.3% — roughly 2:1
+      in favour of undercoding. The generator must preserve that ratio; it is
+      the empirical basis for the paper's undercoding narrative.
     remedy: RECODE
 
   D8:
     label: "Administrative mismatch (SEP, identity, dates)"
-    rate: null
-    citation: TODO
+    rate: 0.039
+    range: [0.03, 0.05]
+    derivation: apportioned
+    citation: >-
+      Maulida & Djunawan (2022) MKMI 21(6):374-379. Administrative components of
+      the "berkas tidak lengkap" cluster (identity mismatch, billing class
+      mismatch, missing SEP attachments) as described in that paper's Section 1
+      criteria. 0.122 pend rate x ~32% administrative share = 0.039.
+      APPORTIONED — the source does not separate D1 from D8.
     remedy: OBTAIN
 
 # Negatives are created by CHANGING CODES, never by regenerating text.
 # Regenerated text carries stylistic fingerprints and the model learns those
-# instead of clinical reasoning. This flag exists so the choice is explicit and
-# reviewable rather than buried in generator code.
+# instead of clinical reasoning. Explicit here so the choice is reviewable
+# rather than buried in generator code.
 negative_construction: code_mutation_only
 
+# Undercoding must outnumber overcoding, per Opitasari Table 4 (13.3% vs 6.7%).
+directionality:
+  undercode_to_overcode_ratio: 2.0
+  derivation: measured
+  citation: >-
+    Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, Table 4. Standard coder
+    produced a HIGHER claim in 14/105 cases (13.3%, hospital undercoded) and a
+    LOWER claim in 7/105 (6.7%, hospital overcoded). 80% identical.
+
+# Net revenue effect the generator should reproduce in aggregate.
+revenue_effect:
+  mean_claim_shortfall: 0.040
+  derivation: measured
+  citation: >-
+    Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, Table 4. Rp 65,005,500
+    shortfall on Rp 1,584,607,500 submitted = 4.1%, single site, n=105.
+    NOTE: our materials have said "4.2%" — that figure has no located source.
+    Use 4%, attributed, or state it as a range. See docs/LITERATURE.md.
+
 temporal:
-  # Each secondary diagnosis carries signal_day and documented_day. These
-  # parameters decide the gap between them, which is the window Vitera claims
-  # to operate in — so `detection_lead_time` is partly an artifact of what is
-  # set here. Every parameter needs a citation for the same reason the rates
-  # do. See intent-anchor.md honesty note 1.
-  signal_to_doc_gap_days:
-    distribution: null
-    citation: TODO
+  # The two timestamps the entire concurrent thesis rests on.
   undocumented_rate:
-    # Share of clinically-visible secondary diagnoses never documented at all.
-    rate: null
-    citation: TODO
+    # Share of clinically-visible secondary diagnoses never documented at all,
+    # i.e. documented_day = null.
+    rate: 0.686
+    derivation: measured
+    citation: >-
+      Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, Table 2. Secondary
+      diagnosis non-conformity between medical record and discharge summary:
+      68.6% (72/105). The authors attribute it explicitly to underreporting of
+      secondary diagnoses in the discharge summary, and link it to undercoding.
+      This is the single most important number in the generator.
+
+  signal_to_doc_gap_days:
+    # Days between a diagnosis becoming clinically visible (treatment, labs,
+    # meds) and its appearance in the notes.
+    distribution: {family: geometric, p: 0.45, max: 7}
+    derivation: assumed
+    citation: >-
+      NO SOURCE EXISTS. No published Indonesian study reports the timing of
+      documentation relative to clinical signal. This is an explicit modelling
+      assumption, and detection_lead_time is therefore partly an artifact of
+      what is set here.
+      REQUIRED: every report of detection_lead_time is labelled "under stated
+      generator assumptions", and bucket 11 runs a sensitivity analysis over
+      p in [0.25, 0.65] to show the lead-time claim does not depend on this
+      choice. If it does depend on it, the claim is weakened, not the parameter.
+      See intent-anchor.md honesty note 1 and docs/LITERATURE.md gap 1.
+
+  signal_day_model:
+    # When a comorbidity first becomes clinically visible, conditioned on LOS.
+    distribution: {family: beta_scaled_to_los, a: 1.5, b: 3.0}
+    derivation: assumed
+    citation: >-
+      NO SOURCE. Keep the temporal model simple — the two-timestamp structure
+      carries the meaning, not the realism of the schedule (CLAUDE.md).
+      Reported as an assumption in docs/DATA_CARD.md.

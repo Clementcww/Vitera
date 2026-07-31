@@ -49,7 +49,7 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 
 | # | Artifact | Command | Bucket | Status |
 |---|---|---|---|---|
-| F1 | Defect prevalence, literature-weighted | `make figures` | 3 | not started |
+| F1 | Defect prevalence, literature-weighted | `docs/LITERATURE.md` | 3 | **done** |
 | T1 | Dataset summary + hospital holdout | `make data` | 4 | not started |
 | N1 | Leakage check (text-only classifier) | `make leakage` | 4 | not started |
 | T2 | Arm A: rules reach 3 of 8 | `make eval` | 5 | not started |

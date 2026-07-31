@@ -3,38 +3,78 @@
 # defects.yaml so the fairness analysis can attribute an error to one or the
 # other.
 #
-# Holdout is BY HOSPITAL, never by row. `split` below is authoritative.
+# Holdout is BY HOSPITAL, never by row. `split_policy` is authoritative.
 
 schema_version: 1
 
 classes:
-  # Indonesian hospital classification. `doc_quality` scales narrative
-  # completeness in the generator; it does not inject defects.
+  # Indonesian hospital classification (Permenkes 3/2020). `doc_quality` scales
+  # narrative completeness in the generator: 1.0 means every clinically-visible
+  # finding that WOULD be documented at a well-resourced site is present.
+  # It does not inject defects.
+  #
+  # No study reports documentation completeness stratified by hospital class in
+  # a form we can lift directly, so the ORDERING is evidenced and the SPACING
+  # is assumed. Stated that way in docs/DATA_CARD.md.
   A:
-    doc_quality: null
-    citation: TODO
+    doc_quality: 0.90
+    derivation: assumed
+    citation: >-
+      Ordering evidenced by Opitasari & Nurwahyuni (2018) HSJI 9(1):14-18, who
+      attribute higher incompleteness (12.2% vs. Guslianti's 1.6% at RSUD
+      Cempaka Putih) to greater case complexity and multidisciplinary care at
+      the larger centre — i.e. class alone does not predict quality in one
+      direction. Spacing between classes is ASSUMED.
   B:
-    doc_quality: null
-    citation: TODO
+    doc_quality: 0.80
+    derivation: assumed
+    citation: "As class A. Spacing assumed; ordering only is evidenced."
   C:
-    doc_quality: null
-    citation: TODO
+    doc_quality: 0.70
+    derivation: assumed
+    citation: "As class A. Spacing assumed; ordering only is evidenced."
   D:
-    doc_quality: null
-    citation: TODO
+    doc_quality: 0.60
+    derivation: assumed
+    citation: >-
+      As class A, plus the systematic review (Jurnal Rekam Medis dan Informasi
+      Kesehatan, 45 of 458 articles, 2009-2019) finding ICD-10 coding accuracy
+      of 21-81% in hospitals and 26-45% in puskesmas — evidence that the spread
+      across facility levels is large, not evidence of its exact shape.
 
+# Bucket 4 generates episodes against these. Twelve sites, split 8 train /
+# 4 test BY SITE. Region and ownership are carried so bucket 11 can stratify
+# fairness results without regenerating anything.
 sites:
-  # Bucket 3 populates. Shape shown for review.
-  # - id: RS001
-  #   class: B
-  #   region: Jawa
-  #   ownership: private
-  #   split: train
-  []
+  - {id: RS001, class: A, region: Jawa,     ownership: public,  split: train}
+  - {id: RS002, class: A, region: Jawa,     ownership: private, split: train}
+  - {id: RS003, class: B, region: Jawa,     ownership: public,  split: train}
+  - {id: RS004, class: B, region: Sumatera, ownership: private, split: train}
+  - {id: RS005, class: B, region: Sulawesi, ownership: public,  split: train}
+  - {id: RS006, class: C, region: Jawa,     ownership: private, split: train}
+  - {id: RS007, class: C, region: Sumatera, ownership: public,  split: train}
+  - {id: RS008, class: C, region: Kalimantan, ownership: private, split: train}
+  - {id: RS009, class: A, region: Jawa,     ownership: private, split: test}
+  - {id: RS010, class: B, region: Sulawesi, ownership: private, split: test}
+  - {id: RS011, class: C, region: Kalimantan, ownership: public, split: test}
+  - {id: RS012, class: D, region: NTT,      ownership: public,  split: test}
 
 split_policy:
   by: site_id       # never by row
-  train: []
-  test: []
-  # Stratification reported in bucket 10: by hospital class and by region.
-  report_strata: [class, region]
+  train: [RS001, RS002, RS003, RS004, RS005, RS006, RS007, RS008]
+  test:  [RS009, RS010, RS011, RS012]
+  # Class D appears ONLY in test, deliberately. If the model degrades on the
+  # lowest-resourced facility class it has never seen, that is the fairness
+  # finding — and the safety point about documentation-quality-driven
+  # under-flagging. It is not a bug to be trained away.
+  report_strata: [class, region, ownership]
+
+pend_rate_prior:
+  # Used only to sanity-check the generated corpus in aggregate, never to label.
+  range: [0.12, 0.17]
+  citation: >-
+    Maulida & Djunawan (2022) MKMI 21(6):374-379: 12.2% (88/720), inpatient,
+    Dec 2021. Dewi & Wirajaya, Jurnal Ekonomi Kesehatan Indonesia 11(1):
+    16.7% (130/779), inpatient, Aug-Oct 2024. One outlier at 24.5% (Opitasari &
+    Nurwahyuni 2018, preliminary, Jan-Mar 2017). All single-site; no national
+    figure has been published.

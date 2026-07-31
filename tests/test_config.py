@@ -7,19 +7,60 @@ import pytest
 from vitera import config
 
 
-def test_uncited_defect_rates_refuse_to_load() -> None:
-    """Until bucket 3 cites every rate, `make data` must not run.
-
-    When this test starts failing, bucket 3 is done — swap it for the
-    positive assertion below it.
-    """
-    with pytest.raises(config.UncitedRateError):
-        config.defects(strict=True)
-
-
-def test_uncited_rates_are_still_readable_non_strictly() -> None:
-    data = config.defects(strict=False)
+def test_every_defect_rate_is_cited() -> None:
+    """Bucket 3 landed: strict load now succeeds. If this ever raises again,
+    someone added a rate without a source."""
+    data = config.defects(strict=True)
     assert set(data["defects"]) == {f"D{i}" for i in range(1, 9)}
+    for name, entry in data["defects"].items():
+        assert entry["rate"] is not None, name
+        assert 0.0 < entry["rate"] < 1.0, name
+        assert len(entry["citation"]) > 40, f"{name} citation is too thin to be one"
+        assert entry["derivation"] in {"measured", "apportioned", "assumed"}, name
+
+
+def test_the_guard_still_fires_on_an_uncited_rate() -> None:
+    """The mechanism, not the current data. Guards rot when nothing tests them."""
+    poisoned = {
+        "defects": {"D1": {"rate": None, "citation": "TODO"}},
+        "temporal": {},
+    }
+    with pytest.raises(config.UncitedRateError):
+        config._assert_all_cited(poisoned)
+
+
+def test_undercoding_outnumbers_overcoding() -> None:
+    """Opitasari & Nurwahyuni (2018) Table 4: 13.3% undercoded vs 6.7%
+    overcoded. The generator must preserve that asymmetry — it is the empirical
+    basis for the paper's undercoding narrative."""
+    d = config.defects(strict=False)
+    assert d["directionality"]["undercode_to_overcode_ratio"] > 1.0
+
+
+def test_the_lead_time_assumption_is_labelled_as_one() -> None:
+    """No Indonesian study reports the gap between clinical signal and
+    documentation. If this ever claims to be `measured`, someone has invented a
+    source — and detection_lead_time becomes an unsupportable claim."""
+    t = config.defects(strict=False)["temporal"]
+    assert t["signal_to_doc_gap_days"]["derivation"] == "assumed"
+    assert "NO SOURCE" in t["signal_to_doc_gap_days"]["citation"]
+    # By contrast, the undocumented rate IS measured.
+    assert t["undocumented_rate"]["derivation"] == "measured"
+    assert t["undocumented_rate"]["rate"] == 0.686
+
+
+def test_lowest_resourced_hospital_class_is_held_out() -> None:
+    """Class D appears only in test. Degradation there is the fairness finding,
+    not a bug to be trained away."""
+    s = config.sites()
+    class_d = [x["id"] for x in s["sites"] if x["class"] == "D"]
+    assert class_d
+    assert all(i in s["split_policy"]["test"] for i in class_d)
+
+
+def test_no_site_appears_in_both_splits() -> None:
+    s = config.sites()["split_policy"]
+    assert not set(s["train"]) & set(s["test"])
 
 
 def test_negatives_are_made_by_code_mutation_only() -> None:
