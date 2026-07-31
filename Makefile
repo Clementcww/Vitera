@@ -5,7 +5,7 @@ SEED ?= 20260731
 VITERA_LLM_MODE ?= cache
 export VITERA_LLM_MODE
 
-.PHONY: help setup data train eval demo demo-offline sweep sweep-demo \
+.PHONY: help setup data train eval arm-a demo demo-offline sweep sweep-demo \
         leakage figures test lint clean freeze-check
 
 help:  ## Show this help
@@ -27,6 +27,9 @@ leakage:  ## Text-only classifier leakage check; prints a number  [bucket 4]
 
 train:  ## Fine-tune the cross-encoder (MPS on Apple silicon)  [bucket 8]
 	$(PY) -m vitera.models.train_cross_encoder --data data/generated --seed $(SEED)
+
+arm-a:  ## Rules-only baseline (arm A)                        [bucket 5]
+	$(PY) experiments/arm_a.py --data data/generated
 
 eval:  ## Three-arm experiment + per-component baselines     [bucket 10]
 	$(PY) -m experiments.run_arms --data data/generated --seeds 3 --out results/

@@ -31,6 +31,7 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 | `make data` | Generate the frozen synthetic dataset |
 | `make leakage` | Text-only leakage check; prints the number |
 | `make train` | Fine-tune the cross-encoder |
+| `make arm-a` | Rules-only baseline (arm A) |
 | `make eval` | Three-arm experiment across 3 seeds |
 | `make demo` | End-to-end discharge path, live LLM |
 | `make demo-offline` | Same path, replayed from cache |
@@ -50,9 +51,9 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | # | Artifact | Command | Bucket | Status |
 |---|---|---|---|---|
 | F1 | Defect prevalence, literature-weighted | `docs/LITERATURE.md` | 3 | **done** |
-| T1 | Dataset summary + hospital holdout | `make data` | 4 | not started |
-| N1 | Leakage check (text-only classifier) | `make leakage` | 4 | not started |
-| T2 | Arm A: rules reach 3 of 8 | `make eval` | 5 | not started |
+| T1 | Dataset summary + hospital holdout | `make data` | 4 | **done** |
+| N1 | Leakage check (text-only classifier) | `make leakage` | 4 | **done** |
+| T2 | Arm A: rules reach 3 of 8 | `make arm-a` | 5 | **done** |
 | T3 | Cross-encoder vs. BM25 vs. zero-shot, per class | `make eval` | 8 | not started |
 | F2 | Calibration curve | `make figures` | 8 | not started |
 | T4 | Three arms, bootstrap CIs across 3 seeds | `make eval` | 10 | not started |

@@ -257,8 +257,27 @@ def generate_episode(
             )
         )
 
-    # Documents: a CPPT per day, resume medis at discharge.
-    documents: list[Document] = []
+    # Documents: berkas klaim cover sheet at admission, a CPPT per day,
+    # resume medis at discharge.
+    #
+    # The berkas klaim exists so administrative and absence-based flags have
+    # something verbatim to cite (architectural rule 6). Without it a rule
+    # detecting "SEP number does not match" or "resume medis not attached"
+    # would have no span, and the pipeline filter would drop it.
+    documents: list[Document] = [
+        Document(
+            doc_id="berkas_klaim",
+            day=0,
+            text=ClinicalText(
+                "BERKAS KLAIM BPJS KESEHATAN — RAWAT INAP\n"
+                f"No. SEP: SEP{episode_id[2:]}\n"
+                f"Tanggal masuk: {admission_date.isoformat()}\n"
+                f"Diagnosis masuk: {group.label} ({group.primary})\n"
+                "Dokumen wajib: resume medis, catatan perkembangan, "
+                "hasil pemeriksaan penunjang."
+            ),
+        )
+    ]
     for day in range(los + 1):
         active = [
             c
