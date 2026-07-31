@@ -1,0 +1,143 @@
+# Secondary diagnoses (comorbidity / complication) and the clinical evidence
+# that makes each one VISIBLE before anyone writes it down.
+#
+# This file is the mechanism of the entire product. For each comorbidity:
+#
+#   signals          what appears in labs / meds / orders when it is present.
+#                    These drive `signal_day` — the day it becomes detectable.
+#   severity_weight  whether documenting it can lift INA-CBG severity level.
+#   doc_phrases      how a DPJP would write it in a resume medis, if they do.
+#
+# A comorbidity with signals present and no doc_phrase in the record is the
+# undercoding defect Vitera exists to catch (Opitasari 2018: 68.6% of episodes).
+#
+# ⚠ DOMAIN REVIEW REQUIRED — Jason owns correctness here. Every ICD-10 code,
+# every threshold and every severity_weight below is a plausible placeholder
+# written by Claude, NOT a verified clinical mapping. `verified` must be
+# flipped to true, per entry, before any result from this corpus goes in the
+# paper. The generator prints a loud warning while any entry is unverified.
+
+schema_version: 1
+verified: false        # ← Jason flips this when the table has been reviewed
+
+comorbidities:
+  - icd10: E11.9
+    label: "Diabetes mellitus tipe 2 tanpa komplikasi"
+    prevalence: 0.28
+    severity_weight: 2          # 0 = none, 1 = mild CC, 2 = major CC
+    verified: false
+    signals:
+      - {kind: LAB,  code: GDS,   direction: high, threshold: "200 mg/dL", label: "Gula darah sewaktu"}
+      - {kind: LAB,  code: HBA1C, direction: high, threshold: "6.5 %",     label: "HbA1c"}
+      - {kind: MED,  code: INSULIN,   label: "Insulin rapid acting"}
+      - {kind: MED,  code: METFORMIN, label: "Metformin 500 mg"}
+    doc_phrases:
+      - "Pasien dengan riwayat DM tipe 2, gula darah terkontrol dengan insulin."
+      - "DM tipe 2 lama, mendapat terapi metformin."
+
+  - icd10: I10
+    label: "Hipertensi esensial (primer)"
+    prevalence: 0.31
+    severity_weight: 1
+    verified: false
+    signals:
+      - {kind: VITALS, code: TD, direction: high, threshold: "140/90 mmHg", label: "Tekanan darah"}
+      - {kind: MED, code: AMLODIPIN, label: "Amlodipin 10 mg"}
+      - {kind: MED, code: CAPTOPRIL, label: "Captopril 25 mg"}
+    doc_phrases:
+      - "Hipertensi terkontrol dengan amlodipin."
+      - "Riwayat hipertensi sejak 5 tahun, saat ini dalam terapi."
+
+  - icd10: N18.3
+    label: "Penyakit ginjal kronik stadium 3"
+    prevalence: 0.12
+    severity_weight: 2
+    verified: false
+    signals:
+      - {kind: LAB, code: CREAT, direction: high, threshold: "1.5 mg/dL", label: "Kreatinin serum"}
+      - {kind: LAB, code: UREUM, direction: high, threshold: "50 mg/dL",  label: "Ureum"}
+      - {kind: LAB, code: EGFR,  direction: low,  threshold: "60 mL/min", label: "eGFR"}
+    doc_phrases:
+      - "CKD stadium 3, eGFR menurun, dalam pemantauan nefrologi."
+      - "Penyakit ginjal kronik, terapi konservatif."
+
+  - icd10: D64.9
+    label: "Anemia, tidak dispesifikasi"
+    prevalence: 0.22
+    severity_weight: 1
+    verified: false
+    signals:
+      - {kind: LAB, code: HB,  direction: low, threshold: "10 g/dL", label: "Hemoglobin"}
+      - {kind: LAB, code: HCT, direction: low, threshold: "30 %",    label: "Hematokrit"}
+      - {kind: PROCEDURE, code: TRANSFUSI, label: "Transfusi PRC"}
+    doc_phrases:
+      - "Anemia, telah dilakukan transfusi PRC 2 kolf."
+      - "Hb rendah saat masuk, koreksi dengan transfusi."
+
+  - icd10: E87.6
+    label: "Hipokalemia"
+    prevalence: 0.14
+    severity_weight: 1
+    verified: false
+    signals:
+      - {kind: LAB, code: K, direction: low, threshold: "3.5 mEq/L", label: "Kalium serum"}
+      - {kind: MED, code: KCL, label: "KCl drip"}
+    doc_phrases:
+      - "Hipokalemia, koreksi dengan KCl drip."
+
+  - icd10: E86
+    label: "Deplesi volume (dehidrasi)"
+    prevalence: 0.18
+    severity_weight: 1
+    verified: false
+    signals:
+      - {kind: MED, code: RL, label: "Infus Ringer Laktat loading"}
+      - {kind: VITALS, code: NADI, direction: high, threshold: "100 x/menit", label: "Nadi"}
+    doc_phrases:
+      - "Dehidrasi sedang, rehidrasi dengan RL."
+
+  - icd10: J96.0
+    label: "Gagal napas akut"
+    prevalence: 0.07
+    severity_weight: 2
+    verified: false
+    signals:
+      - {kind: VITALS, code: SPO2, direction: low, threshold: "90 %", label: "Saturasi oksigen"}
+      - {kind: PROCEDURE, code: VENTILATOR, label: "Ventilasi mekanik"}
+      - {kind: LAB, code: AGD, direction: abnormal, threshold: "pH < 7.35", label: "Analisa gas darah"}
+    doc_phrases:
+      - "Gagal napas akut, dipasang ventilator mekanik."
+
+  - icd10: A41.9
+    label: "Sepsis, tidak dispesifikasi"
+    prevalence: 0.09
+    severity_weight: 2
+    verified: false
+    signals:
+      - {kind: LAB, code: LEUKO,  direction: high, threshold: "12000 /uL", label: "Leukosit"}
+      - {kind: LAB, code: PROCAL, direction: high, threshold: "2 ng/mL",   label: "Prokalsitonin"}
+      - {kind: LAB, code: KULTUR, direction: abnormal, threshold: "positif", label: "Kultur darah"}
+      - {kind: MED, code: MEROPENEM, label: "Meropenem 1 g"}
+    doc_phrases:
+      - "Sepsis, sumber infeksi paru, terapi meropenem."
+
+  - icd10: K30
+    label: "Dispepsia"
+    prevalence: 0.16
+    severity_weight: 0
+    verified: false
+    signals:
+      - {kind: MED, code: OMEPRAZOL, label: "Omeprazol 40 mg"}
+    doc_phrases:
+      - "Dispepsia, terapi omeprazol."
+
+  - icd10: E44.0
+    label: "Malnutrisi protein-energi sedang"
+    prevalence: 0.08
+    severity_weight: 1
+    verified: false
+    signals:
+      - {kind: LAB, code: ALB, direction: low, threshold: "3.0 g/dL", label: "Albumin"}
+      - {kind: MED, code: ALBUMIN, label: "Infus albumin 20%"}
+    doc_phrases:
+      - "Hipoalbuminemia, koreksi albumin."

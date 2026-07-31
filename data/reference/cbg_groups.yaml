@@ -1,0 +1,72 @@
+# INA-CBG groups the generator draws from. Deliberately small: 18 groups
+# covering common Indonesian inpatient presentations. The grouper (bucket 5) is
+# deterministic and must reproduce these exactly.
+#
+# `base_tariff_idr` is severity level I. Levels II and III apply the multipliers
+# below. CLAUDE.md notes the I→III spread runs 2–3×, which these reproduce.
+#
+# ⚠ DOMAIN REVIEW REQUIRED — Jason owns correctness. Every CBG code, ICD-10
+# code, ICD-9-CM code, LOS distribution and tariff below is a PLAUSIBLE
+# PLACEHOLDER written by Claude against no tariff table. They are not real
+# INA-CBG values. `verified` must be true before any rupiah figure from this
+# corpus appears in the paper or the deck.
+
+schema_version: 1
+verified: false        # ← Jason flips this after checking against a tariff reference
+
+severity_multipliers:
+  1: 1.00
+  2: 1.55
+  3: 2.60
+
+groups:
+  # --- infectious / tropical, the Indonesian inpatient bread and butter ---
+  - {cbg: "A-4-13", label: "Infeksi non-bakteri lain-lain",        primary: A91,   los: [3, 7],  base_tariff_idr: 4200000, verified: false}
+  - {cbg: "A-4-14", label: "Demam tifoid dan paratifoid",           primary: A01.0, los: [4, 8],  base_tariff_idr: 3900000, verified: false}
+  - {cbg: "A-4-15", label: "Sepsis",                                primary: A41.9, los: [6, 14], base_tariff_idr: 11500000, verified: false}
+  - {cbg: "A-4-16", label: "Tuberkulosis paru",                     primary: A15.0, los: [5, 12], base_tariff_idr: 6100000, verified: false}
+  - {cbg: "A-4-17", label: "Gastroenteritis dan kolitis infeksi",   primary: A09,   los: [2, 5],  base_tariff_idr: 3100000, verified: false}
+
+  # --- respiratory ---
+  - {cbg: "J-4-16", label: "Pneumonia dan influenza",               primary: J18.9, los: [4, 9],  base_tariff_idr: 5400000, verified: false}
+  - {cbg: "J-4-17", label: "Penyakit paru obstruktif kronik",       primary: J44.9, los: [4, 8],  base_tariff_idr: 5000000, verified: false}
+
+  # --- circulatory ---
+  - {cbg: "I-4-12", label: "Gagal jantung",                         primary: I50.0, los: [4, 10], base_tariff_idr: 7300000, verified: false}
+  - {cbg: "I-4-13", label: "Infark miokard akut",                   primary: I21.0, los: [5, 11], base_tariff_idr: 13800000, verified: false}
+  - {cbg: "I-4-14", label: "Stroke infark",                         primary: I63.9, los: [6, 14], base_tariff_idr: 9200000, verified: false}
+  - {cbg: "I-4-15", label: "Stroke hemoragik",                      primary: I61.9, los: [7, 16], base_tariff_idr: 12400000, verified: false}
+
+  # --- endocrine / renal ---
+  - {cbg: "E-4-10", label: "Diabetes melitus dengan komplikasi",    primary: E11.6, los: [4, 9],  base_tariff_idr: 5800000, verified: false}
+  - {cbg: "N-4-10", label: "Gagal ginjal kronik",                   primary: N18.5, los: [4, 10], base_tariff_idr: 7900000, verified: false}
+  - {cbg: "N-4-11", label: "Infeksi saluran kemih",                 primary: N39.0, los: [3, 6],  base_tariff_idr: 3600000, verified: false}
+
+  # --- surgical, with a required procedure ---
+  - {cbg: "K-1-20", label: "Prosedur apendiks",                     primary: K35.8, los: [3, 6],  base_tariff_idr: 8700000,
+     required_procedure: "47.09", procedure_label: "Apendektomi lain", verified: false}
+  - {cbg: "O-6-10", label: "Persalinan dengan seksio sesarea",      primary: O82,   los: [3, 5],  base_tariff_idr: 7100000,
+     required_procedure: "74.1",  procedure_label: "Seksio sesarea servikal bawah", verified: false}
+  - {cbg: "M-1-30", label: "Prosedur fraktur femur",                primary: S72.0, los: [5, 12], base_tariff_idr: 15600000,
+     required_procedure: "79.35", procedure_label: "Reduksi terbuka fraktur femur dengan fiksasi interna", verified: false}
+  - {cbg: "K-4-17", label: "Sirosis hati dan penyakit hati kronik", primary: K74.6, los: [5, 11], base_tariff_idr: 8300000, verified: false}
+
+# Which comorbidities are plausible alongside which primary diagnosis. Without
+# this the generator produces clinically absurd episodes (sectio caesarea with
+# COPD), which a koder would spot instantly and which would discredit the demo.
+plausible_comorbidities:
+  default:  [E11.9, I10, D64.9, E87.6, E86, K30]
+  "A-4-15": [E11.9, I10, N18.3, D64.9, J96.0, E87.6, E44.0, E86]
+  "A-4-16": [E11.9, D64.9, E44.0, E86]
+  "I-4-12": [I10, N18.3, E11.9, D64.9, E87.6, J96.0]
+  "I-4-13": [I10, E11.9, D64.9, N18.3]
+  "I-4-14": [I10, E11.9, D64.9, E87.6, E86]
+  "I-4-15": [I10, E11.9, D64.9, J96.0]
+  "N-4-10": [I10, E11.9, D64.9, E87.6, E44.0]
+  "E-4-10": [I10, N18.3, D64.9, E87.6, E86]
+  "J-4-16": [E11.9, I10, D64.9, J96.0, E86, E44.0]
+  "J-4-17": [I10, J96.0, D64.9, E44.0]
+  "O-6-10": [D64.9, I10, E11.9]          # no COPD, no CKD stage 3 by default
+  "M-1-30": [I10, E11.9, D64.9, E86]
+  "K-1-20": [E86, K30, D64.9]
+  "K-4-17": [D64.9, E44.0, E87.6, E86, N18.3]

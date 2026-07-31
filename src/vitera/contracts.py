@@ -197,6 +197,19 @@ class ClinicalEvent:
 
 
 @dataclass(frozen=True, slots=True)
+class Document:
+    """A dated document in the record.
+
+    ``day`` is what makes ``Episode.at_day`` possible: on day 3 the resume
+    medis does not exist yet, and a flag citing it would be citing the future.
+    """
+
+    doc_id: str
+    day: int
+    text: ClinicalText
+
+
+@dataclass(frozen=True, slots=True)
 class SecondaryDiagnosis:
     """Carries the two timestamps the whole concurrent thesis rests on.
 
@@ -230,12 +243,19 @@ class Episode:
     secondary_dx: tuple[SecondaryDiagnosis, ...]
     procedures: tuple[str, ...]
     events: tuple[ClinicalEvent, ...]
-    documents: Mapping[str, ClinicalText]
+    documents: tuple[Document, ...]
     discharge_day: int | None = None
 
     @property
     def is_admitted(self) -> bool:
         return self.discharge_day is None
+
+    @property
+    def los_so_far(self) -> int:
+        """Length of stay to date. The sweep's cohort filter reads this."""
+        if self.discharge_day is not None:
+            return self.discharge_day
+        return max((e.day for e in self.events), default=0)
 
     def at_day(self, day: int) -> "Episode":
         """Collapse the sequence to what was knowable on ``day``.
@@ -247,8 +267,53 @@ class Episode:
         N times rather than a second system. If this invariant ever fails, the
         concurrent results and the discharge results are not comparable and the
         lead-time claim is void.
+
+        Three things are filtered, and nothing else:
+
+        - **events** to those that had happened by ``day``;
+        - **documents** to those written by ``day`` — on day 3 there is no
+          resume medis, so a flag citing one would be citing the future;
+        - **secondary diagnoses** to those clinically present by ``day``, i.e.
+          ``signal_day <= day``. A comorbidity that has not developed yet is
+          not a missed diagnosis.
+
+        Note what is deliberately NOT filtered: a diagnosis whose
+        ``signal_day <= day`` is kept even when ``documented_day > day`` or is
+        ``None``. That is exactly the undercoding case — clinically visible,
+        not yet written down — and removing it would erase the phenomenon the
+        product exists to detect.
         """
-        raise NotImplementedError("bucket 4 — generator")
+        if day < 0:
+            raise ValueError(f"day must be >= 0, got {day}")
+
+        discharged = self.discharge_day is not None and day >= self.discharge_day
+        return Episode(
+            episode_id=self.episode_id,
+            site_id=self.site_id,
+            admission_date=self.admission_date,
+            primary_dx=self.primary_dx,
+            secondary_dx=tuple(
+                d
+                for d in self.secondary_dx
+                if d.signal_day is not None and d.signal_day <= day
+            ),
+            procedures=self.procedures,
+            events=tuple(e for e in self.events if e.day <= day),
+            documents=tuple(d for d in self.documents if d.day <= day),
+            discharge_day=self.discharge_day if discharged else None,
+        )
+
+    def documented_dx_at(self, day: int) -> tuple[str, ...]:
+        """Secondary diagnoses actually written down by ``day``.
+
+        The gap between this and ``at_day(day).secondary_dx`` is the value
+        Vitera creates, and what ``detection_lead_time`` measures.
+        """
+        return tuple(
+            d.icd10
+            for d in self.secondary_dx
+            if d.documented_day is not None and d.documented_day <= day
+        )
 
 
 # ---------------------------------------------------------------------------

@@ -7,10 +7,13 @@ passing is the signal the bucket is done.
 
 from __future__ import annotations
 
+from datetime import date
+
 import pytest
 
 from vitera.contracts import (
     DefectClass,
+    Episode,
     Flag,
     FlagSource,
     GroupResult,
@@ -143,11 +146,45 @@ def test_rules_reachable_taxonomy_matches_the_paper() -> None:
 # --- the invariant the whole concurrent thesis rests on --------------------
 
 
-@pytest.mark.xfail(reason="bucket 4 — Episode.at_day not implemented", strict=True)
-def test_collapsing_at_discharge_reproduces_the_flat_episode() -> None:
-    """episode.at_day(discharge_day) == episode
+def test_at_day_rejects_negative_days() -> None:
+    ep = Episode(
+        episode_id="EP1",
+        site_id="RS001",
+        admission_date=date(2026, 1, 1),
+        primary_dx="A01.0",
+        secondary_dx=(),
+        procedures=(),
+        events=(),
+        documents=(),
+        discharge_day=4,
+    )
+    with pytest.raises(ValueError):
+        ep.at_day(-1)
 
-    If this ever fails, concurrent results and discharge results are not
-    comparable, and the detection-lead-time claim is void.
+
+def test_at_day_keeps_visible_but_undocumented_diagnoses() -> None:
+    """The undercoding case must survive the temporal collapse.
+
+    signal_day 2, never documented: on day 3 it is clinically present and
+    missing from the notes. Filtering it out would erase the phenomenon the
+    product exists to detect.
     """
-    raise NotImplementedError
+    dx = SecondaryDiagnosis(icd10="E11.9", signal_day=2, documented_day=None)
+    later = SecondaryDiagnosis(icd10="I10", signal_day=5, documented_day=6)
+    ep = Episode(
+        episode_id="EP1",
+        site_id="RS001",
+        admission_date=date(2026, 1, 1),
+        primary_dx="A01.0",
+        secondary_dx=(dx, later),
+        procedures=(),
+        events=(),
+        documents=(),
+        discharge_day=7,
+    )
+    at3 = ep.at_day(3)
+    assert at3.secondary_dx == (dx,)  # visible
+    assert at3.documented_dx_at(3) == ()  # but unwritten
+    assert ep.documented_dx_at(7) == ("I10",)
+    # The full-stay collapse is lossless.
+    assert ep.at_day(7) == ep
