@@ -1,0 +1,86 @@
+[
+  {
+    "test": "D1 (document availability)",
+    "n_train": 1839,
+    "n_test": 928,
+    "positive_rate_test": 0.0409,
+    "auc": 0.9567,
+    "ci95": [
+      0.9217,
+      0.9829
+    ],
+    "chance_in_ci": false
+  },
+  {
+    "test": "D2 (code mutation)",
+    "n_train": 710,
+    "n_test": 355,
+    "positive_rate_test": 0.0789,
+    "auc": 0.5898,
+    "ci95": [
+      0.4819,
+      0.6913
+    ],
+    "chance_in_ci": true
+  },
+  {
+    "test": "D3 (code mutation)",
+    "n_train": 1903,
+    "n_test": 961,
+    "positive_rate_test": 0.0739,
+    "auc": 0.4641,
+    "ci95": [
+      0.3984,
+      0.5332
+    ],
+    "chance_in_ci": true
+  },
+  {
+    "test": "D4 (code mutation)",
+    "n_train": 517,
+    "n_test": 255,
+    "positive_rate_test": 0.2667,
+    "auc": 0.4809,
+    "ci95": [
+      0.4077,
+      0.5679
+    ],
+    "chance_in_ci": true
+  },
+  {
+    "test": "D5 (document availability)",
+    "n_train": 712,
+    "n_test": 365,
+    "positive_rate_test": 0.1041,
+    "auc": 0.545,
+    "ci95": [
+      0.4511,
+      0.6526
+    ],
+    "chance_in_ci": true
+  },
+  {
+    "test": "D6 (code mutation)",
+    "n_train": 324,
+    "n_test": 161,
+    "positive_rate_test": 0.0373,
+    "auc": 0.6806,
+    "ci95": [
+      0.4841,
+      0.8671
+    ],
+    "chance_in_ci": true
+  },
+  {
+    "test": "D7 (code mutation)",
+    "n_train": 1902,
+    "n_test": 958,
+    "positive_rate_test": 0.071,
+    "auc": 0.4945,
+    "ci95": [
+      0.4244,
+      0.566
+    ],
+    "chance_in_ci": true
+  }
+]

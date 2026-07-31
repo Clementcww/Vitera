@@ -1,0 +1,81 @@
+{
+  "generated_by": "vitera.generator.cli",
+  "seed": 20260731,
+  "n_episodes": 4000,
+  "stage_seeds": {
+    "generator": 628083628,
+    "defect_injection": 628084338
+  },
+  "domain_verified": false,
+  "config_hashes": {
+    "defects.yaml": "8fcdcb81c7e1f14a",
+    "sites.yaml": "6e96e870fe461c8d",
+    "thresholds.yaml": "d636b2af88aac42d",
+    "sweep.yaml": "e35c221a045e3faa"
+  },
+  "reference_hashes": {
+    "comorbidities.yaml": "bf6659fc9c975aed",
+    "cbg_groups.yaml": "bfdf0071a6851d2d"
+  },
+  "holdout": "by site_id, never by row",
+  "negative_construction": "code_mutation_only",
+  "stats": {
+    "episodes": 4000,
+    "train": 2668,
+    "test": 1332,
+    "clean_claims": 2661,
+    "clean_claim_share": 0.6653,
+    "defects_per_class": {
+      "D1": 154,
+      "D2": 182,
+      "D3": 347,
+      "D4": 267,
+      "D5": 245,
+      "D6": 24,
+      "D7": 284,
+      "D8": 159
+    },
+    "defect_rate_per_class": {
+      "D1": {
+        "configured": 0.041,
+        "realised": 0.0385
+      },
+      "D2": {
+        "configured": 0.1,
+        "realised": 0.0455
+      },
+      "D3": {
+        "configured": 0.086,
+        "realised": 0.0867
+      },
+      "D4": {
+        "configured": 0.24,
+        "realised": 0.0668
+      },
+      "D5": {
+        "configured": 0.122,
+        "realised": 0.0612
+      },
+      "D6": {
+        "configured": 0.05,
+        "realised": 0.006
+      },
+      "D7": {
+        "configured": 0.067,
+        "realised": 0.071
+      },
+      "D8": {
+        "configured": 0.039,
+        "realised": 0.0398
+      }
+    },
+    "mean_secondary_dx": 1.654,
+    "undocumented_secondary_dx_rate": 0.6884,
+    "severity_distribution": {
+      "1": 3327,
+      "2": 638,
+      "3": 35
+    },
+    "mean_los": 6.99
+  }
+}

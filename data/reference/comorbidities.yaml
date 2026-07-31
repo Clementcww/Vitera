@@ -20,10 +20,25 @@
 schema_version: 1
 verified: false        # ← Jason flips this when the table has been reviewed
 
+# CALIBRATION NOTE — `prevalence` values are ASSUMED, not cited.
+#
+# No published Indonesian study reports the mean number of secondary diagnoses
+# per inpatient episode. The only anchor available is indirect: Opitasari &
+# Nurwahyuni (2018) Table 2 found secondary-diagnosis non-conformity in 72 of
+# 105 episodes, so AT LEAST 68.6% of inpatient episodes carry at least one
+# secondary diagnosis. Prevalences here are set so the corpus clears that
+# lower bound and so INA-CBG severity level III is reachable — level III
+# requires two documented major comorbidities, and a corpus that cannot
+# produce it cannot demonstrate the 2–3× tariff spread the product turns on.
+#
+# Treat these as a modelling choice with a stated target, reported as such in
+# docs/DATA_CARD.md. They are a sensitivity-analysis parameter in bucket 11,
+# not a finding.
+
 comorbidities:
   - icd10: E11.9
     label: "Diabetes mellitus tipe 2 tanpa komplikasi"
-    prevalence: 0.28
+    prevalence: 0.45
     severity_weight: 2          # 0 = none, 1 = mild CC, 2 = major CC
     verified: false
     signals:
@@ -37,7 +52,7 @@ comorbidities:
 
   - icd10: I10
     label: "Hipertensi esensial (primer)"
-    prevalence: 0.31
+    prevalence: 0.50
     severity_weight: 1
     verified: false
     signals:
@@ -50,7 +65,7 @@ comorbidities:
 
   - icd10: N18.3
     label: "Penyakit ginjal kronik stadium 3"
-    prevalence: 0.12
+    prevalence: 0.20
     severity_weight: 2
     verified: false
     signals:
@@ -63,7 +78,7 @@ comorbidities:
 
   - icd10: D64.9
     label: "Anemia, tidak dispesifikasi"
-    prevalence: 0.22
+    prevalence: 0.38
     severity_weight: 1
     verified: false
     signals:
@@ -76,7 +91,7 @@ comorbidities:
 
   - icd10: E87.6
     label: "Hipokalemia"
-    prevalence: 0.14
+    prevalence: 0.24
     severity_weight: 1
     verified: false
     signals:
@@ -87,7 +102,7 @@ comorbidities:
 
   - icd10: E86
     label: "Deplesi volume (dehidrasi)"
-    prevalence: 0.18
+    prevalence: 0.30
     severity_weight: 1
     verified: false
     signals:
@@ -98,7 +113,7 @@ comorbidities:
 
   - icd10: J96.0
     label: "Gagal napas akut"
-    prevalence: 0.07
+    prevalence: 0.12
     severity_weight: 2
     verified: false
     signals:
@@ -110,7 +125,7 @@ comorbidities:
 
   - icd10: A41.9
     label: "Sepsis, tidak dispesifikasi"
-    prevalence: 0.09
+    prevalence: 0.15
     severity_weight: 2
     verified: false
     signals:
@@ -123,7 +138,7 @@ comorbidities:
 
   - icd10: K30
     label: "Dispepsia"
-    prevalence: 0.16
+    prevalence: 0.26
     severity_weight: 0
     verified: false
     signals:
@@ -133,7 +148,7 @@ comorbidities:
 
   - icd10: E44.0
     label: "Malnutrisi protein-energi sedang"
-    prevalence: 0.08
+    prevalence: 0.14
     severity_weight: 1
     verified: false
     signals:

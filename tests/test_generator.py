@@ -175,3 +175,57 @@ def test_unverified_reference_data_warns_loudly() -> None:
         warnings.simplefilter("always")
         ref.warn_if_unverified()
     assert any(issubclass(x.category, ref.UnverifiedReferenceWarning) for x in w)
+
+
+# --- defect injection (bucket 4b) -----------------------------------------
+
+
+def test_injection_never_regenerates_text() -> None:
+    """Negatives are made by changing codes, not by rewriting prose.
+
+    The episode's documents must be byte-identical before and after injection.
+    This is the property `make leakage` then verifies statistically.
+    """
+    import random as _r
+
+    from vitera.generator.defects import inject
+
+    for ep, gt in generate_corpus(120, seed=42):
+        before = tuple(d.text for d in ep.documents)
+        inject(ep, gt, _r.Random(7))
+        assert tuple(d.text for d in ep.documents) == before, ep.episode_id
+
+
+def test_eligibility_is_recorded_for_every_row() -> None:
+    """Downstream evaluation must be able to condition on eligibility.
+
+    Without it, a classifier predicts the label from episode composition
+    rather than from the code mutation — which is exactly how our first two
+    leakage runs failed.
+    """
+    import random as _r
+
+    from vitera.generator.defects import inject
+
+    seen = set()
+    for ep, gt in generate_corpus(200, seed=11):
+        _, labels, eligible = inject(ep, gt, _r.Random(3))
+        seen.update(eligible)
+        for lab in labels:
+            assert lab.defect_class.name in eligible, (
+                f"{ep.episode_id}: injected {lab.defect_class.name} "
+                "without recording eligibility"
+            )
+    assert len(seen) >= 6, f"only {len(seen)} defect classes ever eligible"
+
+
+def test_clean_claim_codes_only_documented_diagnoses() -> None:
+    """Undercoding is present even with zero injected defects, because it is a
+    site-quality phenomenon rather than a defect."""
+    from vitera.generator.defects import clean_claim
+
+    for ep, gt in generate_corpus(60, seed=5):
+        claim = clean_claim(ep, gt)
+        assert set(claim.secondary_dx) == set(gt.documented_dx)
+        for code in gt.undocumented_dx:
+            assert code not in claim.secondary_dx
