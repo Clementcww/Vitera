@@ -4,10 +4,10 @@
     "n_train": 1839,
     "n_test": 928,
     "positive_rate_test": 0.0409,
-    "auc": 0.9567,
+    "auc": 0.9091,
     "ci95": [
-      0.9217,
-      0.9829
+      0.8604,
+      0.9469
     ],
     "chance_in_ci": false
   },
@@ -16,10 +16,10 @@
     "n_train": 710,
     "n_test": 355,
     "positive_rate_test": 0.0789,
-    "auc": 0.5898,
+    "auc": 0.5902,
     "ci95": [
-      0.4819,
-      0.6913
+      0.4788,
+      0.6925
     ],
     "chance_in_ci": true
   },
@@ -28,10 +28,10 @@
     "n_train": 1903,
     "n_test": 961,
     "positive_rate_test": 0.0739,
-    "auc": 0.4641,
+    "auc": 0.4642,
     "ci95": [
-      0.3984,
-      0.5332
+      0.4,
+      0.5355
     ],
     "chance_in_ci": true
   },
@@ -40,10 +40,10 @@
     "n_train": 517,
     "n_test": 255,
     "positive_rate_test": 0.2667,
-    "auc": 0.4809,
+    "auc": 0.4744,
     "ci95": [
-      0.4077,
-      0.5679
+      0.4004,
+      0.5584
     ],
     "chance_in_ci": true
   },
@@ -52,10 +52,10 @@
     "n_train": 712,
     "n_test": 365,
     "positive_rate_test": 0.1041,
-    "auc": 0.545,
+    "auc": 0.5551,
     "ci95": [
-      0.4511,
-      0.6526
+      0.4597,
+      0.6544
     ],
     "chance_in_ci": true
   },
@@ -64,10 +64,10 @@
     "n_train": 324,
     "n_test": 161,
     "positive_rate_test": 0.0373,
-    "auc": 0.6806,
+    "auc": 0.6645,
     "ci95": [
-      0.4841,
-      0.8671
+      0.4628,
+      0.8627
     ],
     "chance_in_ci": true
   },
@@ -76,10 +76,10 @@
     "n_train": 1902,
     "n_test": 958,
     "positive_rate_test": 0.071,
-    "auc": 0.4945,
+    "auc": 0.4947,
     "ci95": [
-      0.4244,
-      0.566
+      0.4252,
+      0.5678
     ],
     "chance_in_ci": true
   }

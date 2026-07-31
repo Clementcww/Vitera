@@ -9,7 +9,7 @@ while the patient is still admitted — finds what would cause the claim to be
 pended, and hands the medical coder (*petugas casemix / koder klinis*) a ranked
 fix list with evidence cited from the patient record.
 
-All data in this repository is **synthetic**. See `docs/DATA_CARD.md`.
+All data in this repository is **synthetic**. See [`docs/DATA_CARD.md`](docs/DATA_CARD.md) — note `domain_verified: false`.
 
 ---
 
