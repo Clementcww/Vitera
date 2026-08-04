@@ -23,9 +23,10 @@ analysis can attribute an error to one or the other.
 from __future__ import annotations
 
 import random
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date, timedelta
-from typing import Sequence
+from typing import Any
 
 from vitera import config
 from vitera.contracts import (
@@ -85,7 +86,7 @@ def _pick_comorbidities(
     return tuple(chosen)
 
 
-def _signal_day(rng: random.Random, los: int, params: dict) -> int:
+def _signal_day(rng: random.Random, los: int, params: Mapping[str, Any]) -> int:
     """When a comorbidity becomes clinically visible.
 
     ASSUMED distribution — no Indonesian study reports this. See
@@ -98,7 +99,11 @@ def _signal_day(rng: random.Random, los: int, params: dict) -> int:
 
 
 def _documented_day(
-    rng: random.Random, signal_day: int, los: int, p_undocumented: float, gap: dict
+    rng: random.Random,
+    signal_day: int,
+    los: int,
+    p_undocumented: float,
+    gap: Mapping[str, Any],
 ) -> int | None:
     """When it appears in the notes — or never.
 
@@ -109,7 +114,9 @@ def _documented_day(
         return None
     p = gap.get("p", 0.45)
     cap = gap.get("max", 7)
-    delay = min(cap, rng.geometric(p) - 1 if hasattr(rng, "geometric") else _geom(rng, p, cap))
+    delay = min(
+        cap, rng.geometric(p) - 1 if hasattr(rng, "geometric") else _geom(rng, p, cap)
+    )
     day = signal_day + delay
     # Documentation cannot arrive after the patient has gone home.
     return day if day <= los else None

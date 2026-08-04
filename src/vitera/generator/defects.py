@@ -16,7 +16,6 @@ from __future__ import annotations
 import random
 from dataclasses import dataclass, replace
 from datetime import date, timedelta
-from typing import Sequence
 
 from vitera import config
 from vitera.contracts import DefectClass, Episode, Remedy
@@ -113,9 +112,7 @@ def _d1_berkas_tidak_lengkap(
     return (
         replace(
             claim,
-            documents_present=tuple(
-                d for d in claim.documents_present if d != dropped
-            ),
+            documents_present=tuple(d for d in claim.documents_present if d != dropped),
         ),
         DefectLabel(DefectClass.D1, Remedy.OBTAIN, f"berkas hilang: {dropped}"),
     )
@@ -170,9 +167,7 @@ def _d4_unsupported_severity(
     right and documentarily unsupported, which is exactly the hard case.
     """
     candidates = [
-        c
-        for c in gt.undocumented_dx
-        if ref.comorbidity_by_code(c).severity_weight >= 2
+        c for c in gt.undocumented_dx if ref.comorbidity_by_code(c).severity_weight >= 2
     ]
     if not candidates:
         return None

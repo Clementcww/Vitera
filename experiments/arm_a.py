@@ -54,9 +54,7 @@ def evaluate(rows: list[dict[str, Any]]) -> dict[str, Any]:
         # Rule 6 as a measured property, not a promise.
         for f in flags:
             spans_total += 1
-            doc = next(
-                (d for d in ep.documents if d.doc_id == f.span.doc_id), None
-            )
+            doc = next((d for d in ep.documents if d.doc_id == f.span.doc_id), None)
             if doc and doc.text[f.span.start : f.span.end] == f.span.text:
                 spans_ok += 1
 
@@ -85,9 +83,7 @@ def evaluate(rows: list[dict[str, Any]]) -> dict[str, Any]:
         if as_claimed.ungroupable_reason:
             ungroupable += 1
         if as_claimed.tariff_idr and as_documented.tariff_idr:
-            recoverable_idr += max(
-                0, as_documented.tariff_idr - as_claimed.tariff_idr
-            )
+            recoverable_idr += max(0, as_documented.tariff_idr - as_claimed.tariff_idr)
 
     per_class = {}
     for c in CLASSES:
@@ -135,7 +131,9 @@ def main() -> None:
     a.out.write_text(json.dumps(res, indent=2), encoding="utf-8")
 
     print(f"ARM A — rules only, n={res['n']} test episodes\n")
-    print(f"{'class':6} {'elig':>6} {'tp':>5} {'fp':>5} {'fn':>5} {'prec':>7} {'rec':>7}")
+    print(
+        f"{'class':6} {'elig':>6} {'tp':>5} {'fp':>5} {'fn':>5} {'prec':>7} {'rec':>7}"
+    )
     for c in CLASSES:
         m = res["per_class"][c]
         pr = f"{m['precision']:.3f}" if m["precision"] is not None else "  -  "
@@ -145,8 +143,10 @@ def main() -> None:
             f"{pr:>7} {rc:>7}"
         )
     print()
-    print(f"classes reached (recall >= 0.5) : {res['n_classes_reached']} of 8 "
-          f"— {', '.join(res['classes_reached'])}")
+    print(
+        f"classes reached (recall >= 0.5) : {res['n_classes_reached']} of 8 "
+        f"— {', '.join(res['classes_reached'])}"
+    )
     print(f"clean-claim false positive rate : {res['clean_claim_false_positive_rate']}")
     print(f"span verification rate          : {res['span_verification_rate']}")
     print(f"mean recoverable value / episode: Rp {res['recoverable_idr_mean']:,}")

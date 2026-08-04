@@ -72,9 +72,7 @@ class BM25:
             total += self.idf.get(term, 0.0) * f * (self.k1 + 1) / (f + norm)
         return total
 
-    def best_line(
-        self, query: str, lines: Sequence[str]
-    ) -> tuple[int, float]:
+    def best_line(self, query: str, lines: Sequence[str]) -> tuple[int, float]:
         """Index and score of the line that best matches the query.
 
         Line-level rather than passage-level: a fourteen-day CPPT would drown

@@ -64,7 +64,9 @@ def _tokenise(text: str) -> list[str]:
             cur = []
     if cur:
         out.append("".join(cur))
-    return out + [f"{a}_{b}" for a, b in zip(out, out[1:])]  # unigrams + bigrams
+    return out + [
+        f"{a}_{b}" for a, b in zip(out, out[1:], strict=False)
+    ]  # unigrams + bigrams
 
 
 def _tfidf(train: list[str], test: list[str], max_features: int = 20000):
@@ -199,7 +201,12 @@ def main() -> None:
     train, test = _load(a.data / "train.jsonl"), _load(a.data / "test.jsonl")
 
     results = [
-        run(train, test, c, f"{c} ({'code mutation' if c in CODE_DEFECTS else 'document availability'})")
+        run(
+            train,
+            test,
+            c,
+            f"{c} ({'code mutation' if c in CODE_DEFECTS else 'document availability'})",  # noqa: E501
+        )
         for c in sorted(CODE_DEFECTS | DOC_DEFECTS)
     ]
 
@@ -209,7 +216,9 @@ def main() -> None:
     print(f"{'class':6} {'n_test':>7} {'pos':>7} {'AUC':>7}  {'95% CI':<18} verdict")
     for r in results:
         if r.get("auc") is None:
-            print(f"{r['test'][:2]:6} {'-':>7} {'-':>7} {'-':>7}  {'-':<18} inconclusive")
+            print(
+                f"{r['test'][:2]:6} {'-':>7} {'-':>7} {'-':>7}  {'-':<18} inconclusive"
+            )
             continue
         ci = f"[{r['ci95'][0]:.3f}, {r['ci95'][1]:.3f}]"
         ok = "at chance" if r["chance_in_ci"] else "LEAKS"
@@ -218,7 +227,9 @@ def main() -> None:
             f"{r['auc']:>7.3f}  {ci:<18} {ok}"
         )
 
-    code_results = [r for r in results if r["test"][:2] in CODE_DEFECTS and r.get("auc")]
+    code_results = [
+        r for r in results if r["test"][:2] in CODE_DEFECTS and r.get("auc")
+    ]
     leaking = [r["test"][:2] for r in code_results if not r["chance_in_ci"]]
     print()
     if leaking:

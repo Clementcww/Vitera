@@ -20,8 +20,9 @@ is this function called once per day plus a diff — never a second system.
 from __future__ import annotations
 
 import time
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, replace
-from typing import Callable, Protocol, Sequence
+from typing import Protocol
 
 from vitera.agent.boundary import LLMClient, pseudonymise
 from vitera.agent.router import Router, filter_spans
@@ -81,7 +82,12 @@ class BoundedRunner:
             except Exception as exc:  # a failing tool must not kill the run
                 flags = []
                 self.calls.append(
-                    ToolCall(tool.name, {}, f"error: {type(exc).__name__}", time.monotonic() - t0)
+                    ToolCall(
+                        tool.name,
+                        {},
+                        f"error: {type(exc).__name__}",
+                        time.monotonic() - t0,
+                    )
                 )
                 continue
             out.extend(flags)
@@ -177,6 +183,7 @@ def run_pipeline(
     tools = [Tool("rules", lambda c: check(c))]
     degraded = scorer is None
     if scorer is not None:
+
         def _score(c: RuleContext) -> Sequence[Flag]:
             return scorer.score(c)
 

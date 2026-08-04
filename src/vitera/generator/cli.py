@@ -77,9 +77,7 @@ def build(n: int, seed: int, out: Path) -> dict[str, Any]:
             s: seeds.for_stage(s) for s in ("generator", "defect_injection")
         },
         "domain_verified": ref.domain_verified(),
-        "config_hashes": {
-            f: _hash_file(config.CONFIG_DIR / f) for f in CONFIG_FILES
-        },
+        "config_hashes": {f: _hash_file(config.CONFIG_DIR / f) for f in CONFIG_FILES},
         "reference_hashes": {
             f: _hash_file(ref.REFERENCE_DIR / f) for f in REFERENCE_FILES
         },
@@ -106,9 +104,7 @@ def _stats(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "train": sum(1 for r in rows if r["split"] == "train"),
         "test": sum(1 for r in rows if r["split"] == "test"),
         "clean_claims": sum(1 for r in rows if not r["defects"]),
-        "clean_claim_share": round(
-            sum(1 for r in rows if not r["defects"]) / n, 4
-        ),
+        "clean_claim_share": round(sum(1 for r in rows if not r["defects"]) / n, 4),
         "defects_per_class": {k: defect_counts[k] for k in sorted(defect_counts)},
         # Configured vs realised, because they differ and the difference matters.
         # An injector returns None when the episode cannot carry that defect —
@@ -117,9 +113,7 @@ def _stats(rows: list[dict[str, Any]]) -> dict[str, Any]:
         # configured rate would misstate the corpus in the data card.
         "defect_rate_per_class": {
             k: {
-                "configured": float(
-                    config.defects(strict=False)["defects"][k]["rate"]
-                ),
+                "configured": float(config.defects(strict=False)["defects"][k]["rate"]),
                 "realised": round(defect_counts[k] / n, 4),
             }
             for k in sorted(defect_counts)
@@ -128,11 +122,11 @@ def _stats(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "undocumented_secondary_dx_rate": round(undoc / sec_total, 4),
         "severity_distribution": {
             str(k): v
-            for k, v in sorted(Counter(r["ground_truth"].severity for r in rows).items())
+            for k, v in sorted(
+                Counter(r["ground_truth"].severity for r in rows).items()
+            )
         },
-        "mean_los": round(
-            sum(r["episode"].discharge_day or 0 for r in rows) / n, 2
-        ),
+        "mean_los": round(sum(r["episode"].discharge_day or 0 for r in rows) / n, 2),
     }
 
 

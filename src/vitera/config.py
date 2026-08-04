@@ -13,10 +13,11 @@ from __future__ import annotations
 
 import os
 import random
+from collections.abc import Mapping
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 import yaml
 
@@ -54,7 +55,7 @@ def seeds(master: int | None = None) -> Seeds:
     return Seeds(master=master)
 
 
-@lru_cache(maxsize=None)
+@cache
 def _load(name: str) -> Mapping[str, Any]:
     path = CONFIG_DIR / name
     if not path.exists():
@@ -118,7 +119,9 @@ def _assert_all_cited(data: Mapping[str, Any]) -> None:
 
 
 def _is_todo(value: object) -> bool:
-    return value is None or (isinstance(value, str) and value.strip().upper().startswith("TODO"))
+    return value is None or (
+        isinstance(value, str) and value.strip().upper().startswith("TODO")
+    )
 
 
 def llm_mode() -> str:

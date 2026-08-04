@@ -58,9 +58,7 @@ class RuleContext:
     def find_span(self, needle: str, prefer: str | None = None) -> Span | None:
         """Locate a verbatim quotation. Returns None if it is not in the record,
         which causes the caller to drop the flag — rule 6 as a filter."""
-        docs = sorted(
-            self.available, key=lambda d: (d.doc_id != prefer, d.doc_id)
-        )
+        docs = sorted(self.available, key=lambda d: (d.doc_id != prefer, d.doc_id))
         for d in docs:
             i = d.text.find(needle)
             if i >= 0:
@@ -69,9 +67,7 @@ class RuleContext:
 
     def line_containing(self, needle: str, prefer: str | None = None) -> Span | None:
         """Cite the whole line, not the fragment — a koder needs the context."""
-        docs = sorted(
-            self.available, key=lambda d: (d.doc_id != prefer, d.doc_id)
-        )
+        docs = sorted(self.available, key=lambda d: (d.doc_id != prefer, d.doc_id))
         for d in docs:
             for m in re.finditer(r"[^\n]*", d.text):
                 if needle in m.group(0) and m.group(0).strip():
@@ -84,7 +80,9 @@ class RuleContext:
 # ---------------------------------------------------------------------------
 
 
-def validate(ctx: RuleContext) -> tuple[ValidatedEpisode | None, tuple[ValidationFailure, ...]]:
+def validate(
+    ctx: RuleContext,
+) -> tuple[ValidatedEpisode | None, tuple[ValidationFailure, ...]]:
     """Deterministic checks that must pass before any model runs.
 
     A failure here is not a defect flag — it means the record is not in a state
@@ -116,7 +114,9 @@ def validate(ctx: RuleContext) -> tuple[ValidatedEpisode | None, tuple[Validatio
     if ctx.day < 0 or (
         ctx.episode.discharge_day is not None and ctx.day > ctx.episode.discharge_day
     ):
-        failures.append(ValidationFailure("temporal", f"hari {ctx.day} di luar episode"))
+        failures.append(
+            ValidationFailure("temporal", f"hari {ctx.day} di luar episode")
+        )
     else:
         passed.append("temporal")
 
@@ -137,7 +137,9 @@ def _r_d1_berkas_tidak_lengkap(ctx: RuleContext) -> list[Flag]:
     for doc_id in REQUIRED_DOCS:
         if doc_id in present:
             continue
-        if not any(d.doc_id == doc_id and d.day <= ctx.day for d in ctx.episode.documents):
+        if not any(
+            d.doc_id == doc_id and d.day <= ctx.day for d in ctx.episode.documents
+        ):
             continue  # not yet written; not a defect
         span = ctx.line_containing("Dokumen wajib", prefer="berkas_klaim")
         if span is None:

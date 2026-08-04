@@ -134,8 +134,7 @@ _RATIONALE = {
         "tertulis pada dokumentasi DPJP"
     ),
     DefectClass.D7: (
-        "kode {code} termasuk pola penambahan komorbiditas berat tanpa bukti "
-        "penunjang"
+        "kode {code} termasuk pola penambahan komorbiditas berat tanpa bukti penunjang"
     ),
 }
 

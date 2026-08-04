@@ -30,7 +30,7 @@ def corpus() -> list:
 
 def test_grouper_is_deterministic(corpus: list) -> None:
     g1, g2 = Grouper(), Grouper()
-    for ep, gt in corpus:
+    for _, gt in corpus:
         a = g1.group_codes(gt.primary_dx, gt.documented_dx, gt.procedures)
         b = g2.group_codes(gt.primary_dx, gt.documented_dx, gt.procedures)
         assert a == b
@@ -60,7 +60,7 @@ def test_missing_required_procedure_is_ungroupable() -> None:
 def test_undocumented_comorbidity_cannot_lift_severity(corpus: list) -> None:
     """The financial core: clinically present but unwritten pays less."""
     g = Grouper()
-    for ep, gt in corpus:
+    for _, gt in corpus:
         if not gt.undocumented_dx:
             continue
         claimed = g.group_codes(gt.primary_dx, gt.documented_dx, gt.procedures)
@@ -120,7 +120,9 @@ def test_every_flag_cites_a_verbatim_span(corpus: list) -> None:
 def test_rules_never_flag_a_clean_claim(corpus: list) -> None:
     """The adoption-critical metric. A checker that cries wolf is switched off."""
     for ep, gt in corpus:
-        flags, failures = run(RuleContext(ep, clean_claim(ep, gt), ep.discharge_day or 0))
+        flags, failures = run(
+            RuleContext(ep, clean_claim(ep, gt), ep.discharge_day or 0)
+        )
         assert not failures, ep.episode_id
         assert not flags, f"{ep.episode_id}: {[f.rationale for f in flags]}"
 

@@ -12,10 +12,11 @@ unreviewed clinical mappings cannot quietly become a paper figure.
 from __future__ import annotations
 
 import warnings
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 import yaml
 
@@ -79,7 +80,7 @@ def _load(name: str) -> Mapping[str, Any]:
     return data
 
 
-@lru_cache(maxsize=None)
+@cache
 def comorbidities() -> tuple[Comorbidity, ...]:
     raw = _load("comorbidities.yaml")
     out = []
@@ -107,7 +108,7 @@ def comorbidities() -> tuple[Comorbidity, ...]:
     return tuple(out)
 
 
-@lru_cache(maxsize=None)
+@cache
 def cbg_groups() -> tuple[CBGGroup, ...]:
     raw = _load("cbg_groups.yaml")
     return tuple(
@@ -126,13 +127,13 @@ def cbg_groups() -> tuple[CBGGroup, ...]:
     )
 
 
-@lru_cache(maxsize=None)
+@cache
 def severity_multipliers() -> Mapping[int, float]:
     raw = _load("cbg_groups.yaml")
     return {int(k): float(v) for k, v in raw["severity_multipliers"].items()}
 
 
-@lru_cache(maxsize=None)
+@cache
 def plausible_comorbidities(cbg: str) -> tuple[str, ...]:
     """Which comorbidities may co-occur with a given group.
 
@@ -151,7 +152,7 @@ def comorbidity_by_code(code: str) -> Comorbidity:
     raise KeyError(f"unknown comorbidity: {code}")
 
 
-@lru_cache(maxsize=None)
+@cache
 def icd10_labels() -> Mapping[str, str]:
     """Every ICD-10 code a claim can carry, mapped to its Indonesian label.
 
@@ -161,7 +162,9 @@ def icd10_labels() -> Mapping[str, str]:
     pair from this — a code with no label cannot be scored.
     """
     out: dict[str, str] = {}
-    out.update({str(k): str(v) for k, v in _load("icd10_labels.yaml")["labels"].items()})
+    out.update(
+        {str(k): str(v) for k, v in _load("icd10_labels.yaml")["labels"].items()}
+    )
     out.update({g.primary: g.label for g in cbg_groups()})
     out.update({c.icd10: c.label for c in comorbidities()})
     return out

@@ -16,7 +16,8 @@ the evidence sits between the thresholds.
 
 from __future__ import annotations
 
-from typing import Mapping, Sequence
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 from vitera.contracts import (
     Episode,
@@ -27,7 +28,9 @@ from vitera.contracts import (
 )
 
 
-def filter_spans(flags: Sequence[Flag], episode: Episode) -> tuple[tuple[Flag, ...], int]:
+def filter_spans(
+    flags: Sequence[Flag], episode: Episode
+) -> tuple[tuple[Flag, ...], int]:
     """Keep only flags whose span is verbatim in the record.
 
     Returns (kept, dropped_count). A dropped flag is not an error to report to
@@ -48,7 +51,11 @@ def filter_spans(flags: Sequence[Flag], episode: Episode) -> tuple[tuple[Flag, .
 class Router:
     """Deterministic. The whole decision is the ten lines of `decide`."""
 
-    def __init__(self, thresholds: Mapping | None = None, profile: str = "default") -> None:
+    def __init__(
+        self,
+        thresholds: Mapping[str, Any] | None = None,
+        profile: str = "default",
+    ) -> None:
         from vitera import config
 
         t = thresholds or config.thresholds()
@@ -67,9 +74,7 @@ class Router:
         degraded: bool = False,
     ) -> RouterDecision:
         kept = [f for f in flags if f.score >= self.flag_at]
-        borderline = [
-            f for f in flags if self.abstain_below <= f.score < self.flag_at
-        ]
+        borderline = [f for f in flags if self.abstain_below <= f.score < self.flag_at]
 
         if kept:
             verdict = Verdict.FLAGGED
@@ -90,9 +95,9 @@ class Router:
         if degraded:
             reason += " (mode advisory: lapisan model tidak aktif)"
 
-        ordered = sorted(
-            kept, key=lambda f: (f.remedy.decay_rank, -f.score)
-        )[: self.max_flags]
+        ordered = sorted(kept, key=lambda f: (f.remedy.decay_rank, -f.score))[
+            : self.max_flags
+        ]
 
         return RouterDecision(
             verdict=verdict,

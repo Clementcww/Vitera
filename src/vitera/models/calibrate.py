@@ -115,9 +115,7 @@ def ece(probs: Floats, labels: Ints, bins: int = 10) -> float:
     return float(total)
 
 
-def reliability(
-    probs: Floats, labels: Ints, bins: int = 10
-) -> list[dict[str, float]]:
+def reliability(probs: Floats, labels: Ints, bins: int = 10) -> list[dict[str, float]]:
     """Bins for the reliability diagram. Committed to results/ as data, so the
     figure is reproducible without rerunning the model."""
     p = np.asarray(probs, dtype=float)
@@ -213,9 +211,7 @@ def recommend_thresholds(
         achieved_false_positive_rate=round(achieved, 4),
         recall_at_flag_at=round(tp / max(1, int((y == 1).sum())), 4),
         precision_at_flag_at=round(tp / max(1, int(flagged.sum())), 4),
-        recall_captured_above_abstain=round(
-            float((pos >= abstain_below).mean()), 4
-        ),
+        recall_captured_above_abstain=round(float((pos >= abstain_below).mean()), 4),
         bands_crossed=crossed,
     )
 

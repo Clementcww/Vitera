@@ -34,10 +34,11 @@ served by ``Span.evidence_hash``.
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass, field
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from datetime import date
 from enum import Enum
-from typing import Literal, Mapping, NewType, Protocol, Sequence, runtime_checkable
+from typing import Literal, NewType, Protocol, runtime_checkable
 
 __all__ = [
     "ClinicalText",
@@ -178,9 +179,7 @@ class Span:
     @property
     def evidence_hash(self) -> str:
         """Suppression key. Sweep rule 4: same hash, silent; new hash, new flag."""
-        return hashlib.sha256(
-            f"{self.doc_id}:{self.text}".encode("utf-8")
-        ).hexdigest()[:16]
+        return hashlib.sha256(f"{self.doc_id}:{self.text}".encode()).hexdigest()[:16]
 
 
 # ---------------------------------------------------------------------------
@@ -257,7 +256,7 @@ class Episode:
             return self.discharge_day
         return max((e.day for e in self.events), default=0)
 
-    def at_day(self, day: int) -> "Episode":
+    def at_day(self, day: int) -> Episode:
         """Collapse the sequence to what was knowable on ``day``.
 
         INVARIANT, tested in ``tests/test_contracts.py``:
@@ -538,9 +537,9 @@ class Grouper(Protocol):
 class RulesEngine(Protocol):
     """Reaches D1, D6, D8 and part of D5. Arm A of the experiment."""
 
-    def validate(self, episode: Episode, day: int) -> tuple[
-        ValidatedEpisode | None, tuple[ValidationFailure, ...]
-    ]: ...
+    def validate(
+        self, episode: Episode, day: int
+    ) -> tuple[ValidatedEpisode | None, tuple[ValidationFailure, ...]]: ...
 
     def check(self, episode: ValidatedEpisode) -> tuple[Flag, ...]: ...
 
@@ -556,4 +555,6 @@ class Scorer(Protocol):
 class Router(Protocol):
     """Deterministic. Models score; this decides."""
 
-    def decide(self, flags: Sequence[Flag], grouping: GroupResult) -> RouterDecision: ...
+    def decide(
+        self, flags: Sequence[Flag], grouping: GroupResult
+    ) -> RouterDecision: ...

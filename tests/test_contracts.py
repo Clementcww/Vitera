@@ -24,7 +24,6 @@ from vitera.contracts import (
     Verdict,
 )
 
-
 # --- rule 6: every flag carries a verbatim span ----------------------------
 
 

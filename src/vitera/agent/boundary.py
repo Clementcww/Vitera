@@ -93,14 +93,14 @@ class LLMClient:
 
     @staticmethod
     def _key(prompt: str, max_tokens: int) -> str:
-        return hashlib.sha256(
-            f"{max_tokens}\x00{prompt}".encode("utf-8")
-        ).hexdigest()[:24]
+        return hashlib.sha256(f"{max_tokens}\x00{prompt}".encode()).hexdigest()[:24]
 
     def _path(self, key: str) -> Path:
         return self.cache_dir / f"{key}.json"
 
-    def complete(self, prompt: PseudonymisedText, *, max_tokens: int = 512) -> Completion:
+    def complete(
+        self, prompt: PseudonymisedText, *, max_tokens: int = 512
+    ) -> Completion:
         leaked = _looks_reidentified(str(prompt))
         if leaked is not None:
             raise ReidentifiedTextError(
@@ -166,5 +166,7 @@ class NullLLMClient(LLMClient):
     def __init__(self) -> None:
         super().__init__(mode="cache")
 
-    def complete(self, prompt: PseudonymisedText, *, max_tokens: int = 512) -> Completion:
+    def complete(
+        self, prompt: PseudonymisedText, *, max_tokens: int = 512
+    ) -> Completion:
         raise RuntimeError("LLM disabled")

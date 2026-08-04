@@ -44,7 +44,9 @@ def corpus() -> list:
 
 def _ctx(pair, day=None):
     ep, gt = pair
-    return RuleContext(ep, clean_claim(ep, gt), day if day is not None else ep.discharge_day)
+    return RuleContext(
+        ep, clean_claim(ep, gt), day if day is not None else ep.discharge_day
+    )
 
 
 # --- rule 3: the LLM never sees re-identified data ------------------------
@@ -252,7 +254,9 @@ def test_llm_may_only_rewrite_prose(corpus: list) -> None:
     from vitera.agent.loop import _explain
 
     span = Span("resume_medis", 0, 6, "RESUME")
-    before = Flag(DefectClass.D4, Remedy.QUERY, span, 0.83, FlagSource.CROSS_ENCODER, "asli")
+    before = Flag(
+        DefectClass.D4, Remedy.QUERY, span, 0.83, FlagSource.CROSS_ENCODER, "asli"
+    )
 
     class Liar(LLMClient):
         def __init__(self) -> None:

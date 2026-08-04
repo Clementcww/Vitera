@@ -61,8 +61,6 @@ def test_episode_is_still_admitted_before_discharge(corpus: list) -> None:
 
 def test_signal_never_arrives_after_documentation(corpus: list) -> None:
     """A diagnosis cannot be written down before it is clinically visible."""
-    for _, gt in corpus:
-        pass
     for ep, _ in corpus:
         for dx in ep.secondary_dx:
             if dx.documented_day is not None:
@@ -81,7 +79,9 @@ def test_undocumented_diagnoses_still_have_visible_signals(corpus: list) -> None
         resume = next(d for d in ep.documents if d.doc_id == "resume_medis")
         cppt = "\n".join(d.text for d in ep.documents if d.doc_id.startswith("cppt"))
         for code in gt.undocumented_dx:
-            assert code not in resume.text, f"{ep.episode_id}: {code} leaked into resume"
+            assert code not in resume.text, (
+                f"{ep.episode_id}: {code} leaked into resume"
+            )
             for sig in ref.comorbidity_by_code(code).signals:
                 assert sig.label in cppt, f"{ep.episode_id}: no signal for {code}"
     assert found, "corpus contains no undercoding case — the generator is broken"
@@ -118,7 +118,7 @@ def test_documentation_quality_tracks_hospital_class(corpus: list) -> None:
 def test_severity_counts_only_documented_comorbidities(corpus: list) -> None:
     """A clinically present but unwritten comorbidity cannot lift severity.
     That gap is the money."""
-    for ep, gt in corpus:
+    for _, gt in corpus:
         assert set(gt.documented_dx) <= set(gt.secondary_dx)
         assert set(gt.undocumented_dx) == set(gt.secondary_dx) - set(gt.documented_dx)
 

@@ -127,11 +127,7 @@ def test_strip_dx_list_keeps_cppt_bullets() -> None:
     """CPPT signal lines are also indented bullets. Dropping them would delete
     the evidence for every D4 finding."""
     lines = _strip_dx_list(
-        [
-            ln
-            for ln in evidence_lines(_ctx(claimed=()))
-            if ln.doc_id == "cppt_hari_5"
-        ]
+        [ln for ln in evidence_lines(_ctx(claimed=())) if ln.doc_id == "cppt_hari_5"]
     )
     assert any("Gula darah sewaktu" in ln.text for ln in lines)
 

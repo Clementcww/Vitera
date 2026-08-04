@@ -109,9 +109,7 @@ def cross_encoder_probabilities(
 # ---------------------------------------------------------------------------
 
 
-def controls(
-    test: Sequence[CodePair], model_dir: Path, *, seed: int
-) -> dict[str, Any]:
+def controls(test: Sequence[CodePair], model_dir: Path, *, seed: int) -> dict[str, Any]:
     """Two ablations that must FAIL, or the headline result is a shortcut.
 
     A PR-AUC near 1.0 on synthetic data is exactly the number a judge will
@@ -489,8 +487,7 @@ def _asdict(op: calibrate.OperatingPoint) -> dict[str, Any]:
 def _print(result: dict[str, Any]) -> None:
     print(f"\nBUCKET 8 — code-support scoring, n={result['n_test_pairs']} test pairs\n")
     header = (
-        f"{'arm':16} {'PR-AUC':>16} {'ROC-AUC':>8} {'ECE':>7} "
-        f"{'FPR':>6} {'recall':>7}"
+        f"{'arm':16} {'PR-AUC':>16} {'ROC-AUC':>8} {'ECE':>7} {'FPR':>6} {'recall':>7}"
     )
     print(header)
     print("-" * len(header))
