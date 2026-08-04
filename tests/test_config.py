@@ -71,8 +71,34 @@ def test_negatives_are_made_by_code_mutation_only() -> None:
 
 def test_thresholds_are_not_in_code() -> None:
     t = config.thresholds()
-    assert t["router"]["default"]["flag_at"] > t["router"]["default"]["abstain_below"]
+    assert t["router"]["default"]["flag_at"] >= t["router"]["default"]["abstain_below"]
     assert t["budget"]["max_tool_calls"] == 8
+
+
+def test_an_empty_abstention_band_is_declared_not_stumbled_into() -> None:
+    """`abstain_below == flag_at` empties the grey zone.
+
+    That is a legitimate state — bucket 8's cross-encoder separates the
+    synthetic corpus so cleanly that the recall threshold sits above the
+    false-positive threshold — but it must never happen by accident. If the two
+    coincide, the results file has to say so (`bands_crossed`), and the
+    thresholds file has to explain why.
+    """
+    import json
+    from pathlib import Path
+
+    t = config.thresholds()["router"]["default"]
+    if t["flag_at"] > t["abstain_below"]:
+        return
+
+    results = Path("results/cross_encoder.json")
+    assert results.exists(), (
+        "thresholds leave no abstention band, and no bucket-8 result file "
+        "explains it. Run `make baselines` or restore a band."
+    )
+    op = json.loads(results.read_text(encoding="utf-8"))["operating_point"]["default"]
+    assert op["bands_crossed"] is True
+    assert op["flag_at"] == t["flag_at"]
 
 
 def test_sweep_config_is_scheduling_only() -> None:

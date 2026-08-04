@@ -153,6 +153,9 @@ def run_pipeline(
     # --- rule 4: gate first, always -------------------------------------
     validated, failures = validate(ctx)
     if validated is None:
+        # Still label the model layer honestly. A record handed back at the
+        # gate was scored by nothing at all, so a run without a scorer must not
+        # come back looking like a full check (rule 8).
         return PipelineResult(
             episode_id=ctx.episode.episode_id,
             day=ctx.day,
@@ -160,7 +163,13 @@ def run_pipeline(
             grouping=GroupResult(None, None, None, "gagal validasi"),
             validation_failures=failures,
             trace=Trace(
-                ctx.episode.episode_id, ctx.day, (), 0, None, False, runner.elapsed
+                ctx.episode.episode_id,
+                ctx.day,
+                (),
+                0,
+                None,
+                scorer is None,
+                runner.elapsed,
             ),
         )
 

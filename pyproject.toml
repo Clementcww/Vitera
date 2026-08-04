@@ -23,7 +23,10 @@ ml = [
     "torch>=2.4",
     "transformers>=4.44",
     "scikit-learn>=1.5",
-    "rank-bm25>=0.2.2",
+    "scipy>=1.11",
+    # BM25 is implemented in src/vitera/models/bm25.py rather than pulled in:
+    # forty lines, one fewer dependency inside a reproducibility claim, and the
+    # tokeniser has to handle Indonesian clinical shorthand and ICD codes anyway.
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -45,7 +48,7 @@ disallow_untyped_defs = true
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["yaml", "pandas.*", "numpy.*"]
+module = ["yaml", "pandas.*", "numpy.*", "scipy.*", "sklearn.*", "torch.*", "transformers.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

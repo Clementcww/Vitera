@@ -31,6 +31,7 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 | `make data` | Generate the frozen synthetic dataset |
 | `make leakage` | Text-only leakage check; prints the number |
 | `make train` | Fine-tune the cross-encoder |
+| `make baselines` | Cross-encoder vs. BM25 vs. zero-shot LLM, per class |
 | `make arm-a` | Rules-only baseline (arm A) |
 | `make eval` | Three-arm experiment across 3 seeds |
 | `make demo` | End-to-end discharge path, live LLM |
@@ -54,8 +55,10 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | T1 | Dataset summary + hospital holdout | `make data` | 4 | **done** |
 | N1 | Leakage check (text-only classifier) | `make leakage` | 4 | **done** |
 | T2 | Arm A: rules reach 3 of 8 | `make arm-a` | 5 | **done** |
-| T3 | Cross-encoder vs. BM25 vs. zero-shot, per class | `make eval` | 8 | not started |
-| F2 | Calibration curve | `make figures` | 8 | not started |
+| T3 | Cross-encoder vs. BM25, per class | `make train && make baselines` | 8 | **done** |
+| N4 | Shortcut controls + code-conditional AUC | `make baselines` | 8 | **done** |
+| T3b | Zero-shot LLM arm | `make baselines` | 8, 9 | blocked — no provider binding |
+| F2 | Calibration curve (bins in `results/cross_encoder.json`) | `make figures` | 8 | data done, plot not started |
 | T4 | Three arms, bootstrap CIs across 3 seeds | `make eval` | 10 | not started |
 | N2 | Clean-claim false positive rate | `make eval` | 10 | not started |
 | F3 | Detection rate by day of stay | `make figures` | 10 | not started |

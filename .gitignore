@@ -22,7 +22,13 @@ data/generated/*
 # The LLM cache IS committed — demo-offline depends on it.
 !data/generated/llm_cache/
 
-# Model weights go to HuggingFace, not to git.
+# Model weights go to HuggingFace, not to git. `models/` is the local
+# checkpoint directory `make train` writes; calibration.json is copied into
+# results/ so the numbers survive without the weights.
+#
+# Leading slash matters: a bare `models/` also matches src/vitera/models/,
+# which would silently drop the entire model source package from the repo.
+/models/
 *.pt
 *.safetensors
 *.bin

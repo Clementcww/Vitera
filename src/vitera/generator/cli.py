@@ -22,7 +22,7 @@ from vitera.generator.defects import inject
 from vitera.generator.episode import generate_corpus
 
 CONFIG_FILES = ("defects.yaml", "sites.yaml", "thresholds.yaml", "sweep.yaml")
-REFERENCE_FILES = ("comorbidities.yaml", "cbg_groups.yaml")
+REFERENCE_FILES = ("comorbidities.yaml", "cbg_groups.yaml", "icd10_labels.yaml")
 
 
 def _default(o: Any) -> Any:

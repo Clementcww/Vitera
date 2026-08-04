@@ -151,11 +151,40 @@ def comorbidity_by_code(code: str) -> Comorbidity:
     raise KeyError(f"unknown comorbidity: {code}")
 
 
+@lru_cache(maxsize=None)
+def icd10_labels() -> Mapping[str, str]:
+    """Every ICD-10 code a claim can carry, mapped to its Indonesian label.
+
+    Three sources, in precedence order: comorbidities, CBG primaries, then
+    ``icd10_labels.yaml`` for the sibling and invented codes that only ever
+    appear on a claim. Bucket 8's cross-encoder renders the left side of its
+    pair from this — a code with no label cannot be scored.
+    """
+    out: dict[str, str] = {}
+    out.update({str(k): str(v) for k, v in _load("icd10_labels.yaml")["labels"].items()})
+    out.update({g.primary: g.label for g in cbg_groups()})
+    out.update({c.icd10: c.label for c in comorbidities()})
+    return out
+
+
+def icd10_label(code: str) -> str:
+    """Label for ``code``. Raises rather than falling back to the code string —
+    a silent fallback would make the cross-encoder separate D2 pairs on label
+    presence instead of on clinical specificity."""
+    try:
+        return icd10_labels()[code]
+    except KeyError:
+        raise KeyError(
+            f"no Indonesian label for {code}; add it to "
+            "data/reference/icd10_labels.yaml"
+        ) from None
+
+
 def domain_verified() -> bool:
     """True only when every clinical reference entry has been domain-reviewed."""
     files_ok = all(
         bool(_load(n).get("verified", False))
-        for n in ("comorbidities.yaml", "cbg_groups.yaml")
+        for n in ("comorbidities.yaml", "cbg_groups.yaml", "icd10_labels.yaml")
     )
     entries_ok = all(c.verified for c in comorbidities()) and all(
         g.verified for g in cbg_groups()

@@ -1,0 +1,72 @@
+# ICD-10 labels for codes that appear on a CLAIM but never in the record.
+#
+# The cross-encoder (bucket 8) scores a pair: (coded diagnosis, clinical
+# evidence). The left side of that pair is rendered from the code's Indonesian
+# label, so every code a claim can carry needs one — including the sibling
+# codes that defect injection substitutes in (D2) and the codes it invents
+# (D3 / D7). Codes that also exist in comorbidities.yaml or cbg_groups.yaml are
+# NOT repeated here; `reference.icd10_label` falls through to those first.
+#
+# Why this matters for the result: if a sibling's label were left blank or set
+# to the code string, the cross-encoder would separate D2 pairs on the presence
+# of a label rather than on clinical specificity, and the D2 number would be an
+# artifact. The labels below are therefore deliberately close in wording to
+# their siblings — that closeness is the difficulty of the task.
+#
+# ⚠ DOMAIN REVIEW REQUIRED — Jason owns correctness. Every label below is a
+# plausible Indonesian rendering written by Claude against no ICD-10 volume.
+# `verified` must be flipped before any per-class D2 figure enters the paper.
+
+schema_version: 1
+verified: false        # ← Jason flips this after checking against ICD-10 vol. 1
+
+labels:
+  # --- endocrine / metabolic ---
+  E11.8: "Diabetes melitus tipe 2 dengan komplikasi tidak dispesifikasi"
+  E14.9: "Diabetes melitus tidak dispesifikasi tanpa komplikasi"
+  E44.1: "Malnutrisi protein-energi ringan"
+  E46:   "Malnutrisi protein-energi tidak dispesifikasi"
+  E87.0: "Hiperosmolalitas dan hipernatremia"
+  E87.1: "Hipoosmolalitas dan hiponatremia"
+  E87.5: "Hiperkalemia"
+
+  # --- circulatory ---
+  I11.9: "Penyakit jantung hipertensif tanpa gagal jantung"
+  I15.9: "Hipertensi sekunder, tidak dispesifikasi"
+  I60.9: "Perdarahan subaraknoid, tidak dispesifikasi"
+  I62.9: "Perdarahan intrakranial non-traumatik, tidak dispesifikasi"
+  I63.5: "Infark serebral akibat oklusi arteri serebral tidak dispesifikasi"
+  I64:   "Stroke, tidak dispesifikasi sebagai perdarahan atau infark"
+
+  # --- renal / urinary ---
+  N10:   "Nefritis tubulointerstisial akut"
+  N18.2: "Penyakit ginjal kronik stadium 2"
+  N18.4: "Penyakit ginjal kronik stadium 4"
+  N18.9: "Penyakit ginjal kronik, tidak dispesifikasi"
+  N30.0: "Sistitis akut"
+
+  # --- respiratory ---
+  J12.9: "Pneumonia virus, tidak dispesifikasi"
+  J15.9: "Pneumonia bakterial, tidak dispesifikasi"
+  J80:   "Sindrom distres pernapasan akut"
+  J96.9: "Gagal napas, tidak dispesifikasi"
+
+  # --- digestive ---
+  K21.0: "Penyakit refluks gastroesofageal dengan esofagitis"
+  K29.7: "Gastritis, tidak dispesifikasi"
+  K52.9: "Gastroenteritis dan kolitis non-infeksi, tidak dispesifikasi"
+
+  # --- blood ---
+  D50.9: "Anemia defisiensi besi, tidak dispesifikasi"
+  D62:   "Anemia pasca-perdarahan akut"
+
+  # --- infectious / tropical ---
+  A01.4: "Demam paratifoid, tidak dispesifikasi"
+  A02.0: "Enteritis salmonela"
+  A08.4: "Infeksi usus virus, tidak dispesifikasi"
+  A15.3: "Tuberkulosis paru dengan konfirmasi tidak dispesifikasi"
+  A16.2: "Tuberkulosis paru tanpa konfirmasi bakteriologis atau histologis"
+  A41.5: "Sepsis akibat organisme Gram-negatif lain"
+  A90:   "Demam dengue"
+  A97.0: "Dengue tanpa tanda bahaya"
+  R65.2: "Sepsis berat"

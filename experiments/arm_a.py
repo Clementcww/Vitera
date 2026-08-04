@@ -15,60 +15,16 @@ from __future__ import annotations
 import argparse
 import json
 from collections import defaultdict
-from datetime import date
 from pathlib import Path
 from typing import Any
 
-from vitera.contracts import (
-    ClinicalEvent,
-    ClinicalText,
-    Document,
-    Episode,
-    EventKind,
-    SecondaryDiagnosis,
-)
-from vitera.generator.defects import CodedClaim
+from vitera.generator.corpus import claim_from_dict as _claim
+from vitera.generator.corpus import episode_from_dict as _episode
+from vitera.generator.corpus import load_jsonl
 from vitera.grouper.grouper import Grouper
 from vitera.rules.engine import RuleContext, run
 
 CLASSES = [f"D{i}" for i in range(1, 9)]
-
-
-def _episode(d: dict[str, Any]) -> Episode:
-    return Episode(
-        episode_id=d["episode_id"],
-        site_id=d["site_id"],
-        admission_date=date.fromisoformat(d["admission_date"]),
-        primary_dx=d["primary_dx"],
-        secondary_dx=tuple(SecondaryDiagnosis(**s) for s in d["secondary_dx"]),
-        procedures=tuple(d["procedures"]),
-        events=tuple(
-            ClinicalEvent(
-                day=e["day"],
-                kind=EventKind[e["kind"]] if isinstance(e["kind"], str) else e["kind"],
-                code=e["code"],
-                text=ClinicalText(e["text"]) if e["text"] else None,
-            )
-            for e in d["events"]
-        ),
-        documents=tuple(
-            Document(doc_id=x["doc_id"], day=x["day"], text=ClinicalText(x["text"]))
-            for x in d["documents"]
-        ),
-        discharge_day=d["discharge_day"],
-    )
-
-
-def _claim(d: dict[str, Any]) -> CodedClaim:
-    return CodedClaim(
-        episode_id=d["episode_id"],
-        primary_dx=d["primary_dx"],
-        secondary_dx=tuple(d["secondary_dx"]),
-        procedures=tuple(d["procedures"]),
-        documents_present=tuple(d["documents_present"]),
-        sep_number=d["sep_number"],
-        admission_date_claimed=date.fromisoformat(d["admission_date_claimed"]),
-    )
 
 
 def evaluate(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -172,8 +128,7 @@ def main() -> None:
     p.add_argument("--out", type=Path, default=Path("results/arm_a.json"))
     a = p.parse_args()
 
-    with (a.data / "test.jsonl").open(encoding="utf-8") as fh:
-        rows = [json.loads(x) for x in fh if x.strip()]
+    rows = load_jsonl(a.data / "test.jsonl")
 
     res = evaluate(rows)
     a.out.parent.mkdir(parents=True, exist_ok=True)

@@ -132,7 +132,10 @@ def test_rules_catch_the_classes_we_claim_they_catch(corpus: list) -> None:
 
     caught: set[str] = set()
     for ep, gt in corpus:
-        claim, labels, _ = inject(ep, gt, _r.Random(ep.episode_id.__hash__() % 997))
+        # NOT hash(episode_id): str hashing is salted per interpreter run, so
+        # that made this test pass or fail depending on PYTHONHASHSEED. Seeds
+        # are fixed and recorded everywhere — including in tests.
+        claim, labels, _ = inject(ep, gt, _r.Random(int(ep.episode_id[2:]) % 997))
         truth = {x.defect_class.name for x in labels}
         flags, _ = run(RuleContext(ep, claim, ep.discharge_day or 0))
         caught |= {f.defect_class.name for f in flags} & truth

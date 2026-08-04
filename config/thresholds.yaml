@@ -1,10 +1,31 @@
 # Every threshold in Vitera. None of these values may appear in code or in a
 # prompt. The router reads this file; models never see it.
 #
-# Values below are PLACEHOLDERS. They are set for real in bucket 8 from the
-# calibration curve, and corrected for the deployment prior (~90% of codes are
-# already correct) so that training on balanced classes does not produce
-# over-flagging in deployment.
+# The router values below were SET IN BUCKET 8 from the calibration curve, by
+# `calibrate.recommend_thresholds`, and are reproduced by:
+#
+#     make train && make baselines        # -> results/cross_encoder.json
+#
+# They replace the bucket-2 placeholders (default 0.60/0.40,
+# high_precision 0.80/0.55), which were never measured.
+#
+# READ THIS BEFORE CHANGING THEM — three things about these numbers are
+# surprising and all three are real:
+#
+# 1. They are TINY. Scores are calibrated and then shifted from the training
+#    prior (0.418 positive) to the deployment prior (0.10), which compresses
+#    everything toward zero. 0.0015 is not "flag almost everything"; it is the
+#    point at which 9.8% of correctly coded diagnoses get queried, which is the
+#    false-positive budget we chose.
+# 2. They are chosen from a FALSE-POSITIVE BUDGET, not from a symmetric
+#    metric. Over-flagging is what gets a monitoring product switched off, so
+#    the budget is the primary control and recall is the consequence.
+# 3. `abstain_below == flag_at`, so the ABSTAIN band is currently EMPTY. The
+#    cross-encoder separates this corpus so well that the recall threshold sits
+#    above the false-positive threshold — `bands_crossed: true` in the results.
+#    Abstention is still reachable in code (architectural rule 10); it simply is
+#    not exercised on synthetic data. On a corpus with real clinical prose it
+#    will be, and these two values will separate.
 
 schema_version: 1
 
@@ -16,15 +37,17 @@ deployment_prior:
 
 router:
   default:
-    flag_at: 0.60          # score >= this becomes a Flag
-    abstain_below: 0.40    # score in [abstain_below, flag_at) -> Verdict.ABSTAIN
+    # Measured: FPR on supported codes 0.098, recall 0.998, precision 0.887.
+    flag_at: 0.0015        # score >= this becomes a Flag
+    abstain_below: 0.0015  # score in [abstain_below, flag_at) -> Verdict.ABSTAIN
     max_flags_per_episode: 12
 
   high_precision:
     # Used when the clean-claim false positive rate matters more than recall,
     # e.g. the first weeks of a hospital deployment.
-    flag_at: 0.80
-    abstain_below: 0.55
+    # Measured: FPR 0.020, recall 0.985, precision 0.974.
+    flag_at: 0.0152
+    abstain_below: 0.0152
     max_flags_per_episode: 6
 
 severity:

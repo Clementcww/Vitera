@@ -20,8 +20,8 @@ from vitera.agent.loop import BoundedRunner, Tool, run_pipeline
 from vitera.agent.router import Router, filter_spans
 from vitera.contracts import (
     DefectClass,
-    FlagSource,
     Flag,
+    FlagSource,
     GroupResult,
     LoopBudget,
     Remedy,
@@ -145,7 +145,27 @@ def test_fabricated_spans_are_dropped(corpus: list) -> None:
 
 
 def test_router_abstains_in_the_grey_zone() -> None:
-    r = Router()
+    """Rule 10 is about the mechanism, so the thresholds are supplied here
+    rather than read from config.
+
+    The deployed values currently coincide (`bands_crossed` — bucket 8), which
+    empties the band for scores; abstention still reaches the koder through the
+    ungroupable path below. Reading config here would make this test pass or
+    fail on a calibration run rather than on the router's behaviour.
+    """
+    r = Router(
+        thresholds={
+            "router": {
+                "t": {
+                    "flag_at": 0.6,
+                    "abstain_below": 0.4,
+                    "max_flags_per_episode": 12,
+                }
+            },
+            "severity": {"escalate_at": 0.75},
+        },
+        profile="t",
+    )
     span = Span("resume_medis", 0, 6, "RESUME")
     mid = (r.abstain_below + r.flag_at) / 2
     d = r.decide(

@@ -5,8 +5,8 @@ SEED ?= 20260731
 VITERA_LLM_MODE ?= cache
 export VITERA_LLM_MODE
 
-.PHONY: help setup data train eval arm-a demo demo-offline sweep sweep-demo \
-        leakage figures test lint clean freeze-check
+.PHONY: help setup data train baselines eval arm-a demo demo-offline sweep \
+        sweep-demo leakage figures test lint clean freeze-check
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -30,6 +30,9 @@ train:  ## Fine-tune the cross-encoder (MPS on Apple silicon)  [bucket 8]
 
 arm-a:  ## Rules-only baseline (arm A)                        [bucket 5]
 	$(PY) experiments/arm_a.py --data data/generated
+
+baselines:  ## Cross-encoder vs BM25 vs zero-shot LLM, per class  [bucket 8]
+	$(PY) experiments/baselines.py --data data/generated --seed $(SEED)
 
 eval:  ## Three-arm experiment + per-component baselines     [bucket 10]
 	$(PY) -m experiments.run_arms --data data/generated --seeds 3 --out results/
