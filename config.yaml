@@ -1,0 +1,18 @@
+# Every threshold in the system lives here. Nowhere else.
+router:
+  # A model finding below this confidence is not shown to the coder.
+  model_threshold: 0.82
+  # A finding moving at least this much money escalates the episode to URGENT.
+  urgent_tariff_idr: 5000000
+
+redaction:
+  # A page whose redaction confidence is low is dropped from model input
+  # entirely rather than passed through. Dropped pages are reported.
+  fail_closed: true
+  min_ocr_confidence: 0.60
+
+encoder:
+  # Path or HF id of the fine-tuned cross-encoder. null = lexicon-prior stub,
+  # which lets the whole pipeline run before any weights exist.
+  model_path: null
+  max_length: 512

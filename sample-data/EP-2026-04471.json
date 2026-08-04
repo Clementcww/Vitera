@@ -1,0 +1,60 @@
+{
+  "episode_id": "EP-2026-04471",
+  "admitted_at": "2026-07-28",
+  "discharged_at": null,
+  "hospital_day": 3,
+  "demographics": {
+    "name": "Siti Rahmawati",
+    "nik": "3174054501680003",
+    "sep": "0301R0110726V001234",
+    "sex": "F",
+    "age_years": 58
+  },
+  "docs": [
+    {
+      "doc_id": "d1",
+      "doc_type": "sep",
+      "stage": "checkin",
+      "received_at": "2026-07-28",
+      "extraction": "digital",
+      "signed": null,
+      "text": "SURAT ELIGIBILITAS PESERTA. No SEP 0301R0110726V001234. Nama peserta SITI RAHMAWATI. NIK 3174054501680003. Jenis rawat: Rawat Inap. Diagnosa awal: Sepsis."
+    },
+    {
+      "doc_id": "d2",
+      "doc_type": "spri",
+      "stage": "checkin",
+      "received_at": "2026-07-28",
+      "extraction": "ocr",
+      "ocr_confidence": 0.88,
+      "signed": true,
+      "text": "SURAT PERINTAH RAWAT INAP. Pasien SITI RAHMAWATI dirawat inap atas indikasi sepsis dengan gangguan fungsi ginjal. Kelas rawat 2."
+    },
+    {
+      "doc_id": "d3",
+      "doc_type": "lab",
+      "stage": "instay",
+      "received_at": "2026-07-30",
+      "extraction": "ocr",
+      "ocr_confidence": 0.94,
+      "signed": null,
+      "text": "HASIL PEMERIKSAAN LABORATORIUM. Ureum 98 mg/dL. Kreatinin 3.4 mg/dL. eGFR 22 mL/min/1.73m2. Albumin 3.1 g/dL. Hb 7.2 g/dL. Leukosit 18.400 /uL."
+    },
+    {
+      "doc_id": "d4",
+      "doc_type": "cppt",
+      "stage": "instay",
+      "received_at": "2026-07-30",
+      "extraction": "ocr",
+      "ocr_confidence": 0.71,
+      "signed": true,
+      "text": "CATATAN PERKEMBANGAN PASIEN TERINTEGRASI. Hari rawat 3. Pasien tampak lemah, konjungtiva anemis. Transfusi PRC 2 kolf diberikan tanggal 30/07. MRI kepala diusulkan untuk evaluasi penurunan kesadaran. Terapi antibiotik dilanjutkan."
+    }
+  ],
+  "claim": {
+    "principal_dx": "A41.9",
+    "secondary_dx": ["N18.3"],
+    "procedures": [],
+    "severity_level": 2
+  }
+}

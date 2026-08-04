@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+python-multipart
+pydantic
+pyyaml
+langgraph
+langchain-core
+pypdf
+# Cross-encoder. Not needed while encoder.model_path is null in config.yaml.
+torch
+transformers
+pytest
