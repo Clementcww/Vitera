@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vitera — workbench koder</title>
+<!--
+  ============================================================================
+  VITERA — UI MOCKUP  ·  v2, collapsible
+  ============================================================================
+  NOT bucket-12 code. Static, single-file, fabricated data. No build step, no
+  CDN, no network — it opens offline, which is the constraint `make
+  demo-offline` runs under.
+
+  v2 changes, in one sentence: nothing is shown until it is asked for.
+  Everything below the first line of a finding lives behind a disclosure. The
+  koder does 30–50 claims a day; the screen's job is to let them skip fast, not
+  to prove how much the system knows.
+
+  Progressive disclosure, by level:
+    L0  queue row      one line — who acts, how long left, how much
+    L1  row expanded   the findings, one line each
+    L2  flag expanded  rationale, verbatim evidence, actions
+    L3  document       the span highlighted in place
+
+  Rules from CLAUDE.md this file is answerable to:
+    rule 1   drafts and stages; a human commits   -> staging tray, nothing applied on click
+    rule 6   every flag carries a verbatim span   -> a flag cannot render without its quote
+    rule 7   grouper is authoritative for tariff  -> every figure badged; UNGROUPABLE renders a dash
+    rule 8   useful with the LLM off              -> advisory banner + per-flag source
+    rule 10  abstention is first-class            -> its own treatment, not an empty state
+    sweep 3  the diff is the output               -> Baru / Eskalasi / Selesai only
+    sweep 5  stale must never render as fresh     -> header shows the last SUCCESSFUL sweep
+
+  Type: Poppins for chrome and headings, Lora for prose and clinical text,
+  monospace for codes and money. Falls back to Arial / Georgia with no network.
+  ============================================================================
+-->
+<style>
+  :root{
+    /* Anthropic palette */
+    --dark:#141413; --light:#faf9f5; --mid:#b0aea5; --line:#e8e6dc;
+    --orange:#d97757; --blue:#6a9bcc; --green:#788c5d;
+
+    --ink:var(--dark);
+    --ink-2:#4a4844;
+    --muted:#8a877e;
+    --faint:var(--mid);
+    --canvas:var(--light);
+    --surface:#fff;
+    --line-2:#d9d6c9;
+
+    --query:var(--orange);  --query-bg:#fbeee9;   /* DPJP — window shuts at discharge */
+    --obtain:#4f7ba8;       --obtain-bg:#eaf1f8;  /* petugas berkas */
+    --recode:#5e7047;       --recode-bg:#eef1e9;  /* koder */
+
+    --sans:'Poppins',Arial,Helvetica,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+    --mono:ui-monospace,SFMono-Regular,'SF Mono',Menlo,monospace;
+    --r:8px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--sans); background:var(--canvas); color:var(--ink);
+    font-size:13.5px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+  summary::-webkit-details-marker{display:none}
+  summary{list-style:none;cursor:pointer}
+  .mono{font-family:var(--mono)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .prose{font-family:var(--serif)}
+  kbd{font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:4px;
+      border:1px solid var(--line-2);background:var(--surface);color:var(--muted)}
+
+  /* ---- header ---------------------------------------------------------- */
+  header{
+    position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;
+    height:54px;padding:0 24px;background:var(--canvas);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;font-size:15px;letter-spacing:-.02em}
+  .brand .dot{width:10px;height:10px;border-radius:3px;background:var(--orange)}
+  .site{color:var(--muted);font-size:12.5px}
+  .spacer{flex:1}
+
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px;
+    border-radius:999px;background:var(--surface);border:1px solid var(--line);
+    font-size:12px;color:var(--ink-2);white-space:nowrap;
+  }
+  .pill .led{width:6px;height:6px;border-radius:50%;background:var(--green)}
+  .pill.alarm{background:var(--query-bg);border-color:#eec8b8;color:#8f4526;font-weight:600}
+  .pill.alarm .led{background:var(--orange)}
+  .tiny{font-size:11.5px;color:var(--faint);padding:4px 8px;border-radius:6px}
+  .tiny:hover{background:var(--line);color:var(--ink-2)}
+
+  /* ---- banners: one line, expandable ----------------------------------- */
+  .banner{display:none;border-bottom:1px solid}
+  .banner.on{display:block}
+  .banner summary{
+    display:flex;align-items:center;gap:10px;padding:9px 24px;font-size:12.5px;font-weight:500;
+  }
+  .banner .more{margin-left:auto;font-size:11px;opacity:.7}
+  .banner .detail{padding:0 24px 11px 46px;font-size:12.5px;font-family:var(--serif);max-width:88ch}
+  .b-stale{background:var(--query-bg);border-color:#eec8b8;color:#8f4526}
+  .b-adv{background:#f1efe6;border-color:var(--line-2);color:#5c5850}
+  .banner .mark{
+    width:18px;height:18px;border-radius:50%;display:grid;place-items:center;
+    font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;flex:none;
+  }
+  .b-stale .mark{background:var(--orange)}
+  .b-adv .mark{background:var(--mid)}
+
+  /* ---- shell ------------------------------------------------------------ */
+  main{padding:28px 24px 96px;max-width:1320px;margin:0 auto}
+  .view{display:none}.view.on{display:block}
+
+  h1{margin:0;font-size:22px;font-weight:600;letter-spacing:-.025em}
+  .lede{margin:5px 0 0;font-family:var(--serif);font-size:13.5px;color:var(--muted);max-width:60ch}
+
+  /* ---- filters ---------------------------------------------------------- */
+  .filters{display:flex;gap:6px;margin:22px 0 14px;flex-wrap:wrap}
+  .f{
+    display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;
+    border-radius:999px;font-size:12.5px;color:var(--ink-2);
+    border:1px solid transparent;
+  }
+  .f:hover{background:var(--line)}
+  .f.on{background:var(--dark);color:var(--light);font-weight:500}
+  .f .n{font-family:var(--mono);font-size:11px;opacity:.6}
+  .f .sw{width:7px;height:7px;border-radius:50%}
+
+  /* ---- queue: rows, not a table ---------------------------------------- */
+  .list{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .row{border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:0}
+  .row > summary{
+    display:grid;grid-template-columns:14px 128px 1fr 96px 104px 22px;
+    align-items:center;gap:14px;padding:13px 16px;
+  }
+  .row > summary:hover{background:var(--light)}
+  .row[open] > summary{background:var(--light)}
+  .row.sel > summary{box-shadow:inset 2px 0 0 var(--dark)}
+
+  .rdot{width:8px;height:8px;border-radius:50%;justify-self:center}
+  .rid{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+  .rtitle{font-family:var(--serif);font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rmeta{font-size:11.5px;color:var(--faint);white-space:nowrap}
+  .rmoney{font-family:var(--mono);font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
+  .rmoney.none{color:var(--faint)}
+  .chev{
+    width:16px;height:16px;justify-self:end;color:var(--faint);
+    transition:transform .15s ease;
+  }
+  details[open] > summary .chev{transform:rotate(90deg)}
+
+  .diff{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+  .diff.esc{color:var(--orange)}
+
+  .rbody{padding:2px 16px 16px 156px;border-top:1px solid var(--line);background:var(--light)}
+  .mini{display:flex;align-items:baseline;gap:10px;padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--line)}
+  .mini:last-of-type{border-bottom:0}
+  .mini .c{font-family:var(--mono);font-size:11px;color:var(--faint);width:22px;flex:none}
+  .mini .t{font-family:var(--serif);flex:1}
+  .open-btn{
+    margin-top:12px;height:30px;padding:0 14px;border-radius:6px;
+    background:var(--dark);color:var(--light);font-size:12.5px;font-weight:500;
+  }
+
+  .help{margin:14px 2px 0}
+  .help summary{font-size:12px;color:var(--faint);display:inline-flex;gap:6px;align-items:center}
+  .help summary:hover{color:var(--ink-2)}
+  .help .detail{margin-top:8px;font-family:var(--serif);font-size:12.5px;color:var(--muted);max-width:78ch}
+
+  /* ---- workbench: verdict ---------------------------------------------- */
+  .crumb{display:flex;align-items:center;gap:9px;margin-bottom:16px;font-size:12.5px;color:var(--faint)}
+  .crumb button{color:var(--ink-2);font-weight:500}
+  .crumb button:hover{color:var(--orange)}
+
+  .verdict{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:20px 22px;margin-bottom:14px;
+  }
+  .vtop{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .vword{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--orange);display:flex;align-items:center;gap:8px}
+  .vword .d{width:7px;height:7px;border-radius:50%;background:var(--orange)}
+  .vtop h2{margin:0;font-size:19px;font-weight:600;letter-spacing:-.02em}
+  .vtop .who{font-family:var(--serif);font-size:13px;color:var(--muted)}
+
+  .strip{display:flex;gap:34px;margin-top:18px;flex-wrap:wrap}
+  .kv .k{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:500}
+  .kv .v{font-size:17px;font-weight:500;margin-top:4px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .kv .v small{font-size:11.5px;color:var(--muted);font-weight:400;margin-left:5px}
+  .src{font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);
+       border:1px solid var(--line-2);border-radius:3px;padding:0 4px;margin-left:6px;vertical-align:1px}
+
+  .vmore{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+  .vmore summary{font-size:12px;color:var(--faint)}
+  .vmore summary:hover{color:var(--ink-2)}
+  .vmore .grid{display:flex;gap:34px;margin-top:12px;flex-wrap:wrap;font-size:12.5px}
+  .vmore .grid div span{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
+
+  /* ---- panels ----------------------------------------------------------- */
+  .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+  @media(max-width:1024px){.split{grid-template-columns:1fr}}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .phd{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .phd h3{margin:0;font-size:12px;font-weight:600;letter-spacing:.02em}
+  .phd .c{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint)}
+
+  /* group by WHO ACTS — role-tailoring is the alert-fatigue lever */
+  .grp{border-bottom:1px solid var(--line)}
+  .grp:last-child{border-bottom:0}
+  .ghd{display:flex;align-items:center;gap:9px;padding:9px 16px;background:var(--light)}
+  .ghd .sw{width:7px;height:7px;border-radius:50%}
+  .ghd .nm{font-size:11.5px;font-weight:600}
+  .ghd .wd{font-size:11.5px;color:var(--faint);font-family:var(--serif)}
+
+  /* ---- flag: one line collapsed ---------------------------------------- */
+  .flag{border-top:1px solid var(--line)}
+  .grp .flag:first-of-type{border-top:0}
+  .flag > summary{display:grid;grid-template-columns:16px 26px 1fr auto;align-items:center;
+    gap:10px;padding:12px 16px}
+  .flag > summary:hover{background:var(--light)}
+  .flag[open] > summary{background:var(--light)}
+  .flag.hot > summary{box-shadow:inset 2px 0 0 var(--dark)}
+  .dcls{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--muted)}
+  .ftitle{font-family:var(--serif);font-size:13.5px;line-height:1.35}
+  .fright{display:flex;align-items:center;gap:9px}
+  .conf{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .escd{font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--orange)}
+
+  .fbody{padding:2px 16px 16px 58px}
+  .why{font-family:var(--serif);font-size:13px;color:var(--ink-2);margin:0 0 12px;max-width:62ch}
+  blockquote{
+    margin:0 0 10px;padding:9px 13px;border-left:2px solid var(--dark);background:var(--light);
+    font-family:var(--serif);font-size:12.5px;color:var(--ink-2);
+  }
+  blockquote cite{display:block;margin-top:5px;font-family:var(--mono);font-size:10px;
+    color:var(--faint);font-style:normal}
+  .draft{
+    font-family:var(--serif);font-size:12.5px;color:#8f4526;background:var(--query-bg);
+    border-radius:6px;padding:9px 13px;margin:0 0 10px;
+  }
+  .draft b{font-family:var(--sans);font-size:11px;letter-spacing:.04em;text-transform:uppercase;
+    display:block;margin-bottom:3px;font-weight:600}
+  .draft .no{color:#a8785f;font-size:11.5px}
+
+  .acts{display:flex;gap:8px;align-items:center}
+  .act{height:29px;padding:0 13px;border-radius:6px;border:1px solid var(--line-2);
+    background:var(--surface);font-size:12.5px;font-weight:500}
+  .act:hover{border-color:var(--mid)}
+  .act.primary{background:var(--dark);border-color:var(--dark);color:var(--light)}
+  .act.staged{background:var(--recode-bg);border-color:var(--green);color:var(--recode)}
+  .meta{margin-left:auto;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
+
+  /* abstain — a first-class output */
+  .flag.abstain .ftitle{color:var(--muted)}
+  .abst{font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--faint);border:1px dashed var(--line-2);border-radius:4px;padding:1px 6px}
+
+  /* ---- documents: collapsed, auto-open the cited one -------------------- */
+  .doc{border-top:1px solid var(--line)}
+  .doc:first-of-type{border-top:0}
+  .doc > summary{display:grid;grid-template-columns:16px 1fr auto;align-items:center;gap:10px;padding:11px 16px}
+  .doc > summary:hover{background:var(--light)}
+  .doc .nm{font-size:12.5px;font-weight:500}
+  .doc .mt{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  .doc .body{padding:2px 16px 16px 42px;font-family:var(--serif);font-size:12.5px;
+    line-height:1.7;color:var(--ink-2);white-space:pre-wrap}
+  .doc.absent .nm{color:var(--faint)}
+  .doc.absent .body{color:var(--faint);font-style:italic}
+  .cited{width:6px;height:6px;border-radius:50%;background:var(--orange)}
+
+  mark{background:#f6e3d8;border-radius:2px;padding:0 2px;color:inherit}
+  mark.on{background:var(--orange);color:var(--light)}
+
+  /* ---- timeline, collapsed ---------------------------------------------- */
+  .tl{padding:18px 16px 16px}
+  .track{position:relative;height:38px}
+  .track .ln{position:absolute;left:0;right:0;top:18px;height:1px;background:var(--line-2)}
+  .track .fl{position:absolute;left:0;top:18px;height:1px;background:var(--dark)}
+  .d{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:56px}
+  .d .tk{width:1px;height:8px;background:var(--line-2);margin:14px auto 0}
+  .d .lb{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:4px}
+  .d.now .tk{background:var(--dark);height:12px;margin-top:10px}
+  .d.now .lb{color:var(--dark);font-weight:600}
+  .ev{position:absolute;width:9px;height:9px;border-radius:50%;transform:translateX(-50%);border:2px solid var(--surface)}
+  .lg{display:flex;gap:16px;font-size:11.5px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+  .lg span{display:flex;align-items:center;gap:6px}
+  .lg i{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .lead{margin-top:14px;padding:11px 13px;background:var(--light);border-radius:6px;
+    font-family:var(--serif);font-size:12.5px;color:var(--ink-2)}
+  .lead b{font-family:var(--mono);font-weight:600}
+
+  /* ---- staging tray — rule 1, made visible ----------------------------- */
+  .tray{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:center;gap:12px;
+    padding:13px 24px;background:var(--dark);color:var(--light);font-size:12.5px;
+    transform:translateY(105%);transition:transform .18s ease;
+  }
+  .tray.on{transform:none}
+  .tray .cnt{font-family:var(--mono);font-weight:600;background:#2a2926;padding:3px 9px;border-radius:5px}
+  .tray .nt{color:var(--mid)}
+  .tray .grow{flex:1}
+  .tray button{height:30px;padding:0 14px;border-radius:6px;background:#2a2926;color:var(--light);
+    font-size:12.5px;font-weight:500}
+  .tray button.commit{background:var(--light);color:var(--dark)}
+
+  .foot{margin-top:22px}
+  .foot summary{font-size:11.5px;color:var(--faint)}
+  .foot .detail{margin-top:8px;font-family:var(--serif);font-size:12px;color:var(--muted);
+    max-width:80ch;line-height:1.7}
+  .foot code{font-family:var(--mono);font-size:11px;background:var(--surface);padding:1px 5px;
+    border-radius:3px;border:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><span class="dot"></span>Vitera</div>
+  <div class="site">RS Harapan Bunda · Unit Casemix</div>
+  <div class="spacer"></div>
+  <div class="pill" id="sweepPill"><span class="led"></span>Sweep <b class="mono" style="font-weight:600">01 Agu 02:14</b></div>
+  <button class="tiny" onclick="toggleStale()">sweep partial</button>
+  <button class="tiny" onclick="toggleAdvisory()">model mati</button>
+</header>
+
+<!-- sweep rule 5. Collapsed to one line; the reason is one click away. -->
+<details class="banner b-stale" id="staleBanner">
+  <summary><span class="mark">!</span>Antrean berumur 26 jam — sweep semalam tidak selesai
+    <span class="more">rincian ▾</span></summary>
+  <div class="detail">412 dari 660 episode terproses sebelum batas panggilan LLM tercapai, jadi sweep
+    ditandai <b>partial</b>. Yang tampil di bawah adalah hasil sweep <b>31 Juli 02:11</b>. Episode yang
+    masuk setelah itu belum diperiksa sama sekali.</div>
+</details>
+
+<details class="banner b-adv" id="advisoryBanner">
+  <summary><span class="mark">~</span>Mode advisory — hanya aturan deterministik
+    <span class="more">rincian ▾</span></summary>
+  <div class="detail">Lapisan model tidak tersedia; sweep tetap berjalan. Yang diperiksa hanya D1, D6, D8
+    dan sebagian D5. Kelas <b>D2, D3, D4, D7 tidak diperiksa malam ini</b> — antrean bersih tidak berarti
+    klaim bersih.</div>
+</details>
+
+<main>
+
+<!-- ============================ ANTREAN ================================= -->
+<section class="view on" id="viewQueue">
+  <h1>Antrean pagi</h1>
+  <p class="lede">Selisih sweep semalam terhadap sweep sebelumnya. Temuan yang tidak berubah tidak muncul lagi.</p>
+
+  <div class="filters">
+    <button class="f on">Semua <span class="n">14</span></button>
+    <button class="f"><span class="sw" style="background:var(--query)"></span>Query <span class="n">5</span></button>
+    <button class="f"><span class="sw" style="background:var(--obtain)"></span>Obtain <span class="n">4</span></button>
+    <button class="f"><span class="sw" style="background:var(--recode)"></span>Recode <span class="n">5</span></button>
+  </div>
+
+  <div class="list" id="qlist"></div>
+
+  <details class="help">
+    <summary>Bagaimana antrean ini diurutkan? ▾</summary>
+    <div class="detail">
+      Urutan <code>remedy_decay_rank → expected_value → day_of_stay</code>, dibaca dari
+      <code>config/sweep.yaml</code>. Query naik lebih dulu karena jendelanya tutup saat pasien pulang;
+      Obtain masih bisa dikejar setelah pulang; Recode masih bisa sampai berkas disubmit.
+      Kolom rupiah seluruhnya keluaran grouper — model tidak pernah menghasilkan angka uang, dan
+      episode <code>UNGROUPABLE</code> ditampilkan sebagai tanda hubung, bukan estimasi.
+    </div>
+  </details>
+</section>
+
+<!-- =========================== WORKBENCH =============================== -->
+<section class="view" id="viewCase">
+  <div class="crumb"><button onclick="showQueue()">← Antrean</button><span>/</span>
+    <span class="mono">EPS-2026-0731-0142</span></div>
+
+  <div class="verdict">
+    <div class="vtop">
+      <span class="vword"><span class="d"></span>Perlu perbaikan</span>
+      <h2>P-4471 · L, 58 th</h2>
+      <span class="who">Melati 3B · hari rawat ke-4 · masih dirawat</span>
+    </div>
+
+    <div class="strip">
+      <div class="kv"><div class="k">Tarif saat ini</div>
+        <div class="v">Rp 4.812.300<span class="src">grouper</span></div></div>
+      <div class="kv"><div class="k">Bila dikonfirmasi</div>
+        <div class="v">Rp 7.156.900 <small>+2,34 jt</small></div></div>
+      <div class="kv"><div class="k">Sisa jendela</div>
+        <div class="v">≈2 hari <small>perkiraan pulang h6</small></div></div>
+      <div class="kv"><div class="k">Temuan</div>
+        <div class="v">4 <small>1 abstain</small></div></div>
+    </div>
+
+    <details class="vmore">
+      <summary>Rincian episode dan grouping ▾</summary>
+      <div class="grid">
+        <div><span>Dx utama</span><b class="mono">J18.9</b> Pneumonia, organisme tidak spesifik</div>
+        <div><span>Grup</span><b class="mono">J-4-10-I</b> → <b class="mono">J-4-10-II</b></div>
+        <div><span>Severity</span>I → II</div>
+        <div><span>DPJP</span>dr. S.W., Sp.PD</div>
+        <div><span>SEP</span><b class="mono">0301R0110726V004471</b></div>
+        <div><span>Masuk</span>28 Jul 2026</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="split">
+    <div class="panel">
+      <div class="phd"><h3>Daftar perbaikan</h3><span class="c">menurut pelaksana</span></div>
+      <div id="flags"></div>
+    </div>
+
+    <div>
+      <div class="panel" style="margin-bottom:14px">
+        <div class="phd"><h3>Rekam medis</h3><span class="c">sebatas hari ke-4</span></div>
+        <div id="docs"></div>
+      </div>
+
+      <details class="panel">
+        <summary class="phd" style="cursor:pointer"><h3>Garis waktu episode</h3>
+          <span class="c">bukti klinis vs pencatatan ▾</span></summary>
+        <div class="tl">
+          <div class="track" id="track"></div>
+          <div class="lg">
+            <span><i style="background:var(--query)"></i>bukti klinis muncul</span>
+            <span><i style="background:var(--obtain)"></i>terdeteksi Vitera</span>
+            <span><i style="background:var(--mid)"></i>tercatat</span>
+          </div>
+          <div class="lead">E11.9 terbaca dari terapi pada <b>hari ke-2</b>, ditandai sweep <b>hari ke-2</b>,
+            belum tercatat sampai hari ke-4. <b>detection_lead_time = 4 hari</b> sebelum perkiraan pulang —
+            di bawah asumsi generator yang dinyatakan.</div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <details class="foot">
+    <summary>Catatan mockup ▾</summary>
+    <div class="detail">
+      Data fiktif. Angka rupiah berasal dari grouper deterministik; bila grouper mengembalikan
+      <code>UNGROUPABLE</code> kolom tarif menampilkan tanda hubung dan tidak pernah diisi estimasi.
+      Tidak ada tombol yang mengirim apa pun keluar sistem — draf pertanyaan DPJP dicetak dan diserahkan.
+      Resume medis sengaja belum ada: DPJP menulisnya saat pasien pulang, jadi pada hari ke-4
+      <code>Episode.at_day</code> menyaringnya keluar dan tidak ada temuan yang boleh mengutipnya.
+      Metrik selalu agregat unit; tidak ada tampilan per-koder.
+    </div>
+  </details>
+</section>
+
+</main>
+
+<div class="tray" id="tray">
+  <span class="cnt" id="trayCount">0</span>
+  <span>perubahan disiapkan, belum diterapkan</span>
+  <span class="nt">· E-Klaim tidak tersentuh sampai Anda commit</span>
+  <span class="grow"></span>
+  <button onclick="clearTray()">Batalkan</button>
+  <button class="commit" onclick="commitTray()">Commit sebagai Rina H. <kbd>⌘⏎</kbd></button>
+</div>
+
+<script>
+/* =========================== fabricated data =========================== */
+
+const QUEUE=[
+ {id:"0731-0142",pt:"P-4471",room:"Melati 3B",los:4,diff:"esc",remedy:"query",delta:2344600,
+  top:"Severity II tidak didukung dokumentasi komorbid",
+  finds:[["D4","Severity tidak didukung — DM tipe 2 terbaca dari terapi"],
+         ["D5","Kultur sputum diminta, hasil belum di berkas"],
+         ["D2","J18.9 mungkin kurang spesifik"],["D7","Pola urutan diagnosis — abstain"]]},
+ {id:"0729-0088",pt:"P-4390",room:"Anggrek 2A",los:6,diff:"new",remedy:"query",delta:1980000,
+  top:"CKD st.3 terbaca dari eGFR, tidak ada di catatan",
+  finds:[["D4","eGFR 42 dua kali, N18.3 tidak tercatat"]]},
+ {id:"0730-0117",pt:"P-4428",room:"ICU 1",los:5,diff:"new",remedy:"query",delta:3120400,
+  top:"Sepsis terdokumentasi, kultur darah belum ada",
+  finds:[["D5","Kultur darah belum dilampirkan"],["D4","Severity III bergantung kultur"]]},
+ {id:"0728-0061",pt:"P-4362",room:"Dahlia 1C",los:7,diff:"esc",remedy:"query",delta:865000,
+  top:"Anemia gravis ditransfusi, tidak masuk catatan",
+  finds:[["D4","2 kantong PRC, D64.9 tidak tercatat"]]},
+ {id:"0731-0150",pt:"P-4483",room:"Melati 2A",los:2,diff:"new",remedy:"query",delta:1204800,
+  top:"DM tipe 2 terbaca dari terapi hari ke-1",
+  finds:[["D4","Insulin rapid dimulai h1"]]},
+ {id:"0727-0044",pt:"P-4310",room:"pulang 31 Jul",los:8,diff:"new",remedy:"obtain",delta:0,
+  top:"Hasil PA belum dilampirkan pada berkas",finds:[["D1","Hasil PA tidak ditemukan"]]},
+ {id:"0726-0031",pt:"P-4288",room:"pulang 30 Jul",los:9,diff:"new",remedy:"obtain",delta:null,
+  top:"Laporan operasi tidak ditemukan di berkas",
+  finds:[["D1","Laporan operasi hilang"],["D6","Prosedur tanpa laporan — grouping gagal"]]},
+ {id:"0730-0102",pt:"P-4415",room:"Bougenville 4B",los:5,diff:"new",remedy:"obtain",delta:0,
+  top:"Tanggal SEP tidak cocok dengan tanggal masuk",finds:[["D8","SEP 29/07 vs masuk 28/07"]]},
+ {id:"0729-0095",pt:"P-4401",room:"Anggrek 3C",los:6,diff:"esc",remedy:"obtain",delta:742000,
+  top:"Ekokardiografi dirujuk di CPPT, belum di berkas",finds:[["D5","Hasil eko belum dilampirkan"]]},
+ {id:"0728-0072",pt:"P-4371",room:"Dahlia 2B",los:7,diff:"new",remedy:"recode",delta:1655300,
+  top:"J18.9 terlalu umum — kultur menunjuk K. pneumoniae",finds:[["D2","Kode saudara tersedia"]]},
+ {id:"0731-0139",pt:"P-4466",room:"Melati 1A",los:3,diff:"new",remedy:"recode",delta:0,
+  top:"Prosedur 39.95 tanpa diagnosis pendukung",finds:[["D6","Hemodialisis tanpa dx ginjal"]]},
+ {id:"0725-0019",pt:"P-4255",room:"pulang 29 Jul",los:10,diff:"res",remedy:"recode",delta:0,
+  top:"Kultur sputum sudah dilampirkan — temuan selesai",finds:[["D5","Selesai — berkas lengkap"]]},
+ {id:"0730-0108",pt:"P-4421",room:"Bougenville 2C",los:5,diff:"new",remedy:"recode",delta:0,
+  top:"Kode sekunder tidak menaikkan CBG — periksa urutan",finds:[["D7","Urutan dx perlu ditinjau"]]},
+ {id:"0729-0090",pt:"P-4396",room:"ICU 2",los:6,diff:"esc",remedy:"recode",delta:1112000,
+  top:"I50.0 vs I50.9 — spesifisitas kurang",finds:[["D2","Kode saudara lebih tepat"]]}
+];
+
+const REMEDY={
+ query:{label:"Query",who:"DPJP — perlu pasien masih di ruangan",c:"var(--query)"},
+ obtain:{label:"Obtain",who:"Petugas berkas — masih bisa setelah pulang",c:"var(--obtain)"},
+ recode:{label:"Recode",who:"Koder — masih bisa sampai submit",c:"var(--recode)"}};
+
+const DIFF={new:"Baru",esc:"Eskalasi",res:"Selesai"};
+
+/* Day 4. No resume medis — the DPJP writes it at discharge, at_day filters it
+   out, and a flag citing it would be citing the future. */
+const DOCS=[
+ {id:"CPPT-D1",name:"CPPT hari ke-1",meta:"28 Jul · dr. S.W.",
+  text:`S: Sesak sejak 3 hari, batuk berdahak kehijauan, demam naik turun.
+O: TD 130/80, N 104x/mnt, RR 28x/mnt, S 38.6°C, SpO2 92% udara ruangan.
+   Ronki basah kasar lapangan bawah kanan.
+A: Community acquired pneumonia.
+P: O2 nasal 3 lpm, Ceftriaxone 2x1 g IV, cek DL/GDS/ureum-kreatinin, foto toraks, kultur sputum.`},
+ {id:"LAB-D2",name:"Hasil laboratorium",meta:"29 Jul 06:20 · hari ke-2",
+  text:`Leukosit 18.400 /µL (H)
+Hb 11.8 g/dL · Trombosit 288.000 /µL
+GDS 312 mg/dL (H)
+HbA1c 9.1 % (H)
+Ureum 38 mg/dL · Kreatinin 1.1 mg/dL · eGFR 78`},
+ {id:"CPPT-D2",name:"CPPT hari ke-2",meta:"29 Jul · dr. S.W.",
+  text:`S: Sesak berkurang, masih batuk. Nafsu makan menurun.
+O: TD 128/78, N 96x/mnt, RR 24x/mnt, S 37.8°C, SpO2 96% dengan O2 2 lpm.
+A: CAP perbaikan.
+P: Lanjut Ceftriaxone. Terapi metformin 500 mg 2x1 dimulai, konsul gizi diet DM 1900 kkal.
+   Cek GDS 2x sehari.`},
+ {id:"CPPT-D3",name:"CPPT hari ke-3",meta:"30 Jul · dr. S.W.",
+  text:`S: Batuk berkurang, tidak sesak saat istirahat.
+O: TD 124/76, N 88x/mnt, RR 20x/mnt, S 36.9°C, SpO2 98% udara ruangan.
+   GDS pagi 214 mg/dL, GDS sore 187 mg/dL.
+A: CAP perbaikan. P: Lanjut terapi. Metformin lanjut. Rencana aff O2.`},
+ {id:"ORD-D1",name:"Order & obat",meta:"28–31 Jul · SIMRS farmasi",
+  text:`28/07  Ceftriaxone 2 x 1 g IV
+28/07  N-asetilsistein 3 x 200 mg PO
+29/07  Metformin 500 mg 2 x 1 PO
+29/07  Diet DM 1900 kkal
+30/07  Nebulisasi salbutamol 3 x /hari`},
+ {id:"RESUME",name:"Resume medis",meta:"belum ada",absent:true,
+  text:`Ditulis DPJP saat pasien pulang. Pada hari ke-4 dokumen ini belum ada,
+jadi tidak ada temuan yang boleh mengutipnya.`}
+];
+
+/* rule 6: `quote` must occur verbatim inside its cited document. */
+const FLAGS=[
+ {id:"f1",d:"D4",remedy:"query",score:.87,source:"cross_encoder",esc:true,
+  label:"Severity tidak didukung dokumentasi komorbid",
+  why:"Metformin dan HbA1c 9.1% menunjukkan DM tipe 2 yang dikelola selama perawatan, tetapi E11.9 tidak ada di daftar diagnosis. Tanpa komorbid tercatat, grup bertahan di severity I.",
+  doc:"CPPT-D2",quote:"Terapi metformin 500 mg 2x1 dimulai, konsul gizi diet DM 1900 kkal.",
+  also:[{doc:"LAB-D2",quote:"HbA1c 9.1 % (H)"}],
+  ask:"Mohon konfirmasi apakah diabetes melitus tipe 2 ditegakkan dan dikelola pada perawatan ini."},
+ {id:"f2",d:"D5",remedy:"obtain",score:.71,source:"rules",esc:false,
+  label:"Pemeriksaan penunjang wajib belum ada di berkas",
+  why:"Kultur sputum diminta pada hari ke-1, hasilnya belum terlampir. Untuk grup pneumonia, verifikator BPJS rutin menanyakan penunjang ini.",
+  doc:"CPPT-D1",quote:"kultur sputum",also:[]},
+ {id:"f3",d:"D2",remedy:"recode",score:.64,source:"cross_encoder",esc:false,
+  label:"Spesifisitas kode kurang — kandidat kode saudara",
+  why:"J18.9 dipilih hari ke-1 saat organisme belum diketahui. Bila kultur kembali dengan organisme, kode lebih spesifik tersedia. Tunggu hasil sebelum mengubah.",
+  doc:"CPPT-D1",quote:"A: Community acquired pneumonia.",also:[]},
+ {id:"f4",d:"D7",remedy:"recode",score:.48,source:"cross_encoder",esc:false,abstain:true,
+  label:"Pola urutan diagnosis",
+  why:"Skor 0.48 ada di bawah ambang flag (0.60) dan di atas ambang abstain (0.40). Sistem tidak menyimpulkan. Bukti yang terkumpul ditampilkan agar Anda menilai sendiri.",
+  doc:"ORD-D1",quote:"30/07  Nebulisasi salbutamol 3 x /hari",also:[]}
+];
+
+/* ============================== render ================================= */
+
+const CHEV='<svg class="chev" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+const rp=n=>"Rp "+n.toLocaleString("id-ID");
+const jt=n=>"Rp "+(n/1e6).toFixed(2).replace(".",",")+" jt";
+const docName=id=>(DOCS.find(d=>d.id===id)||{}).name||id;
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function renderQueue(){
+  document.getElementById("qlist").innerHTML=QUEUE.map((r,i)=>{
+    const rm=REMEDY[r.remedy];
+    const money=r.delta===null?`<span class="rmoney none">—</span>`
+      :r.delta===0?`<span class="rmoney none">·</span>`
+      :`<span class="rmoney" title="${rp(r.delta)} — grouper">${jt(r.delta)}</span>`;
+    return `<details class="row" data-i="${i}">
+      <summary>
+        <span class="rdot" style="background:${rm.c}" title="${rm.label}"></span>
+        <span class="rid">${r.id}</span>
+        <span class="rtitle">${r.top}</span>
+        <span class="rmeta">${r.room} · h${r.los}</span>
+        <span class="diff ${r.diff==='esc'?'esc':''}" style="text-align:right">${DIFF[r.diff]}</span>
+        ${CHEV}
+      </summary>
+      <div class="rbody">
+        ${r.finds.map(f=>`<div class="mini"><span class="c">${f[0]}</span><span class="t">${f[1]}</span></div>`).join("")}
+        <button class="open-btn" onclick="event.stopPropagation();openCase(${i})">Buka workbench →</button>
+      </div>
+    </details>`;
+  }).join("");
+}
+
+function renderFlags(){
+  document.getElementById("flags").innerHTML=["query","obtain","recode"].map(k=>{
+    const rows=FLAGS.filter(f=>f.remedy===k); if(!rows.length) return "";
+    const rm=REMEDY[k];
+    return `<div class="grp">
+      <div class="ghd"><span class="sw" style="background:${rm.c}"></span>
+        <span class="nm">${rm.label}</span><span class="wd">${rm.who}</span></div>
+      ${rows.map(card).join("")}</div>`;
+  }).join("");
+}
+
+function card(f){
+  const quotes=[{doc:f.doc,quote:f.quote},...f.also].map(q=>
+    `<blockquote>“${q.quote}”<cite>${docName(q.doc)} · ${q.doc}</cite></blockquote>`).join("");
+  const acts=f.abstain
+    ? `<button class="act" onclick="event.stopPropagation();stage('${f.id}')">Tinjau manual</button>
+       <button class="act" onclick="event.stopPropagation();dismiss('${f.id}')">Tandai sudah dicek</button>`
+    : `<button class="act primary" onclick="event.stopPropagation();stage('${f.id}')">${f.remedy==="query"?"Siapkan pertanyaan":"Siapkan perbaikan"}</button>
+       <button class="act" onclick="event.stopPropagation();dismiss('${f.id}')">Tolak</button>`;
+  return `<details class="flag${f.abstain?' abstain':''}" id="fl-${f.id}" ontoggle="onFlag(this,'${f.id}')">
+    <summary>${CHEV}<span class="dcls">${f.d}</span>
+      <span class="ftitle">${f.label}</span>
+      <span class="fright">${f.abstain?'<span class="abst">abstain</span>':f.esc?'<span class="escd">eskalasi</span>':''}
+        <span class="conf">${f.score.toFixed(2)}</span></span>
+    </summary>
+    <div class="fbody">
+      <p class="why">${f.why}</p>
+      ${quotes}
+      ${f.ask?`<div class="draft"><b>Draf pertanyaan untuk DPJP</b>“${f.ask}”
+        <span class="no">— dicetak dan diserahkan, tidak dikirim sistem.</span></div>`:''}
+      <div class="acts">${acts}<span class="meta">${f.source==='rules'?'aturan':'cross-encoder'}</span></div>
+    </div></details>`;
+}
+
+function renderDocs(){
+  document.getElementById("docs").innerHTML=DOCS.map(d=>{
+    const cited=FLAGS.some(f=>[f.doc,...f.also.map(a=>a.doc)].includes(d.id));
+    return `<details class="doc${d.absent?' absent':''}" id="doc-${d.id}">
+      <summary>${CHEV}<span class="nm">${d.name}</span>
+        <span class="mt">${cited?'<span class="cited" style="display:inline-block;margin-right:6px"></span>':''}${d.meta}</span></summary>
+      <div class="body" id="body-${d.id}">${esc(d.text)}</div></details>`;
+  }).join("");
+  FLAGS.forEach(f=>[{doc:f.doc,quote:f.quote},...f.also].forEach(q=>mark(q.doc,q.quote,f.id)));
+}
+
+/* Highlight in place. A detached citation list does not survive scrutiny;
+   an in-document highlight is the audit trail. */
+function mark(docId,quote,flagId){
+  const el=document.getElementById("body-"+docId); if(!el) return;
+  const q=esc(quote);
+  if(!el.innerHTML.includes(q)){console.warn("span tidak ditemukan — pipeline men-drop flag ini:",quote);return;}
+  el.innerHTML=el.innerHTML.replace(q,`<mark data-flag="${flagId}">${q}</mark>`);
+}
+
+/* accordion: one flag open at a time, and its document opens with it */
+function onFlag(el,id){
+  if(!el.open) return;
+  document.querySelectorAll(".flag").forEach(o=>{if(o!==el)o.open=false;o.classList.remove("hot")});
+  el.classList.add("hot");
+  document.querySelectorAll("mark").forEach(m=>m.classList.remove("on"));
+  const f=FLAGS.find(x=>x.id===id);
+  [f.doc,...f.also.map(a=>a.doc)].forEach(d=>{const dd=document.getElementById("doc-"+d); if(dd) dd.open=true;});
+  requestAnimationFrame(()=>{
+    const hits=[...document.querySelectorAll(`mark[data-flag="${id}"]`)];
+    hits.forEach(m=>m.classList.add("on"));
+    if(hits[0]) hits[0].scrollIntoView({block:"center",behavior:"smooth"});
+  });
+}
+
+function renderTimeline(){
+  const days=[0,1,2,3,4,5,6],W=100/(days.length-1);
+  document.getElementById("track").innerHTML=
+    `<div class="ln"></div><div class="fl" style="width:${4*W}%"></div>`+
+    days.map(d=>`<div class="d${d===4?' now':''}" style="left:${d*W}%">
+      <div class="tk"></div><div class="lb">${d===4?'kini':'h'+d}</div></div>`).join("")+
+    `<div class="ev" style="left:${2*W}%;top:5px;background:var(--query)" title="metformin + GDS 312 → E11.9 terbaca"></div>
+     <div class="ev" style="left:${2*W}%;top:24px;background:var(--obtain)" title="Vitera menandai D4"></div>`;
+}
+
+/* -------- staging tray: rule 1 -------- */
+const staged=new Set();
+function stage(id){
+  staged.has(id)?staged.delete(id):staged.add(id);
+  const b=document.querySelector(`#fl-${id} .act.primary`)||document.querySelector(`#fl-${id} .act`);
+  if(b){b.classList.toggle("staged",staged.has(id));
+    b.textContent=staged.has(id)?"✓ Disiapkan":(FLAGS.find(f=>f.id===id).remedy==="query"?"Siapkan pertanyaan":"Siapkan perbaikan");}
+  syncTray();
+}
+function dismiss(id){
+  const el=document.getElementById("fl-"+id);
+  el.querySelector(".acts").innerHTML=
+    `<span style="font-size:12px;color:var(--muted);font-family:var(--serif)">Ditolak. Tidak muncul lagi selama kutipan buktinya tidak berubah — <span class="mono" style="font-size:11px">evidence_hash</span> tetap.</span>`;
+  el.style.opacity=.5; staged.delete(id); syncTray();
+}
+function syncTray(){
+  document.getElementById("trayCount").textContent=staged.size;
+  document.getElementById("tray").classList.toggle("on",staged.size>0);
+}
+function clearTray(){staged.clear();renderFlags();syncTray();}
+function commitTray(){
+  alert("Mockup — di produk ini menulis ke draft workspace dan mencatat siapa yang commit.\n\n"+
+        "Yang tidak terjadi: tidak ada tulisan ke berkas klaim, tidak ada submit ke BPJS,\n"+
+        "tidak ada pesan keluar sistem. Draf pertanyaan DPJP dicetak dan diserahkan.");
+  clearTray();
+}
+
+/* -------- system state -------- */
+let stale=false,adv=false;
+function toggleStale(){
+  stale=!stale;
+  document.getElementById("staleBanner").classList.toggle("on",stale);
+  const p=document.getElementById("sweepPill"); p.classList.toggle("alarm",stale);
+  p.innerHTML=stale
+    ?`<span class="led"></span>Partial · terakhir berhasil <b class="mono" style="font-weight:600">31 Jul 02:11</b>`
+    :`<span class="led"></span>Sweep <b class="mono" style="font-weight:600">01 Agu 02:14</b>`;
+}
+function toggleAdvisory(){
+  adv=!adv;
+  document.getElementById("advisoryBanner").classList.toggle("on",adv);
+}
+
+/* -------- navigation -------- */
+let sel=0;
+function openCase(){
+  document.getElementById("viewQueue").classList.remove("on");
+  document.getElementById("viewCase").classList.add("on"); window.scrollTo(0,0);
+  renderFlags(); renderDocs(); renderTimeline();
+  const first=document.getElementById("fl-f1"); if(first) first.open=true;
+}
+function showQueue(){
+  document.getElementById("viewCase").classList.remove("on");
+  document.getElementById("viewQueue").classList.add("on"); window.scrollTo(0,0);
+}
+
+/* Keyboard-first. 30–50 claims a day; if it adds time per claim it has failed. */
+let g=false;
+document.addEventListener("keydown",e=>{
+  if(e.key==="g"){g=true;return;} if(g&&e.key==="q"){showQueue();g=false;return;} g=false;
+  const onQ=document.getElementById("viewQueue").classList.contains("on");
+  const rows=[...document.querySelectorAll(".row")];
+  if(onQ){
+    if(e.key==="j"||e.key==="k"){
+      sel=Math.max(0,Math.min(rows.length-1,sel+(e.key==="j"?1:-1)));
+      rows.forEach((r,i)=>r.classList.toggle("sel",i===sel));
+      rows[sel].scrollIntoView({block:"nearest"}); e.preventDefault();
+    }
+    if(e.key===" "){rows[sel].open=!rows[sel].open;e.preventDefault();}
+    if(e.key==="Enter") openCase(sel);
+  }else{
+    const ids=FLAGS.map(f=>f.id);
+    const cur=document.querySelector(".flag.hot");
+    let i=cur?ids.indexOf(cur.id.slice(3)):0;
+    if(e.key==="j"||e.key==="k"){
+      i=Math.max(0,Math.min(ids.length-1,i+(e.key==="j"?1:-1)));
+      document.getElementById("fl-"+ids[i]).open=true; e.preventDefault();
+    }
+    if(e.key==="a"&&cur) stage(ids[i]);
+    if(e.key==="d"&&cur) dismiss(ids[i]);
+    if(e.key==="Escape") showQueue();
+  }
+});
+
+renderQueue();
+document.querySelector(".row").classList.add("sel");
+</script>
+</body>
+</html>
