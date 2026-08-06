@@ -34,3 +34,10 @@ data/generated/*
 *.bin
 
 # results/ IS committed: every paper figure and metrics JSON lives there.
+
+# Workbench UI build artifacts. `make ui-install && make ui-build` regenerates
+# both. The committed fallback if the toolchain is unavailable on the day is
+# docs/ui/workbench-mockup.html, which needs no build step at all.
+src/vitera/ui/node_modules/
+src/vitera/ui/dist/
+src/vitera/ui/tsconfig.tsbuildinfo

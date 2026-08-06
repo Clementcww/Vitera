@@ -6,7 +6,8 @@ VITERA_LLM_MODE ?= cache
 export VITERA_LLM_MODE
 
 .PHONY: help setup data train baselines eval arm-a demo demo-offline sweep \
-        sweep-demo leakage figures test lint clean freeze-check
+        sweep-demo leakage figures test lint clean freeze-check \
+        ui ui-data ui-build ui-dev ui-install
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -50,6 +51,24 @@ sweep:  ## One night against the configured cohort           [bucket 13]
 
 sweep-demo:  ## Replay 7 seeded days in under a minute       [bucket 13]
 	VITERA_LLM_MODE=cache $(PY) -m vitera.sweep.runner --replay 7 --seed $(SEED)
+
+## --- workbench UI ----------------------------------------------------------
+
+ui-data:  ## Export real pipeline output for the workbench     [bucket 12]
+	$(PY) -m vitera.api.export --cohort 36 --seed $(SEED)
+
+ui-install:  ## Install the workbench toolchain (network, once)
+	npm ci --prefix src/vitera/ui
+
+ui-build:  ## Build the workbench bundle into src/vitera/ui/dist
+	npm run build --prefix src/vitera/ui
+
+ui:  ## Serve the built workbench on :5188 — static, no toolchain, no network
+	@echo "http://localhost:5188  (ctrl-c to stop)"
+	@cd src/vitera/ui/dist && $(PY) -m http.server 5188
+
+ui-dev:  ## Vite dev server with hot reload
+	npm run dev --prefix src/vitera/ui
 
 ## --- outputs ---------------------------------------------------------------
 

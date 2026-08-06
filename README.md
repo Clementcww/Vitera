@@ -38,6 +38,10 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 | `make demo-offline` | Same path, replayed from cache |
 | `make sweep` | One night against the configured cohort |
 | `make sweep-demo` | Replay 7 seeded days in under a minute |
+| `make ui-data` | Export real pipeline output for the workbench |
+| `make ui-install` | Install the workbench toolchain (network, once) |
+| `make ui-build` | Build the workbench bundle |
+| `make ui` | Serve the workbench on :5188 — static, offline |
 | `make figures` | Regenerate every paper figure |
 | `make freeze-check` | Verify the sealed adversarial set is untouched |
 
@@ -67,6 +71,8 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | N3 | Latency, cost per claim, % zero-LLM episodes | `make demo` | 9 | not started |
 | T6 | Adversarial set results | `make eval` | 11 | not started |
 | F5 | Sweep: alerts/episode/day and churn | `make sweep-demo` | 13 | not started |
+| U1 | Coder workbench — queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |
+| U2 | Detection surface (episode × day × recoverable value) | `make ui-data && make ui` | 12 | **done** |
 
 ## Layout
 
@@ -78,6 +84,22 @@ experiments/ arm_a · arm_b · arm_c · ablations · leakage_check
 results/     committed figures + metrics JSON
 docs/        ARCHITECTURE · DATA_CARD · MODEL_CARD · CLAIMS
 ```
+
+### Workbench
+
+`src/vitera/ui/` is a React + three.js single-page app. It **renders pipeline
+output and computes nothing** — `src/vitera/api/export.py` runs the real
+pipeline over a demo cohort and writes the JSON the app reads. Rupiah figures
+are grouper output; spans are re-verified against the document text in the
+browser before a flag is allowed to render, which is architectural rule 6
+enforced a second time on the surface that a poisoned note would have to reach.
+
+The 3D detection surface is fenced three ways — lazy chunk, WebGL capability
+probe, error boundary — and every path lands on the same 2D matrix. If it were
+cut, nothing else in the app changes.
+
+`docs/ui/workbench-mockup.html` is the no-build-step fallback and the design
+spec the app implements.
 
 `src/vitera/contracts.py` is the interface every module codes against. The hard
 architectural rules from `CLAUDE.md` are encoded there as types, so they fail at

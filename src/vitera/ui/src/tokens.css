@@ -1,0 +1,60 @@
+/* Anthropic brand tokens.
+ *
+ * Seven colours and two typefaces. Everything else in this app is layout, so
+ * there is no design system to install and nothing to keep in sync.
+ *
+ *   Poppins  chrome, headings, labels — the product's voice
+ *   Lora     clinical prose, rationale, quoted record — the hospital's voice
+ *   mono     ICD codes, CBG codes, rupiah — anything a koder reads digit by
+ *            digit, with tabular figures so columns line up
+ *
+ * The remedy colours are the one place brand meets domain. They are not
+ * decoration: remedy decides who acts and how fast the repair window shuts, so
+ * the colour carries the urgency the queue is ordered by.
+ */
+
+/* latin subsets only. The default @fontsource entrypoint ships devanagari and
+ * cyrillic too, which is ~270 kB of fonts this Indonesian-language UI will
+ * never render. Vendored locally either way — no CDN, so `make demo-offline`
+ * works with the network down. */
+@import '@fontsource/poppins/latin-400.css';
+@import '@fontsource/poppins/latin-500.css';
+@import '@fontsource/poppins/latin-600.css';
+@import '@fontsource/lora/latin-400.css';
+@import '@fontsource/lora/latin-400-italic.css';
+
+:root {
+  /* main */
+  --dark: #141413;
+  --light: #faf9f5;
+  --mid: #b0aea5;
+  --line: #e8e6dc;
+
+  /* accent */
+  --orange: #d97757;
+  --blue: #6a9bcc;
+  --green: #788c5d;
+
+  /* derived surfaces */
+  --ink: var(--dark);
+  --ink-2: #4a4844;
+  --muted: #8a877e;
+  --faint: var(--mid);
+  --canvas: var(--light);
+  --surface: #ffffff;
+  --line-2: #d9d6c9;
+
+  /* remedy — who acts, and how fast the window shuts */
+  --query: var(--orange);   /* DPJP, while the patient is still on the ward */
+  --query-bg: #fbeee9;
+  --obtain: #4f7ba8;        /* petugas berkas, survives discharge */
+  --obtain-bg: #eaf1f8;
+  --recode: #5e7047;        /* koder, survives until submission */
+  --recode-bg: #eef1e9;
+
+  --sans: 'Poppins', Arial, Helvetica, sans-serif;
+  --serif: 'Lora', Georgia, 'Times New Roman', serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  --r: 8px;
+}
