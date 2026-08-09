@@ -59,8 +59,8 @@ export function SurfaceView({
       <p className="lede">
         Satu batang = satu kali pipeline dijalankan pada hari tersebut. Baca
         mendatar untuk melihat hari temuan mulai terdeteksi; tinggi batang
-        adalah nilai yang dapat dipulihkan menurut grouper. Ini bukan diff —
-        diff, urutan dan penekanan adalah tugas sweep.
+        adalah nilai yang dapat dipulihkan menurut grouper. Ini bukan diff.
+        Diff, urutan dan penekanan adalah tugas sweep.
       </p>
 
       <div className="switch">

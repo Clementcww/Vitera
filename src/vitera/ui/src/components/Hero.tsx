@@ -3,26 +3,24 @@ import type { ReactNode } from 'react'
 import type { Payload } from '../types'
 import { webglAvailable } from '../three/webgl'
 import { jt } from '../format'
-import { Term } from './Term'
 
 /* The opening frame.
  *
- * A koder opens this tool thirty to fifty times a day, so a hero that stands
- * between them and the queue every morning would be a defect, not a feature.
- * It is therefore an entry state: shown once on load, dismissed by the call to
- * action, and never shown again while the app stays open. `Lewati` skips it
- * outright for anyone who already knows what this is.
+ * A koder opens this tool thirty times a day, so the hero is an entry state:
+ * shown once on load, dismissed by either call to action, never returned to
+ * while the app stays open.
  *
- * Everything quantitative on it is read from the payload — episode count,
- * findings, recoverable value, the seed. No hero copy states a number that the
- * pipeline did not produce, and none of it is rounded up. The one-liner is the
- * project's own, and it is a claim about what the system does, not about what
- * it recovers.
+ * Deliberately sparse. The screen has one job, which is to say what this is
+ * and then get out of the way. Every sentence not doing that work sits between
+ * the reader and the queue, so the explanatory detail lives one click deeper,
+ * in the queue's own first-time-reader panel.
  *
- * The 3D scene is fenced exactly as the Permukaan tab is: lazy chunk, WebGL
- * capability probe, error boundary. Every failure path renders the hero
- * without it, and the headline and call to action are plain DOM sitting above
- * the canvas — so a dead GPU costs the demo an animation, never an entrance.
+ * Numbers are read from the payload. The lead time is the measured headline
+ * from the full held-out split and renders only when it exists.
+ *
+ * The 3D scene is fenced as the Permukaan tab is: lazy chunk, WebGL probe,
+ * error boundary. Headline and buttons are plain DOM above the canvas, so a
+ * dead GPU costs an animation, never the entrance.
  */
 
 const HeroScene = lazy(() => import('../three/HeroScene'))
@@ -54,22 +52,11 @@ export function Hero({
     [],
   )
 
-  const episodes = payload.episodes.length
   const findings = payload.episodes.reduce((n, e) => n + e.flags.length, 0)
-  const queries = payload.episodes.reduce(
-    (n, e) => n + e.flags.filter((f) => f.remedy === 'QUERY').length,
-    0,
-  )
   const recoverable = payload.episodes.reduce(
     (n, e) => n + (e.money.delta_idr ?? 0),
     0,
   )
-  // NOT "still admitted": every episode in the frozen corpus carries a
-  // discharge_day, so that count is always zero and would read as the product
-  // never catching anyone mid-stay. The honest concurrent number this corpus
-  // can support is how many per-day pipeline runs stand behind the queue —
-  // one per episode per day of stay.
-  const dailyRuns = payload.surface.cells.length
   const measured = payload.measured
 
   return (
@@ -96,64 +83,24 @@ export function Hero({
           selagi masih ada waktu memperbaikinya.
         </h1>
         <p className="herolede prose">
-          Setiap malam, selama pasien masih dirawat, sistem membaca ulang{' '}
-          <Term k="rekam-medis">rekam medis</Term> dan menandai apa yang akan
-          membuat <Term k="klaim">klaim</Term> rumah sakit ke{' '}
-          <Term k="bpjs">BPJS</Term> tertunda — lalu menyerahkan daftar
-          perbaikan kepada <Term k="koder">koder</Term>, selagi masih ada waktu
-          memperbaikinya. Setiap temuan mengutip dokumen aslinya{' '}
-          <Term k="verbatim">kata demi kata</Term>.
+          Setiap malam, selama pasien masih dirawat.
         </p>
 
-        <ol className="herosteps">
-          <li>
-            <b>Pasien dirawat.</b> Catatan medis bertambah setiap hari — hasil
-            laboratorium, obat, catatan dokter.
-          </li>
-          <li>
-            <b>Sistem memeriksa setiap malam.</b> Bukti klinis sering muncul
-            berhari-hari sebelum ditulis sebagai diagnosis. Jendela itulah yang
-            diperiksa.
-          </li>
-          <li>
-            <b>Manusia yang memutuskan.</b> Sistem hanya menyiapkan draf;
-            koder dan dokter yang menindaklanjuti. Tidak ada yang dikirim
-            otomatis.
-          </li>
-        </ol>
-
         <div className="herostats">
-          <div>
-            <b className="mono">{episodes}</b>
-            <span>episode diperiksa</span>
-          </div>
+          {measured?.lead_time_median_days != null && (
+            <div className="measured">
+              <b className="mono">{measured.lead_time_median_days} hari</b>
+              <span>lebih awal, median</span>
+            </div>
+          )}
           <div>
             <b className="mono">{findings}</b>
             <span>temuan</span>
           </div>
           <div>
-            <b className="mono">{queries}</b>
-            <span>perlu DPJP</span>
+            <b className="mono">{recoverable ? jt(recoverable) : '·'}</b>
+            <span>dapat dipulihkan</span>
           </div>
-          <div>
-            <b className="mono">{dailyRuns}</b>
-            <span>pemeriksaan harian</span>
-          </div>
-          <div>
-            <b className="mono">{recoverable ? jt(recoverable) : '—'}</b>
-            <span>
-              dapat dipulihkan · <Term k="grouper">grouper</Term>
-            </span>
-          </div>
-          {measured?.lead_time_median_days != null && (
-            <div className="measured" title={measured.source}>
-              <b className="mono">{measured.lead_time_median_days} hari</b>
-              <span>
-                median temuan terdeteksi sebelum pasien pulang — diukur pada{' '}
-                {measured.n_episodes} episode uji
-              </span>
-            </div>
-          )}
         </div>
 
         <div className="heroacts">
@@ -161,15 +108,9 @@ export function Hero({
             Buka antrean pagi
           </button>
           <button className="act" onClick={onSurface}>
-            Lihat permukaan deteksi
+            Permukaan deteksi
           </button>
         </div>
-
-        <p className="herofoot">
-          Data sintetis, kohort demo terstratifikasi ·{' '}
-          <span className="mono">seed {payload.generated.seed}</span>
-          {payload.generated.advisory && ' · mode advisory: lapisan model mati'}
-        </p>
       </div>
     </section>
   )

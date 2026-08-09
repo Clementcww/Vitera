@@ -57,7 +57,7 @@ export function CaseView({
           </span>
           {!ep.still_admitted && byRemedy(ep, 'QUERY').length > 0 && (
             <span className="windowshut">
-              jendela query sudah tutup — DPJP menyusun ulang dari ingatan
+              jendela query sudah tutup, DPJP menyusun ulang dari ingatan
             </span>
           )}
         </div>

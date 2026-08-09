@@ -33,7 +33,7 @@ export function SurfaceFallback({
     <div className="fallback">
       {reason && (
         <p className="fbnote">
-          Tampilan 3D tidak tersedia — {reason}. Data yang sama ditampilkan
+          Tampilan 3D tidak tersedia: {reason}. Data yang sama ditampilkan
           sebagai peta 2D.
         </p>
       )}

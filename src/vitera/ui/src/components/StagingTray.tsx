@@ -25,7 +25,7 @@ export function StagingTray({
       <div className="tleft">
         <b>{items.length}</b> perbaikan disiapkan
         <span className="tnote">
-          belum diterapkan — perlu commit oleh manusia
+          belum diterapkan, perlu commit oleh manusia
         </span>
       </div>
       <div className="tright">

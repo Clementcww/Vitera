@@ -22,12 +22,12 @@ export function AdvisoryBanner({ payload }: { payload: Payload }) {
     <details className="banner b-adv" open>
       <summary>
         <span className="mark">~</span>
-        Mode advisory — hanya aturan deterministik
+        Mode advisory: hanya aturan deterministik
         <span className="more">rincian</span>
       </summary>
       <div className="detail">
         Lapisan model tidak tersedia; pipeline tetap berjalan. Kelas{' '}
-        <b>{unchecked.join(', ')} tidak diperiksa</b> pada proses ini — antrean
+        <b>{unchecked.join(', ')} tidak diperiksa</b> pada proses ini. Antrean
         bersih tidak berarti klaim bersih.
         {payload.generated.model_unavailable && (
           <div className="why-mono">{payload.generated.model_unavailable}</div>
@@ -43,7 +43,7 @@ export function DroppedSpanBanner({ dropped }: { dropped: number }) {
     <details className="banner b-stale">
       <summary>
         <span className="mark">!</span>
-        {dropped} temuan dibuang — kutipan tidak cocok dengan rekam medis
+        {dropped} temuan dibuang: kutipan tidak cocok dengan rekam medis
         <span className="more">rincian</span>
       </summary>
       <div className="detail">

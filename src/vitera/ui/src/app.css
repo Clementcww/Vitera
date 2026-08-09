@@ -282,8 +282,8 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
   margin: 0 0 20px; max-width: 17ch;
 }
 .herolede {
-  margin: 0 0 32px; max-width: 46ch;
-  font-size: clamp(14px, 1.35vw, 17px); line-height: 1.62; color: var(--ink-2);
+  margin: 0 0 34px; max-width: 46ch;
+  font-size: clamp(14px, 1.35vw, 17px); line-height: 1.62; color: var(--muted);
 }
 
 .herostats {
@@ -320,27 +320,8 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
   cursor: help;
 }
 
-.herosteps {
-  margin: 0 0 30px; padding: 0; list-style: none;
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px; max-width: 720px; counter-reset: step;
-}
-.herosteps li {
-  font-size: 12.5px; line-height: 1.55; color: var(--ink-2);
-  font-family: var(--serif); counter-increment: step; position: relative;
-  padding-top: 26px;
-}
-.herosteps li::before {
-  content: counter(step);
-  position: absolute; top: 0; left: 0;
-  width: 19px; height: 19px; border-radius: 50%;
-  display: grid; place-items: center;
-  font-family: var(--mono); font-size: 10.5px; font-weight: 700;
-  background: var(--ink); color: var(--light);
-}
-.herosteps b { font-family: var(--sans); font-weight: 600; display: block; margin-bottom: 2px; }
-@media (max-width: 720px) { .herosteps { grid-template-columns: 1fr; } }
 
-.herostats .measured { max-width: 240px; }
-.herostats .measured span { line-height: 1.45; }
-.herostats .measured b { color: var(--orange); }
+/* The measured lead time is the one number on this screen that came from the
+   full held-out split rather than the demo cohort, so it leads and it is the
+   only one that takes the accent colour. */
+.herostats .measured b { color: var(--orange); font-size: 26px; }

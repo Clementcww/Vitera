@@ -64,7 +64,7 @@ export function FlagCard({
                 perawatan ini. Bukti pada catatan: {flag.span.text}”
               </span>
               <span className="no">
-                — dicetak dan diserahkan. Sistem tidak pernah mengirim apa pun
+                Dicetak dan diserahkan. Sistem tidak pernah mengirim apa pun
                 keluar.
               </span>
             </div>

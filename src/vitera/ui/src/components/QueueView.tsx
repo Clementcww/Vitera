@@ -42,7 +42,7 @@ export function QueueView({
       <h1>Antrean pagi</h1>
       <p className="lede">
         Daftar <Term k="klaim">klaim</Term> yang perlu ditindaklanjuti pagi
-        ini, terurut menurut jendela perbaikan — yang butuh dokter selagi
+        ini, terurut menurut jendela perbaikan. Yang butuh dokter selagi
         pasien masih dirawat naik paling atas.
       </p>
 
@@ -51,12 +51,12 @@ export function QueueView({
         <div className="detail">
           Setiap baris adalah tagihan satu pasien ke{' '}
           <Term k="bpjs">BPJS</Term>. Warna menunjukkan siapa yang harus
-          bertindak: <b style={{ color: 'var(--query)' }}>oranye</b> — dokter (
+          bertindak: <b style={{ color: 'var(--query)' }}>oranye</b> untuk dokter (
           <Term k="dpjp">DPJP</Term>), selagi pasien masih di ruangan;{' '}
-          <b style={{ color: 'var(--obtain)' }}>biru</b> — petugas berkas,
-          melengkapi dokumen; <b style={{ color: 'var(--recode)' }}>hijau</b> —{' '}
+          <b style={{ color: 'var(--obtain)' }}>biru</b> untuk petugas berkas,
+          melengkapi dokumen; <b style={{ color: 'var(--recode)' }}>hijau</b> untuk{' '}
           <Term k="koder">koder</Term>, memperbaiki kode. Kolom rupiah adalah
-          selisih tarif yang bisa diselamatkan bila catatan dilengkapi —
+          selisih tarif yang bisa diselamatkan bila catatan dilengkapi,
           dihitung <Term k="grouper">grouper</Term>, bukan model AI. Klik baris
           untuk melihat temuannya; setiap temuan mengutip dokumen aslinya{' '}
           <Term k="verbatim">kata demi kata</Term>.
@@ -170,7 +170,7 @@ export function QueueView({
           Urutan <code>remedy_decay_rank → expected_value → day_of_stay</code>.
           Query naik lebih dulu karena jendelanya tutup saat pasien pulang;
           Obtain masih bisa dikejar setelah pulang; Recode masih bisa sampai
-          berkas disubmit. Kolom rupiah seluruhnya keluaran grouper — model
+          berkas disubmit. Kolom rupiah seluruhnya keluaran grouper. Model
           tidak pernah menghasilkan angka uang, dan episode{' '}
           <code>UNGROUPABLE</code> ditampilkan sebagai tanda hubung.
         </div>

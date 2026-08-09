@@ -12,27 +12,27 @@
  */
 
 const GLOSSARY: Record<string, string> = {
-  bpjs: 'BPJS Kesehatan — asuransi kesehatan nasional Indonesia. Rumah sakit menagih biaya perawatan ke BPJS lewat klaim.',
+  bpjs: 'BPJS Kesehatan, asuransi kesehatan nasional Indonesia. Rumah sakit menagih biaya perawatan ke BPJS lewat klaim.',
   klaim:
     'Tagihan rumah sakit ke BPJS atas perawatan satu pasien. Jika dokumennya tidak lengkap atau kodenya salah, klaim dikembalikan dan pembayaran tertunda.',
   'klaim-pending':
-    'Klaim yang dikembalikan BPJS karena ada masalah — rumah sakit harus memperbaiki dan mengirim ulang, pembayaran tertunda berminggu-minggu.',
+    'Klaim yang dikembalikan BPJS karena ada masalah. Rumah sakit harus memperbaiki dan mengirim ulang, pembayaran tertunda berminggu-minggu.',
   koder:
     'Petugas rumah sakit yang menerjemahkan catatan dokter menjadi kode diagnosis standar. Pengguna utama aplikasi ini.',
-  dpjp: 'Dokter Penanggung Jawab Pelayanan — dokter yang merawat pasien dan menulis ringkasan medisnya.',
-  sep: 'Surat Eligibilitas Peserta — surat jaminan BPJS yang diterbitkan saat pasien masuk rawat inap.',
-  cbg: 'Kelompok tarif INA-CBG. Setiap kombinasi diagnosis masuk ke satu kelompok dengan tarif paket tetap — kode yang salah berarti tarif yang salah.',
+  dpjp: 'Dokter Penanggung Jawab Pelayanan, dokter yang merawat pasien dan menulis ringkasan medisnya.',
+  sep: 'Surat Eligibilitas Peserta, surat jaminan BPJS yang diterbitkan saat pasien masuk rawat inap.',
+  cbg: 'Kelompok tarif INA-CBG. Setiap kombinasi diagnosis masuk ke satu kelompok dengan tarif paket tetap. Kode yang salah berarti tarif yang salah.',
   grouper:
-    'Perangkat lunak deterministik yang menghitung kelompok tarif dari kode diagnosis. Satu-satunya sumber angka rupiah di aplikasi ini — model AI tidak pernah menghasilkan angka uang.',
+    'Perangkat lunak deterministik yang menghitung kelompok tarif dari kode diagnosis. Satu-satunya sumber angka rupiah di aplikasi ini. Model AI tidak pernah menghasilkan angka uang.',
   'resume-medis':
     'Ringkasan perawatan yang ditulis dokter saat pasien pulang. Dokumen utama yang diperiksa BPJS.',
-  cppt: 'Catatan perkembangan harian pasien — ditulis setiap hari selama dirawat.',
+  cppt: 'Catatan perkembangan harian pasien, ditulis setiap hari selama dirawat.',
   'rekam-medis':
     'Seluruh catatan perawatan pasien: catatan harian, hasil laboratorium, daftar obat, ringkasan pulang.',
   komorbiditas:
-    'Penyakit penyerta di samping diagnosis utama — misalnya diabetes pada pasien pneumonia. Jika tidak tertulis di dokumen, BPJS tidak membayarnya.',
+    'Penyakit penyerta di samping diagnosis utama, misalnya diabetes pada pasien pneumonia. Jika tidak tertulis di dokumen, BPJS tidak membayarnya.',
   abstain:
-    'Sistem menyatakan tidak yakin dan menyerahkan penilaian ke manusia — bukan menebak. Kejujuran ini disengaja dan diukur.',
+    'Sistem menyatakan tidak yakin dan menyerahkan penilaian ke manusia, bukan menebak. Kejujuran ini disengaja dan diukur.',
   advisory:
     'Mode saat lapisan AI mati: hanya pemeriksaan aturan sederhana yang berjalan, dan sistem mengatakannya terang-terangan.',
   'cross-encoder':

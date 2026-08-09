@@ -18,17 +18,17 @@ export function tariff(g: Group): string {
 export const REMEDY: Record<Remedy, { label: string; who: string; css: string }> = {
   QUERY: {
     label: 'Query',
-    who: 'DPJP — perlu pasien masih di ruangan',
+    who: 'DPJP, perlu pasien masih di ruangan',
     css: 'query',
   },
   OBTAIN: {
     label: 'Obtain',
-    who: 'Petugas berkas — masih bisa setelah pulang',
+    who: 'Petugas berkas, masih bisa setelah pulang',
     css: 'obtain',
   },
   RECODE: {
     label: 'Recode',
-    who: 'Koder — masih bisa sampai submit',
+    who: 'Koder, masih bisa sampai submit',
     css: 'recode',
   },
 }
@@ -45,7 +45,7 @@ export const REMEDY: Record<Remedy, { label: string; who: string; css: string }>
  * have done. */
 export const DEFECT_ID: Record<string, string> = {
   D1: 'Berkas klaim tidak lengkap',
-  D2: 'Spesifisitas kode kurang — ada kode saudara',
+  D2: 'Spesifisitas kode kurang, ada kode saudara',
   D3: 'Diagnosis tidak didukung narasi rekam medis',
   D4: 'Komorbiditas terbaca di catatan, belum terdokumentasi',
   D5: 'Pemeriksaan penunjang belum dilampirkan',
