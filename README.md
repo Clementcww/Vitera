@@ -72,8 +72,8 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | N3 | Latency, % zero-LLM episodes | `make detection` | 9 | **partly** — 17 ms/run rules+CE, zero-LLM 100%; LLM-path cost blocked on provider |
 | T6 | Adversarial set results | `make eval` | 11 | not started |
 | F5 | Sweep: alerts/episode/day and churn | `make sweep-demo` | 13 | not started |
-| U1 | Coder workbench — queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |
-| U2 | Detection surface (episode × day × recoverable value) | `make ui-data && make ui` | 12 | **done** |
+| U1 | Coder workbench: queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |
+| U2 | Detection surface (episode × day × recoverable value) | `make ui-data && make ui` | 12 | **done** (landing card) |
 
 ## Layout
 
@@ -95,9 +95,15 @@ are grouper output; spans are re-verified against the document text in the
 browser before a flag is allowed to render, which is architectural rule 6
 enforced a second time on the surface that a poisoned note would have to reach.
 
-The 3D detection surface is fenced three ways — lazy chunk, WebGL capability
-probe, error boundary — and every path lands on the same 2D matrix. If it were
-cut, nothing else in the app changes.
+It is a single page. The landing and the workbench are the same DOM: the dark
+bento card is the hinge, and entering the queue morphs that card into the
+workbench rather than routing to another screen. The detection surface lives in
+the accent card, which expands in place.
+
+The 3D layer is fenced three ways: lazy chunk, WebGL capability probe, error
+boundary. The canvas only mounts once its card is open, so a closed landing
+never touches WebGL, and losing the 3D layer costs an animation rather than a
+screen.
 
 `docs/ui/workbench-mockup.html` is the no-build-step fallback and the design
 spec the app implements.
