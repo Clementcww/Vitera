@@ -49,6 +49,19 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 `VITERA_LLM_MODE` = `live` | `record` | `cache`. Rehearse in `record` to
 populate the cache that `demo-offline` replays. Never demo by waiting for a clock.
 
+The provider needs `VITERA_LLM_API_KEY` (or `OPENAI_API_KEY`) in the
+environment; `VITERA_LLM_BASE_URL` and `VITERA_LLM_MODEL` override endpoint and
+model, which is the seam the SEA-LION / Sahabat-AI production path uses. No key
+is ever read from a file, and none is committed. The LLM writes rationale prose
+only: with it switched off, detection, scores, citations and tariffs are
+unchanged and the run is marked `advisory`.
+
+Judges can supply their own key in the workbench itself, from the header panel.
+It is held in `sessionStorage`, dies with the tab, is never written to disk, and
+the request goes from their browser straight to the provider. Text is
+pseudonymised client-side first, by a port of the same patterns the Python
+boundary uses.
+
 ## Reproduction table
 
 Every figure and headline number in the paper maps to a command. **Keep this
@@ -62,14 +75,15 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | T2 | Arm A: rules reach 3 of 8 | `make arm-a` | 5 | **done** |
 | T3 | Cross-encoder vs. BM25, per class | `make train && make baselines` | 8 | **done** |
 | N4 | Shortcut controls + code-conditional AUC | `make baselines` | 8 | **done** |
-| T3b | Zero-shot LLM arm | `make baselines` | 8, 9 | blocked — no provider binding |
+| T3b | Zero-shot LLM arm | `make baselines` | 8, 9 | provider wired; arm not yet run |
 | F2 | Calibration curve (bins in `results/cross_encoder.json`) | `make figures` | 8 | data done, plot not started |
 | T4 | Three arms, bootstrap CIs across 3 seeds | `make eval` | 10 | not started |
 | N2 | Clean-claim false positive rate | `make eval` | 10 | not started |
 | F3 | Detection rate by day of stay | `make detection` | 10 | **done** (data in `results/detection_curve.json`) |
 | F4 | Detection lead time distribution | `make detection` | 10 | **done** — median 5 days, 86.7% detected |
 | T5 | Fairness by hospital class | `make detection` | 10 | **done** (rules+CE; region pending) |
-| N3 | Latency, % zero-LLM episodes | `make detection` | 9 | **partly** — 17 ms/run rules+CE, zero-LLM 100%; LLM-path cost blocked on provider |
+| N3 | Latency, cost/claim, % zero-LLM episodes | `make demo` | 9 | **done** — 30 ms/episode offline, ~Rp 0.68/claim prose-only |
+| E1 | End-to-end run, 20 cases, no crash | `make demo-offline` | 9 | **done** — `results/demo_run.json`, asserted in `tests/test_demo.py` |
 | T6 | Adversarial set results | `make eval` | 11 | not started |
 | F5 | Sweep: alerts/episode/day and churn | `make sweep-demo` | 13 | not started |
 | U1 | Coder workbench: queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |

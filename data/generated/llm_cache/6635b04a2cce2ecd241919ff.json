@@ -1,0 +1,5 @@
+{
+  "prompt": "Jelaskan dalam satu kalimat, untuk koder klinis, mengapa temuan berikut perlu ditindaklanjuti.\nTemuan: Upcoding pattern (valid individually, inflates CBG)\nKutipan rekam medis: Diagnosis utama: Gagal ginjal kronik (N18.5).\nCatatan sistem: kode E11.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+  "max_tokens": 120,
+  "text": "Temuan ini perlu ditindaklanjuti karena adanya pola upcoding yang dapat mengakibatkan inflasi pada CBG dan tidak didukung oleh bukti penunjang yang memadai untuk diagnosis komorbiditas berat."
+}

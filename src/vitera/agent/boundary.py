@@ -43,6 +43,20 @@ _PATTERNS: tuple[tuple[str, str], ...] = (
 )
 
 
+# The provider is asked to write one sentence of Indonesian prose about a
+# finding that already exists. It is told, in the prompt as well as by the
+# architecture, that it decides nothing: the finding, its class, its remedy,
+# its score and its citation are all fixed before this call is made.
+_SYSTEM_PROMPT = (
+    "Anda menulis satu kalimat penjelasan dalam Bahasa Indonesia untuk koder "
+    "klinis di rumah sakit. Temuan sudah ditetapkan oleh sistem deterministik; "
+    "tugas Anda hanya menjelaskannya dengan bahasa yang jelas. Jangan menambah "
+    "temuan baru, jangan mengubah kesimpulan, jangan menyebut angka yang tidak "
+    "diberikan, dan jangan memberi tahu dokter apa yang harus ditulis. "
+    "Jawab maksimal satu kalimat, tanpa pembuka."
+)
+
+
 class ReidentifiedTextError(RuntimeError):
     """Raised when text that has not crossed the pseudonymisation boundary is
     about to be sent to a model."""
@@ -140,10 +154,22 @@ class LLMClient:
         return Completion(text, False, key)
 
     def _call_provider(self, prompt: PseudonymisedText, max_tokens: int) -> str:
-        """Provider call. Kept as the single seam so the production path can
-        swap the frontier API for SEA-LION / Sahabat-AI without touching the
-        harness."""
-        api_key = os.environ.get("VITERA_LLM_API_KEY")
+        """Provider call. The single seam, so the production path can swap the
+        frontier API for SEA-LION / Sahabat-AI without touching the harness.
+
+        The key is read from the environment on every call and is never stored,
+        logged or written to the cache. What the cache holds is the prompt and
+        the completion, which is what `demo-offline` needs to replay and which
+        carries no credential.
+
+        Note what this function is allowed to affect: prose, and only prose.
+        Architectural rule 2 keeps every clinical determination with the
+        cross-encoder, the grouper and the rules, so a provider outage, a bad
+        key or a refusal costs the run its rationale wording and nothing else.
+        """
+        api_key = os.environ.get("VITERA_LLM_API_KEY") or os.environ.get(
+            "OPENAI_API_KEY"
+        )
         if not api_key:
             raise RuntimeError(
                 "VITERA_LLM_API_KEY is not set and mode is not `cache`. "
@@ -151,9 +177,23 @@ class LLMClient:
                 "the caller should degrade to rules-only (architectural rule 8) "
                 "rather than treating this as fatal."
             )
-        raise NotImplementedError(
-            "provider binding is wired in bucket 9; rehearse in `record` mode"
+
+        base_url = os.environ.get("VITERA_LLM_BASE_URL") or None
+        model = os.environ.get("VITERA_LLM_MODEL", "gpt-4o-mini")
+
+        from openai import OpenAI
+
+        client = OpenAI(api_key=api_key, base_url=base_url, timeout=20.0)
+        resp = client.chat.completions.create(
+            model=model,
+            max_completion_tokens=max_tokens,
+            temperature=0,
+            messages=[
+                {"role": "system", "content": _SYSTEM_PROMPT},
+                {"role": "user", "content": str(prompt)},
+            ],
         )
+        return (resp.choices[0].message.content or "").strip()
 
 
 class NullLLMClient(LLMClient):

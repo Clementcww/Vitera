@@ -1,0 +1,5 @@
+{
+  "prompt": "Jelaskan dalam satu kalimat, untuk koder klinis, mengapa temuan berikut perlu ditindaklanjuti.\nTemuan: Diagnosis unsupported by narrative\nKutipan rekam medis: Diagnosis utama: Infeksi non-bakteri lain-lain (A91).\nCatatan sistem: kode E87.6 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+  "max_tokens": 120,
+  "text": "Temuan ini perlu ditindaklanjuti karena diagnosis yang tercantum tidak didukung oleh narasi atau bukti yang memadai dalam rekam medis yang tersedia."
+}

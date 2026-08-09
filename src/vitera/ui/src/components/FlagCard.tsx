@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import type { Flag } from '../types'
+import { explain, keyStore } from '../llm'
 import { DEFECT_ID, REMEDY, SOURCE } from '../format'
 
 /* L2 — rationale, the verbatim quote, and the two actions.
@@ -28,6 +30,35 @@ export function FlagCard({
   onStage: () => void
   onDismiss: () => void
 }) {
+  /* The provider layer, when a judge has supplied a key. It is additive: the
+     deterministic rationale stays on screen and the generated sentence appears
+     beneath it, labelled. Architectural rule 2 is easier to believe when you
+     can see which layer wrote which line. */
+  const [prose, setProse] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+  const hasKey = Boolean(keyStore.get())
+
+  const ask = async () => {
+    setBusy(true)
+    setErr(null)
+    try {
+      setProse(
+        await explain(
+          {
+            defect: flag.defect_label,
+            rationale: flag.rationale,
+            quote: flag.span.text,
+          },
+          { key: keyStore.get(), model: keyStore.model() },
+        ),
+      )
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
+    }
+  }
   const abstain = flag.source === 'cross_encoder' && flag.score < 0.5
   const isQuery = flag.remedy === 'QUERY'
 
@@ -48,6 +79,14 @@ export function FlagCard({
       {open && (
         <div className="fbody">
           <p className="why">{flag.rationale}</p>
+
+          {prose && (
+            <p className="whyai prose">
+              <span className="ailabel">ditulis model</span>
+              {prose}
+            </p>
+          )}
+          {err && <p className="whyerr">{err}</p>}
 
           <blockquote>
             “{flag.span.text}”
@@ -81,6 +120,18 @@ export function FlagCard({
             <button className="act" onClick={onDismiss}>
               Tolak
             </button>
+            {hasKey && !prose && (
+              <button
+                className="act"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  void ask()
+                }}
+                disabled={busy}
+              >
+                {busy ? 'Menulis…' : 'Jelaskan'}
+              </button>
+            )}
             <span className="meta">
               {SOURCE[flag.source]} · {REMEDY[flag.remedy].label} ·{' '}
               {flag.actor}

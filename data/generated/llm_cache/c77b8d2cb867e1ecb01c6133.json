@@ -1,0 +1,5 @@
+{
+  "prompt": "Jelaskan dalam satu kalimat, untuk koder klinis, mengapa temuan berikut perlu ditindaklanjuti.\nTemuan: Missing required supporting examination\nKutipan rekam medis: Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.\nCatatan sistem: diagnosis A41.9 dikode, hasil pemeriksaan penunjang (Leukosit, Prokalsitonin, Kultur darah) tidak dilampirkan",
+  "max_tokens": 120,
+  "text": "Temuan ini perlu ditindaklanjuti karena hasil pemeriksaan penunjang yang diperlukan untuk mendukung diagnosis A41.9 tidak dilampirkan, sehingga dapat mempengaruhi akurasi dan kelengkapan data medis."
+}

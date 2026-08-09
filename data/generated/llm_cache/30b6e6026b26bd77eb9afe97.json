@@ -1,0 +1,5 @@
+{
+  "prompt": "Jelaskan dalam satu kalimat, untuk koder klinis, mengapa temuan berikut perlu ditindaklanjuti.\nTemuan: Diagnosis unsupported by narrative\nKutipan rekam medis: Diagnosis utama: Demam tifoid dan paratifoid (A01.0).\nCatatan sistem: kode K30 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+  "max_tokens": 120,
+  "text": "Diagnosis demam tifoid dan paratifoid tidak didukung oleh narasi yang ada dalam rekam medis, sehingga perlu ditindaklanjuti untuk memastikan akurasi dan kelengkapan dokumentasi klinis."
+}

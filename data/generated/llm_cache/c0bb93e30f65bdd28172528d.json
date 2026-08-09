@@ -1,0 +1,5 @@
+{
+  "prompt": "Jelaskan dalam satu kalimat, untuk koder klinis, mengapa temuan berikut perlu ditindaklanjuti.\nTemuan: Administrative mismatch (SEP, identity, dates)\nKutipan rekam medis: Tanggal masuk: [TANGGAL]\nCatatan sistem: tanggal masuk pada klaim ([TANGGAL]) tidak sesuai SEP",
+  "max_tokens": 120,
+  "text": "Temuan ini perlu ditindaklanjuti karena adanya ketidaksesuaian antara tanggal masuk yang tercatat dalam klaim dan yang tertera dalam SEP, yang dapat mempengaruhi akurasi data administrasi dan proses klaim."
+}

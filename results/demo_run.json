@@ -1,0 +1,171 @@
+{
+  "summary": {
+    "episodes": 20,
+    "errors": 0,
+    "verdicts": {
+      "flagged": 4,
+      "clean": 16,
+      "abstain": 0
+    },
+    "failed_validation": 0,
+    "flags": 10,
+    "span_verification_rate": 1.0,
+    "spans_dropped": 0,
+    "advisory_episodes": 0,
+    "budget_breaches": 0,
+    "llm_calls": 10,
+    "zero_llm_share": 0.8,
+    "latency": {
+      "seconds_per_episode_mean": 0.7201,
+      "hardware": "Apple silicon (MPS), local"
+    },
+    "cost_estimate": {
+      "idr_per_claim": 0.68,
+      "basis": "prose calls only, tokens approximated not metered. Detection is rules + cross-encoder and costs no API spend per claim."
+    },
+    "llm_mode": "record",
+    "seed": 20260731
+  },
+  "episodes": [
+    {
+      "episode_id": "EP000104",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0083
+    },
+    {
+      "episode_id": "EP000154",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.1783
+    },
+    {
+      "episode_id": "EP000551",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0001
+    },
+    {
+      "episode_id": "EP000692",
+      "verdict": "flagged",
+      "flags": 1,
+      "advisory": false,
+      "seconds": 2.7228
+    },
+    {
+      "episode_id": "EP000947",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.1031
+    },
+    {
+      "episode_id": "EP001088",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0416
+    },
+    {
+      "episode_id": "EP001463",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0001
+    },
+    {
+      "episode_id": "EP001498",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0231
+    },
+    {
+      "episode_id": "EP001511",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0001
+    },
+    {
+      "episode_id": "EP001557",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0413
+    },
+    {
+      "episode_id": "EP001725",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0001
+    },
+    {
+      "episode_id": "EP001977",
+      "verdict": "flagged",
+      "flags": 3,
+      "advisory": false,
+      "seconds": 4.3105
+    },
+    {
+      "episode_id": "EP002181",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0696
+    },
+    {
+      "episode_id": "EP002337",
+      "verdict": "flagged",
+      "flags": 4,
+      "advisory": false,
+      "seconds": 5.2327
+    },
+    {
+      "episode_id": "EP002733",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.1313
+    },
+    {
+      "episode_id": "EP002901",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0001
+    },
+    {
+      "episode_id": "EP003239",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0001
+    },
+    {
+      "episode_id": "EP003273",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0
+    },
+    {
+      "episode_id": "EP003466",
+      "verdict": "flagged",
+      "flags": 2,
+      "advisory": false,
+      "seconds": 1.5392
+    },
+    {
+      "episode_id": "EP003719",
+      "verdict": "clean",
+      "flags": 0,
+      "advisory": false,
+      "seconds": 0.0002
+    }
+  ]
+}

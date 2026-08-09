@@ -6,6 +6,8 @@ import { QueueView } from './components/QueueView'
 import { CaseView } from './components/CaseView'
 import { StagingTray } from './components/StagingTray'
 import { HeroCards } from './components/Hero'
+import { KeyPanel } from './components/KeyPanel'
+import { keyStore } from './llm'
 
 /* One page.
  *
@@ -33,6 +35,7 @@ export default function App() {
   const [mode, setMode] = useState<Mode>('hero')
   const [openCase, setOpenCase] = useState<string | null>(null)
   const [staged, setStaged] = useState<Set<string>>(new Set())
+  const [keyTick, setKeyTick] = useState(0)
 
   useEffect(() => {
     load().then(setState).catch((e) => setError(String(e)))
@@ -74,6 +77,13 @@ export default function App() {
         </button>
 
         <div className="hspacer" />
+
+        {mode === 'work' && (
+          <KeyPanel
+            hasKey={Boolean(keyStore.get()) || keyTick < 0}
+            onChange={() => setKeyTick((n) => n + 1)}
+          />
+        )}
 
         {mode === 'work' && (
           <div className="hpill statpill">
