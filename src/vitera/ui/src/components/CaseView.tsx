@@ -39,7 +39,7 @@ export function CaseView({
   return (
     <section className="view">
       <div className="crumb">
-        <button onClick={onBack}>← Queue</button>
+        <button onClick={onBack}>← Antrean</button>
         <span>/</span>
         <span className="mono">{ep.episode_id}</span>
       </div>
@@ -52,26 +52,26 @@ export function CaseView({
           </span>
           <h2 className="mono">{ep.episode_id}</h2>
           <span className="who">
-            {ep.site_id} · day {ep.day} of stay ·{' '}
-            {ep.still_admitted ? 'still admitted' : 'discharged'}
+            {ep.site_id} · hari rawat ke-{ep.day} ·{' '}
+            {ep.still_admitted ? 'masih dirawat' : 'sudah pulang'}
           </span>
           {!ep.still_admitted && byRemedy(ep, 'QUERY').length > 0 && (
             <span className="windowshut">
-              the window has shut; the doctor would be reconstructing from memory
+              jendela query sudah tutup, DPJP menyusun ulang dari ingatan
             </span>
           )}
         </div>
 
         <div className="strip">
           <div className="kv">
-            <div className="k">Tariff as it stands</div>
+            <div className="k">Tarif saat ini</div>
             <div className="v mono">
               {tariff(ep.money.now)}
               <span className="src">grouper</span>
             </div>
           </div>
           <div className="kv">
-            <div className="k">If confirmed</div>
+            <div className="k">Bila dikonfirmasi</div>
             <div className="v mono">
               {tariff(ep.money.if_confirmed)}
               {ep.money.delta_idr ? (
@@ -89,7 +89,7 @@ export function CaseView({
             </div>
           </div>
           <div className="kv">
-            <div className="k">Findings</div>
+            <div className="k">Temuan</div>
             <div className="v mono">
               {ep.flags.length}
               {/* NOT `verdict_reason` — that string names the raw router
@@ -98,7 +98,7 @@ export function CaseView({
               <small>
                 {ORDER.filter((k) => byRemedy(ep, k).length)
                   .map((k) => `${byRemedy(ep, k).length} ${REMEDY[k].label}`)
-                  .join(' · ') || 'nothing found'}
+                  .join(' · ') || 'tidak ada temuan'}
               </small>
             </div>
           </div>
@@ -108,8 +108,8 @@ export function CaseView({
       <div className="split">
         <div className="panel">
           <div className="phd">
-            <h3>What to fix</h3>
-            <span className="c">grouped by who acts</span>
+            <h3>Daftar perbaikan</h3>
+            <span className="c">menurut pelaksana</span>
           </div>
           {ep.flags.length === 0 && (
             <p className="empty prose">{ep.verdict_reason}</p>
@@ -132,7 +132,7 @@ export function CaseView({
                      `Flag.suppression_key` is defect_class + evidence_hash, and
                      two findings about DIFFERENT codes collide on it whenever
                      they cite the same anchor line — which D5 and D7 do all the
-                     time, because an absence-based finding cites the claim file
+                     time, because an absence-based finding cites the berkas
                      cover sheet. Without the index, staging or dismissing one
                      silently applies to the other. See the note in
                      docs/ARCHITECTURE.md; the real fix is a subject field on
@@ -163,23 +163,23 @@ export function CaseView({
       </div>
 
       <details className="help">
-        <summary>Run trace</summary>
+        <summary>Jejak pemeriksaan</summary>
         <div className="detail">
           <div className="tracegrid mono">
             <span>panggilan LLM</span>
             <b>{ep.trace.llm_calls}</b>
-            <span>budget exceeded</span>
-            <b>{ep.trace.budget_breach ?? 'none'}</b>
+            <span>batas terlampaui</span>
+            <b>{ep.trace.budget_breach ?? 'tidak'}</b>
             <span>durasi</span>
             <b>{ep.trace.elapsed_seconds.toFixed(4)} s</b>
-            <span>tools run</span>
+            <span>alat dijalankan</span>
             <b>
               {ep.trace.tool_calls.map((t) => `${t.tool} (${t.result_digest})`).join(', ') ||
                 '—'}
             </b>
-            <span>classes checked</span>
+            <span>kelas diperiksa</span>
             <b>{ep.classes_checked.join(', ')}</b>
-            <span>router decision</span>
+            <span>keputusan router</span>
             <b>{ep.verdict_reason}</b>
           </div>
         </div>

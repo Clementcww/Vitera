@@ -134,15 +134,15 @@ boundary. The canvas only mounts once its card is open, so a closed landing
 never touches WebGL, and losing the 3D layer costs an animation rather than a
 screen.
 
-Three panes sit behind the header switch. **Queue** is the koder's day.
-**Summary** is the unit view above it — aggregates only, never a per-coder cut.
-**Scanned form** is the paper the batch arrived on: the scanned FPK with
+Three panes sit behind the header switch. **Antrean** is the koder's day.
+**Ringkasan** is the unit view above it — aggregates only, never a per-coder
+cut. **Berkas pindaian** is the paper the batch arrived on: the scanned FPK with
 every recognised line drawn back onto it as a box, coloured by the engine's own
 confidence, next to the extracted values and the validation gate's verdict.
 Showing every observation — not only the ones a field used — is the point; a
 view that drew only the successful reads would hide the half a koder needs.
 
-**Generate report** renders the corrected draft in the browser from the same
+**Buat laporan** renders the corrected draft in the browser from the same
 export `make intake` prints as a PDF, and prints through the page rather than a
 popup. It is stamped DRAF, its signature block is empty, and the amount that
 would only become claimable if a DPJP documents care the record suggests is
@@ -150,23 +150,18 @@ printed apart from the total and never added into it.
 
 ### Language
 
-The split is deliberate, not drift. **The workbench is English**; the **CLI and
-the printed FPK are Bahasa Indonesia**, because the FPK imitates a real
-Indonesian regulatory form and `make demo` narrates a hospital's own workflow.
+**The whole product speaks Bahasa Indonesia** — workbench, CLI and printed FPK
+alike. The user is a *petugas casemix / koder klinis*, usually D-3 Perekam
+Medis, and CLAUDE.md's plain-language layer is written for them.
 
-Where the two meet — validation-gate messages, defect labels, remedies — the UI
-composes its own English from the structured fields (`check`, `subject`,
-`defect_class`, `remedy_code`) rather than rendering the Indonesian prose the
-exporter writes for paper. One meaning, two surfaces, no sentence translated
-twice.
+Only two kinds of string are exempt, and both for the same reason: they are
+quotations, not copy. **Quoted record text stays verbatim** — rule 6 is void the
+moment a citation is paraphrased — and the field labels beside the scanned form
+keep the wording printed on the sheet, since that panel exists so a reader can
+find the same words on the paper.
 
-Two things are never translated. **Quoted record text stays verbatim** — rule 6
-is void the moment a citation is paraphrased — and the field labels beside the
-scanned form keep the wording printed on the sheet, since the whole point of
-that panel is reading a value and finding the same words on the paper.
-
-Glossary keys still carry the Indonesian terms, so reverting the workbench to
-Bahasa for a hospital pilot is a copy change, not a refactor.
+Code comments and the docs are in English. That is a repository convention for
+the people who maintain it, and it never reaches a screen.
 
 `docs/ui/workbench-mockup.html` is the no-build-step fallback and the design
 spec the app implements.

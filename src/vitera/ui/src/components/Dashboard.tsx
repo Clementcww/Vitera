@@ -73,60 +73,61 @@ export function Dashboard({ payload }: { payload: Payload }) {
 
   return (
     <section className="view dash">
-      <h1>Unit summary</h1>
+      <h1>Ringkasan unit</h1>
       <p className="lede">
-        {payload.generated.cohort} inpatient episodes, {admitted.length} of them
-        still on the ward this morning. Every rupiah figure is the
-        grouper&rsquo;s; episodes it could not group are counted here but left
-        out of the money.
+        {payload.generated.cohort} episode rawat inap, {admitted.length} di
+        antaranya masih dirawat pagi ini. Semua angka rupiah berasal dari
+        grouper; episode yang tidak dapat dikelompokkan tetap dihitung sebagai
+        kasus, tetapi tidak ikut dijumlahkan nilainya.
       </p>
 
       {payload.generated.advisory && (
         <p className="dash-warn">
-          The last run had no model layer. Some defect classes went
-          unchecked, so everything below is a floor, not a total.
+          Proses terakhir berjalan tanpa lapisan model. Sebagian kelas temuan
+          tidak diperiksa, jadi angka di bawah adalah batas bawah, bukan
+          total.
         </p>
       )}
 
       <div className={'lead' + (onWardQueries ? ' urgent' : '')}>
         <b>{onWardQueries}</b>
         <div>
-          <strong>need the doctor while the patient is still on the ward</strong>
+          <strong>perlu dokter selagi pasien masih di ruangan</strong>
           <span>
             {onWardQueries
-              ? 'These shut at discharge. Everything else can wait a day.'
+              ? 'Jendela ini tertutup saat pasien pulang. Sisanya masih bisa besok.'
               : admitted.length
-                ? 'Nothing on the ward needs the doctor this morning.'
-                : 'No episode in this cohort is still admitted, so no repair window is open.'}
+                ? 'Pagi ini tidak ada yang perlu dokter di ruangan.'
+                : 'Tidak ada episode yang masih dirawat pada kohort ini, jadi tidak ada jendela perbaikan yang terbuka.'}
           </span>
         </div>
       </div>
 
       <div className="stats">
         <Stat
-          label="Claims with findings"
+          label="Klaim dengan temuan"
           value={`${flagged.length} / ${eps.length}`}
-          sub={abstain.length ? `${abstain.length} need a coder to judge` : undefined}
+          sub={abstain.length ? `${abstain.length} perlu penilaian koder` : undefined}
         />
         <Stat
-          label="Recoverable"
+          label="Dapat dipulihkan"
           value={jt(recoverable)}
-          sub="tariff difference, from the grouper"
+          sub="selisih tarif, dari grouper"
         />
         <Stat
-          label="Could not be grouped"
+          label="Tidak dapat dikelompokkan"
           value={String(ungroupable.length)}
-          sub={ungroupable.length ? 'no tariff estimated' : 'none'}
+          sub={ungroupable.length ? 'tarif tidak diperkirakan' : 'tidak ada'}
         />
       </div>
 
-      <h2 className="dash-h">Who has to act</h2>
+      <h2 className="dash-h">Siapa yang harus bertindak</h2>
       <table className="dash-tbl">
         <thead>
           <tr>
-            <th>Who</th>
-            <th>Findings</th>
-            <th>Time left</th>
+            <th>Siapa</th>
+            <th>Temuan</th>
+            <th>Sisa waktu</th>
           </tr>
         </thead>
         <tbody>
@@ -139,41 +140,41 @@ export function Dashboard({ payload }: { payload: Payload }) {
               <td className="num">{byRemedy(r)}</td>
               <td className="win">
                 {r === 'QUERY'
-                  ? 'until the patient goes home'
+                  ? 'sampai pasien pulang'
                   : r === 'OBTAIN'
-                    ? 'until the file is sent'
-                    : 'until the claim is submitted'}
+                    ? 'sampai berkas dikirim'
+                    : 'sampai klaim disubmit'}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <h2 className="dash-h">Detection</h2>
+      <h2 className="dash-h">Deteksi</h2>
       {m ? (
         <div className="stats">
           <Stat
-            label="Found before discharge"
+            label="Terdeteksi sebelum pulang"
             value={`${Math.round(m.detection_rate * 100)}%`}
             sub={`n = ${m.n_episodes}`}
           />
           <Stat
-            label="Found this early"
-            value={m.lead_time_median_days !== null ? `${m.lead_time_median_days} days` : '—'}
-            sub="median, before discharge"
+            label="Sedini ini ditemukan"
+            value={m.lead_time_median_days !== null ? `${m.lead_time_median_days} hari` : '—'}
+            sub="median, sebelum pasien pulang"
           />
           <Stat
-            label="Two days or more to act"
+            label="Jendela perbaikan ≥ 2 hari"
             value={
               m.lead_time_share_ge_2_days !== null
                 ? `${Math.round(m.lead_time_share_ge_2_days * 100)}%`
                 : '—'
             }
-            sub="still repairable"
+            sub="masih bisa diperbaiki"
           />
         </div>
       ) : (
-        <p className="dash-empty">Not yet measured on the held-out split.</p>
+        <p className="dash-empty">Belum diukur pada split uji.</p>
       )}
 
       {/* Precision matters here: `llm_calls` counts calls to the language
@@ -181,17 +182,17 @@ export function Dashboard({ payload }: { payload: Payload }) {
           still scored by the cross-encoder, which is a model — so "no LLM
           call" is true and "deterministic rules alone" would not be. */}
       <p className="dash-cost">
-        <span>{llmCalls}</span> language-model calls across the cohort ·{' '}
-        <span>{Math.round((zeroLlm / Math.max(1, eps.length)) * 100)}%</span> of
-        episodes settled with no language-model call at all. Detection is rules
-        plus the in-hospital <Term k="cross-encoder">cross-encoder</Term>; the
-        language model only writes the explanations.
+        <span>{llmCalls}</span> panggilan model bahasa untuk seluruh kohort ·{' '}
+        <span>{Math.round((zeroLlm / Math.max(1, eps.length)) * 100)}%</span>{' '}
+        episode selesai tanpa satu pun panggilan model bahasa. Deteksi dikerjakan
+        aturan dan <Term k="cross-encoder">cross-encoder</Term> yang berjalan di
+        rumah sakit; model bahasa hanya menulis penjelasannya.
       </p>
 
       <p className="dash-foot">
-        There are no per-coder figures on this screen and there will not be.
-        A queue that doubles as a performance review is a queue that gets
-        closed rather than worked.
+        Tidak ada angka per koder di layar ini, dan tidak akan pernah ada.
+        Antrean yang sekaligus menjadi penilaian kinerja adalah antrean yang
+        ditutup, bukan dikerjakan.
       </p>
     </section>
   )

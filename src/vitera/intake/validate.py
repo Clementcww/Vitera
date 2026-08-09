@@ -87,6 +87,18 @@ _REQUIRED = ("nama_ppk", "kode_ppk", "bulan_pelayanan", "jenis_pelayanan")
 
 _LINE_FIELDS = ("sep_number", "no_kartu", "tanggal_masuk", "hari", "cbg_code")
 
+# What to call a rincian cell in a message a person reads. The attribute names
+# are ours; "cbg_code tidak terbaca" tells a petugas berkas nothing about which
+# column to go and look at on the paper.
+_FIELD_ID = {
+    "sep_number": "nomor SEP",
+    "no_kartu": "nomor kartu",
+    "tanggal_masuk": "tanggal masuk",
+    "hari": "lama rawat",
+    "cbg_code": "kode INA-CBG",
+    "biaya_idr": "biaya",
+}
+
 
 def _cfg() -> dict[str, Any]:
     return dict(config.thresholds()["intake"])
@@ -170,7 +182,7 @@ def check_legibility(x: ExtractedFPK) -> tuple[list[IntakeFailure], float]:
         )
     for ln in x.lines:
         if not _complete(ln):
-            gaps = [f for f in _LINE_FIELDS if getattr(ln, f) is None]
+            gaps = [_FIELD_ID[f] for f in _LINE_FIELDS if getattr(ln, f) is None]
             out.append(
                 IntakeFailure(
                     "row_incomplete",

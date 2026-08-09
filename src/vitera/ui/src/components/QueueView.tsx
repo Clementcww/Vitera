@@ -39,25 +39,29 @@ export function QueueView({
 
   return (
     <section className="view">
-      <h1>This morning&rsquo;s queue</h1>
+      <h1>Antrean pagi</h1>
       <p className="lede">
-        <Term k="klaim">Claims</Term> that need work today, ordered by how
-        little time is left to do it. Anything needing the doctor while the
-        patient is still on the ward comes first.
+        Daftar <Term k="klaim">klaim</Term> yang perlu ditindaklanjuti pagi
+        ini, terurut menurut jendela perbaikan. Yang butuh dokter selagi
+        pasien masih dirawat naik paling atas.
       </p>
 
-      <p className="legend">
-        <span className="rdot" style={{ background: 'var(--query)' }} />
-        doctor, while admitted
-        <span className="rdot" style={{ background: 'var(--obtain)' }} />
-        records officer
-        <span className="rdot" style={{ background: 'var(--recode)' }} />
-        coder
-        <em>
-          Rupiah come from the <Term k="grouper">grouper</Term>, never from a
-          model.
-        </em>
-      </p>
+      <details className="help" style={{ margin: '0 0 16px' }}>
+        <summary>Baru pertama kali melihat layar ini?</summary>
+        <div className="detail">
+          Setiap baris adalah tagihan satu pasien ke{' '}
+          <Term k="bpjs">BPJS</Term>. Warna menunjukkan siapa yang harus
+          bertindak: <b style={{ color: 'var(--query)' }}>oranye</b> untuk dokter (
+          <Term k="dpjp">DPJP</Term>), selagi pasien masih di ruangan;{' '}
+          <b style={{ color: 'var(--obtain)' }}>biru</b> untuk petugas berkas,
+          melengkapi dokumen; <b style={{ color: 'var(--recode)' }}>hijau</b> untuk{' '}
+          <Term k="koder">koder</Term>, memperbaiki kode. Kolom rupiah adalah
+          selisih tarif yang bisa diselamatkan bila catatan dilengkapi,
+          dihitung <Term k="grouper">grouper</Term>, bukan model AI. Klik baris
+          untuk melihat temuannya; setiap temuan mengutip dokumen aslinya{' '}
+          <Term k="verbatim">kata demi kata</Term>.
+        </div>
+      </details>
 
       <div className="filters">
         {(['ALL', 'QUERY', 'OBTAIN', 'RECODE'] as Filter[]).map((f) => (
@@ -72,7 +76,7 @@ export function QueueView({
                 style={{ background: `var(--${REMEDY[f].css})` }}
               />
             )}
-            {f === 'ALL' ? 'All' : REMEDY[f].label}
+            {f === 'ALL' ? 'Semua' : REMEDY[f].label}
             <span className="n">{counts[f]}</span>
           </button>
         ))}
@@ -92,7 +96,7 @@ export function QueueView({
                 <span
                   className="rdot"
                   style={{ background: rm ? `var(--${REMEDY[rm].css})` : 'var(--mid)' }}
-                  title={rm ? REMEDY[rm].label : 'nothing found'}
+                  title={rm ? REMEDY[rm].label : 'tidak ada temuan'}
                 />
                 <span className="rid mono">{e.episode_id}</span>
                 {/* The class label is the same words on eleven consecutive
@@ -115,7 +119,7 @@ export function QueueView({
                     </>
                   ) : (
                     <span className="muted">
-                      Nothing found on this run
+                      Tidak ada temuan pada pemeriksaan ini
                     </span>
                   )}
                 </span>
@@ -161,15 +165,14 @@ export function QueueView({
       </div>
 
       <details className="help">
-        <summary>How this queue is ordered</summary>
+        <summary>Bagaimana antrean ini diurutkan?</summary>
         <div className="detail">
-          Sorted by <code>remedy_decay_rank → expected_value → day_of_stay</code>.
-          A doctor query rises first because its window shuts at discharge. A
-          document can still be chased afterwards, and a code can be changed
-          until the claim is sent. Every rupiah figure is the grouper&rsquo;s;
-          the model never produces one, and an episode the grouper could not
-          group shows{' '}
-          <code>UNGROUPABLE</code> as a dash, never an estimate.
+          Urutan <code>remedy_decay_rank → expected_value → day_of_stay</code>.
+          Query naik lebih dulu karena jendelanya tutup saat pasien pulang;
+          Obtain masih bisa dikejar setelah pulang; Recode masih bisa sampai
+          berkas disubmit. Kolom rupiah seluruhnya keluaran grouper. Model
+          tidak pernah menghasilkan angka uang, dan episode{' '}
+          <code>UNGROUPABLE</code> ditampilkan sebagai tanda hubung.
         </div>
       </details>
     </section>

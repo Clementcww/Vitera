@@ -25,7 +25,7 @@ export function StagingTray({
       <div className="tleft">
         <b>{items.length}</b> perbaikan disiapkan
         <span className="tnote">
-          not applied yet, needs a human to commit
+          belum diterapkan, perlu commit oleh manusia
         </span>
       </div>
       <div className="tright">
@@ -34,10 +34,10 @@ export function StagingTray({
         </button>
         <button
           className="act primary"
-          title="Not active in this build: writing to the claim of record, and the commit log that would accompany it."
+          title="Tidak aktif pada build ini: penulisan ke klaim of record dan pencatatan commit belum ada."
           disabled
         >
-          Commit to the claim file
+          Commit ke berkas klaim
         </button>
       </div>
     </div>

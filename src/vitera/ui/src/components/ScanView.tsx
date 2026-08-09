@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { IntakePayload, ReadField } from '../intake'
-import { FIELD_ID, SEVERITY_ID, band, gateText } from '../intake'
+import { FIELD_ID, SEVERITY_ID, band } from '../intake'
 import { rp } from '../format'
 import { Term } from './Term'
 
@@ -18,7 +18,7 @@ import { Term } from './Term'
  *   half a koder needs. The default is fields-only for legibility; one toggle
  *   shows everything the engine saw.
  * - **Cells the reader could not get are marked, never blank.** A blank in a
- *   rupiah column reads as a zero. `unreadable` reads as what it is.
+ *   rupiah column reads as a zero. `tidak terbaca` reads as what it is.
  * - **The gate's verdict sits above the data, not below it.** If the sheet was
  *   held, nothing downstream ran, and that has to be the first thing on screen
  *   rather than a footnote under a table of numbers.
@@ -48,9 +48,9 @@ export function ScanView({
   if (!p) {
     return (
       <section className="view">
-        <h1>Scanned form</h1>
+        <h1>Berkas pindaian</h1>
         <p className="lede">
-          No scanned pages in this export. Run{' '}
+          Tidak ada halaman pindaian pada ekspor ini. Jalankan{' '}
           <code>make ui-intake</code>.
         </p>
       </section>
@@ -59,39 +59,40 @@ export function ScanView({
 
   return (
     <section className="view">
-      <h1>Scanned form</h1>
+      <h1>Berkas pindaian</h1>
       <p className="lede">
-        The scanned <Term k="fpk">FPK</Term> sheet with the machine&rsquo;s
-        reading drawn on top. Each box is the place on the page a value
-        was found, not a redrawing of it.
+        Lembar <Term k="fpk">FPK</Term> yang dipindai, dengan hasil bacaan mesin
+        digambar di atasnya. Kotak adalah posisi asli tempat setiap nilai
+        ditemukan, bukan gambar ulang.
       </p>
 
       <div className={'gatebar ' + (held ? 'held' : 'ok')}>
         <span className="gdot" />
-        <b>{held ? 'Held at the validation gate' : 'Passed the validation gate'}</b>
+        <b>{held ? 'Berkas ditahan di gerbang validasi' : 'Lolos gerbang validasi'}</b>
         <span className="gsub">
-          {gate.engine} · {gate.rows} itemised rows ·{' '}
-          {Math.round(gate.rows_complete_share * 100)}% read in full ·{' '}
-          {gate.matched_episodes} matched the hospital record
+          {gate.engine} · {gate.rows} baris rincian ·{' '}
+          {Math.round(gate.rows_complete_share * 100)}% terbaca lengkap ·{' '}
+          {gate.matched_episodes} cocok dengan rekam rumah sakit
         </span>
         {!held && (
           <button className="act primary gbtn" onClick={onReport}>
-            Generate report
+            Buat laporan
           </button>
         )}
       </div>
 
       <details className="help" style={{ margin: '0 0 16px' }}>
-        <summary>What you are looking at</summary>
+        <summary>Apa yang sedang dilihat di sini?</summary>
         <div className="detail">
-          Hospitals send claims on paper. Vitera scans the form, reads it, and
-          checks it against the record before anything else happens. Box colour
-          is how sure the machine is of each value:{' '}
-          <b className="c-ok">green</b> confident,{' '}
-          <b className="c-soft">amber</b> unsure, <b className="c-weak">red</b>{' '}
-          barely legible. A value it could not read is marked{' '}
-          <i>unreadable</i> and never guessed. A doubtful reading is never
-          turned into a claim finding; it goes back for a person to read.
+          Rumah sakit mengirim klaim dengan formulir kertas. Vitera memindai
+          formulir itu, membaca isinya, lalu mencocokkannya dengan rekam medis
+          sebelum apa pun diproses. Warna kotak menunjukkan seberapa yakin mesin
+          membaca: <b className="c-ok">hijau</b> yakin,{' '}
+          <b className="c-soft">kuning</b> ragu, <b className="c-weak">merah</b>{' '}
+          nyaris tidak terbaca. Nilai yang gagal dibaca ditandai{' '}
+          <i>tidak terbaca</i> dan tidak pernah ditebak. Pembacaan yang meragukan
+          tidak pernah dijadikan temuan klaim; ia dikembalikan untuk dibaca
+          ulang manusia.
         </div>
       </details>
 
@@ -104,7 +105,7 @@ export function ScanView({
                 className={'f' + (i === page ? ' on' : '')}
                 onClick={() => setPage(i)}
               >
-                Page {i + 1}
+                Halaman {i + 1}
               </button>
             ))}
             <span className="spacer" />
@@ -112,18 +113,18 @@ export function ScanView({
               className={'f' + (mode === 'fields' ? ' on' : '')}
               onClick={() => setMode('fields')}
             >
-              Fields read
+              Kolom terbaca
             </button>
             <button
               className={'f' + (mode === 'all' ? ' on' : '')}
               onClick={() => setMode('all')}
             >
-              Every reading <span className="n">{p.obs.length}</span>
+              Semua bacaan <span className="n">{p.obs.length}</span>
             </button>
           </div>
 
           <div className="sheet" style={{ aspectRatio: `${p.w} / ${p.h}` }}>
-            <img src={p.src} alt={`Scanned sheet, page ${page + 1}`} />
+            <img src={p.src} alt={`Lembar pindaian halaman ${page + 1}`} />
             {mode === 'all' &&
               p.obs.map((o, i) => (
                 <span
@@ -158,14 +159,7 @@ export function ScanView({
               ))}
           </div>
 
-          {/* The workbench's own words, not the exporter's. `generated.note`
-              is written in Bahasa for the CLI and the printed FPK; what it
-              says is repeated here in the language of this screen. */}
-          <p className="scannote prose">
-            A synthetic scanned sheet, read by a local OCR engine. The boxes are
-            the reader&rsquo;s own coordinates, not a redrawing. Every rupiah
-            figure comes from the INA-CBG grouper.
-          </p>
+          <p className="scannote prose">{data.generated.note}</p>
         </div>
 
         <div className="scanside">
@@ -184,7 +178,7 @@ export function ScanView({
           {gate.failures_detail.length > 0 && (
             <div className="panel" style={{ marginTop: 16 }}>
               <div className="phd">
-                <b>Gate notes</b>
+                <b>Catatan gerbang</b>
                 <span className="c">{gate.failures_detail.length}</span>
               </div>
               <ul className="gatelist">
@@ -193,12 +187,12 @@ export function ScanView({
                     <span className={'sev ' + SEVERITY_ID[f.severity].css}>
                       {SEVERITY_ID[f.severity].label}
                     </span>
-                    <span className="gd">{gateText(f, data)}</span>
+                    <span className="gd">{f.detail}</span>
                   </li>
                 ))}
                 {gate.failures_detail.length > 14 && (
                   <li className="gmore">
-                    and {gate.failures_detail.length - 14} more
+                    dan {gate.failures_detail.length - 14} lainnya
                   </li>
                 )}
               </ul>
@@ -207,7 +201,7 @@ export function ScanView({
         </div>
       </div>
 
-      <Itemised data={data} />
+      <Rincian data={data} />
     </section>
   )
 }
@@ -226,9 +220,9 @@ function FieldList({
   return (
     <div className="panel">
       <div className="phd">
-        <b>Form fields</b>
+        <b>Kolom formulir</b>
         <span className="c">
-          {fields.length} read{missing.length ? `, ${missing.length} failed` : ''}
+          {fields.length} terbaca{missing.length ? `, ${missing.length} gagal` : ''}
         </span>
       </div>
       <ul className="fieldlist">
@@ -240,7 +234,7 @@ function FieldList({
           >
             <span className="fn">{FIELD_ID[f.name] ?? f.name}</span>
             <span className="fv">{f.value}</span>
-            <span className={'cf b-' + band(f.confidence)} title="how sure the machine was">
+            <span className={'cf b-' + band(f.confidence)} title="keyakinan mesin">
               {f.confidence.toFixed(2)}
             </span>
           </li>
@@ -248,7 +242,7 @@ function FieldList({
         {missing.map((m) => (
           <li key={m} className="gone">
             <span className="fn">{FIELD_ID[m] ?? m}</span>
-            <span className="fv">unreadable</span>
+            <span className="fv">tidak terbaca</span>
             <span className="cf b-weak">—</span>
           </li>
         ))}
@@ -257,7 +251,7 @@ function FieldList({
   )
 }
 
-function Itemised({ data }: { data: IntakePayload }) {
+function Rincian({ data }: { data: IntakePayload }) {
   const [all, setAll] = useState(false)
   const rows = all ? data.lines : data.lines.slice(0, 12)
   const t = data.totals
@@ -265,9 +259,9 @@ function Itemised({ data }: { data: IntakePayload }) {
   return (
     <div className="panel" style={{ marginTop: 18 }}>
       <div className="phd">
-        <b>What was read</b>
+        <b>Rincian yang terbaca</b>
         <span className="c">
-          {data.lines.length} rows · total on the form{' '}
+          {data.lines.length} baris · jumlah pada formulir{' '}
           {t.biaya_idr === null ? '—' : rp(t.biaya_idr)}
         </span>
       </div>
@@ -278,24 +272,24 @@ function Itemised({ data }: { data: IntakePayload }) {
               <th>No.</th>
               <th>No. SEP</th>
               <th>Episode</th>
-              <th>Admitted</th>
-              <th>Days</th>
+              <th>Tgl masuk</th>
+              <th>Hari</th>
               <th>INA-CBG</th>
-              <th className="num">Amount</th>
-              <th className="num">Sure</th>
+              <th className="num">Biaya</th>
+              <th className="num">Yakin</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((ln) => (
               <tr key={ln.index} className={ln.unread.length ? 'partial' : ''}>
                 <td className="mono">{ln.index}</td>
-                <td className="mono">{ln.sep ?? <i>unreadable</i>}</td>
+                <td className="mono">{ln.sep ?? <i>tidak terbaca</i>}</td>
                 <td className="mono dim">{ln.episode_id ?? '—'}</td>
-                <td className="mono">{ln.tanggal ?? <i>unreadable</i>}</td>
-                <td className="mono">{ln.hari ?? <i>unreadable</i>}</td>
-                <td className="mono">{ln.cbg ?? <i>unreadable</i>}</td>
+                <td className="mono">{ln.tanggal ?? <i>tidak terbaca</i>}</td>
+                <td className="mono">{ln.hari ?? <i>tidak terbaca</i>}</td>
+                <td className="mono">{ln.cbg ?? <i>tidak terbaca</i>}</td>
                 <td className="mono num">
-                  {ln.biaya_idr === null ? <i>unreadable</i> : rp(ln.biaya_idr)}
+                  {ln.biaya_idr === null ? <i>tidak terbaca</i> : rp(ln.biaya_idr)}
                 </td>
                 <td className={'mono num cf b-' + band(ln.confidence)}>
                   {ln.confidence.toFixed(2)}
@@ -307,7 +301,7 @@ function Itemised({ data }: { data: IntakePayload }) {
       </div>
       {data.lines.length > 12 && (
         <button className="open-btn" style={{ margin: 12 }} onClick={() => setAll(!all)}>
-          {all ? 'Show top 12' : `Show all ${data.lines.length} rows`}
+          {all ? 'Tampilkan 12 teratas' : `Tampilkan semua ${data.lines.length} baris`}
         </button>
       )}
     </div>

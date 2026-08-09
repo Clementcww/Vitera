@@ -22,12 +22,13 @@ export function AdvisoryBanner({ payload }: { payload: Payload }) {
     <details className="banner b-adv" open>
       <summary>
         <span className="mark">~</span>
-        Advisory mode: deterministic rules only
-        <span className="more">details</span>
+        Mode advisory: hanya aturan deterministik
+        <span className="more">rincian</span>
       </summary>
       <div className="detail">
-        The model layer was unavailable and the pipeline ran without it. Classes{' '}
-        <b>{unchecked.join(', ')} went unchecked</b> on this run. A clean queue does not mean a clean claim.
+        Lapisan model tidak tersedia; pipeline tetap berjalan. Kelas{' '}
+        <b>{unchecked.join(', ')} tidak diperiksa</b> pada proses ini. Antrean
+        bersih tidak berarti klaim bersih.
         {payload.generated.model_unavailable && (
           <div className="why-mono">{payload.generated.model_unavailable}</div>
         )}
@@ -42,14 +43,14 @@ export function DroppedSpanBanner({ dropped }: { dropped: number }) {
     <details className="banner b-stale">
       <summary>
         <span className="mark">!</span>
-        {dropped} findings dropped: the quote did not match the record
-        <span className="more">details</span>
+        {dropped} temuan dibuang: kutipan tidak cocok dengan rekam medis
+        <span className="more">rincian</span>
       </summary>
       <div className="detail">
-        Every finding must point at a verbatim quote in the document it cites
+        Setiap temuan harus menunjuk kutipan verbatim pada dokumen yang dirujuk
         (aturan arsitektur 6). Pemeriksaan diulang di sisi klien terhadap teks
-        before it is shown. Anything that cannot is dropped rather than shown
-        with the quote loosened until it fits.
+        yang akan ditampilkan; yang gagal dibuang sebelum tampil, bukan
+        ditampilkan dengan kutipan yang dilonggarkan.
       </div>
     </details>
   )

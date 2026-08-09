@@ -64,13 +64,13 @@ export default function App() {
   if (error) {
     return (
       <div className="fatal">
-        <h1>Could not load the data</h1>
+        <h1>Data tidak dapat dimuat</h1>
         <p className="prose">{error}</p>
         <pre>make ui-data</pre>
       </div>
     )
   }
-  if (!state) return <div className="loading">loading…</div>
+  if (!state) return <div className="loading">memuat…</div>
 
   const { payload, droppedFlags } = state
   const ep = payload.episodes.find((e) => e.episode_id === openCase) ?? null
@@ -112,7 +112,7 @@ export default function App() {
               className={pane === 'queue' ? 'on' : ''}
               onClick={() => setPane('queue')}
             >
-              Queue
+              Antrean
             </button>
             <button
               className={pane === 'dash' ? 'on' : ''}
@@ -121,7 +121,7 @@ export default function App() {
                 setOpenCase(null)
               }}
             >
-              Summary
+              Ringkasan
             </button>
             {intake && (
               <button
@@ -131,7 +131,7 @@ export default function App() {
                   setOpenCase(null)
                 }}
               >
-                Scanned form
+                Berkas pindaian
               </button>
             )}
           </div>
@@ -140,7 +140,7 @@ export default function App() {
         {mode === 'work' && (
           <div className="hpill statpill">
             <span className="led" />
-            {payload.episodes.length} episodes · seed{' '}
+            {payload.episodes.length} episode · seed{' '}
             <b className="mono">{payload.generated.seed}</b>
           </div>
         )}
@@ -151,11 +151,11 @@ export default function App() {
         >
           {mode === 'hero' ? (
             <>
-              Open the queue <span aria-hidden="true">→</span>
+              Buka antrean <span aria-hidden="true">→</span>
             </>
           ) : (
             <>
-              <span aria-hidden="true">←</span> Home
+              <span aria-hidden="true">←</span> Beranda
             </>
           )}
         </button>
@@ -171,9 +171,9 @@ export default function App() {
         >
           <div className="teaser">
             <h2>
-              This morning&rsquo;s
+              Antrean
               <br />
-              queue
+              pagi
             </h2>
             <div className="rings" aria-hidden="true">
               <i />
@@ -185,7 +185,7 @@ export default function App() {
               <span className="rdot" style={{ background: 'var(--obtain)' }} />
               <span className="rdot" style={{ background: 'var(--recode)' }} />
               <span className="chip outline">
-                {payload.episodes.reduce((n, e) => n + e.flags.length, 0)} findings
+                {payload.episodes.reduce((n, e) => n + e.flags.length, 0)} temuan
               </span>
             </div>
           </div>

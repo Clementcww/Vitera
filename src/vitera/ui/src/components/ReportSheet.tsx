@@ -1,7 +1,6 @@
 import type { IntakePayload } from '../intake'
-import { SEVERITY_ID, gateText } from '../intake'
-import { DEFECT_ID, REMEDY, rp } from '../format'
-import type { Remedy } from '../types'
+import { SEVERITY_ID } from '../intake'
+import { rp } from '../format'
 
 /* The generated report: what the check found, on one sheet a human signs.
  *
@@ -14,7 +13,7 @@ import type { Remedy } from '../types'
  * nothing has been sent to BPJS. A report that could be mistaken for a
  * submission would defeat the point of having a human commit.
  *
- * Rule 7 governs the numbers. `Claimed`, `After review` and the conditional
+ * Rule 7 governs the numbers. `Diajukan`, `Draf perbaikan` and the conditional
  * line are three grouper figures carried through the export untouched. The
  * conditional amount — what would become claimable only if a DPJP documents
  * care the record merely suggests — is printed apart from the total and is
@@ -26,7 +25,7 @@ import type { Remedy } from '../types'
  */
 
 const today = () =>
-  new Date().toLocaleDateString('en-GB', {
+  new Date().toLocaleDateString('id-ID', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
@@ -50,109 +49,106 @@ export function ReportSheet({
   const changed = c.corrections.filter((x) => (x.delta_idr ?? 0) !== 0)
 
   return (
-    <div className="reportsheet" role="dialog" aria-label="Internal review report">
+    <div className="reportsheet" role="dialog" aria-label="Laporan pemeriksaan">
       <div className="rtoolbar">
-        <b>Internal review report</b>
+        <b>Laporan pemeriksaan internal</b>
         <span className="spacer" />
         <button className="act" onClick={onClose}>
-          Close
+          Tutup
         </button>
         <button className="act primary" onClick={() => window.print()}>
-          Print / save as PDF
+          Cetak / simpan PDF
         </button>
       </div>
 
       <article className="paper">
-        {/* English, unlike the PDF `make intake` prints. That one imitates
-            an Indonesian regulatory form and stays in Bahasa; this is the
-            workbench's own document and follows the workbench. */}
         <div className="stamp" aria-hidden="true">
-          DRAFT
+          DRAF
         </div>
 
         <header className="rhd">
           <div>
-            <h1>Internal Review of the Claim File</h1>
+            <h1>Laporan Pemeriksaan Internal Berkas Klaim</h1>
             <p className="rsub">
-              {f.nama_ppk} · PPK code {f.kode_ppk} · {f.bulan_pelayanan} ·{' '}
+              {f.nama_ppk} · Kode PPK {f.kode_ppk} · {f.bulan_pelayanan} ·{' '}
               {f.jenis_pelayanan}
             </p>
           </div>
           <div className="rdate">
-            <span>Printed</span>
+            <span>Dicetak</span>
             <b>{today()}</b>
           </div>
         </header>
 
         <p className="rnote">
-          This is a <b>draft</b>. Nothing here has been sent to BPJS and no
-          change has been written to the claim of record. It takes effect only
-          once the coder and the internal verifier have signed it. Every figure
-          in this report is synthetic.
+          Dokumen ini adalah <b>draf</b>. Belum ada satu pun bagian dari berkas
+          ini yang dikirim ke BPJS, dan tidak ada perubahan yang ditulis ke
+          klaim resmi. Draf berlaku hanya setelah ditandatangani koder dan
+          verifikator internal. Seluruh data pada laporan ini sintetis.
         </p>
 
         <section>
-          <h2>1. Value summary</h2>
+          <h2>1. Ringkasan nilai</h2>
           <table className="sum">
             <tbody>
               <tr>
-                <td>Claimed on the form</td>
+                <td>Diajukan pada formulir</td>
                 <td className="num mono">{rp(c.total_before_idr)}</td>
               </tr>
               <tr>
-                <td>After review (draft)</td>
+                <td>Setelah pemeriksaan (draf)</td>
                 <td className="num mono">{rp(c.total_after_idr)}</td>
               </tr>
               <tr className="delta">
-                <td>Difference</td>
+                <td>Selisih</td>
                 <td className="num mono">
-                  {delta < 0 ? 'down ' : 'up '}
+                  {delta < 0 ? 'turun ' : 'naik '}
                   {rp(Math.abs(delta))}
                 </td>
               </tr>
             </tbody>
           </table>
           <p className="cond">
-A further <b className="mono">{rp(conditional)}</b> could be claimed
-            if the doctor documents the comorbidities already visible in the
-            notes. This conditional figure is <b>not</b> included in the total
-            above and must not be claimed before that documentation exists.
+            Berpotensi <b className="mono">{rp(conditional)}</b> lebih tinggi
+            bila DPJP melengkapi dokumentasi komorbiditas yang sudah terlihat di
+            catatan. Angka bersyarat ini <b>tidak</b> dimasukkan ke jumlah di
+            atas dan tidak boleh diajukan sebelum dokumentasinya ada.
           </p>
           <p className="src">
-            Every rupiah figure is computed by the INA-CBG grouper. The model
-            never produces a monetary figure.
-            {c.advisory && ' This review ran in advisory mode.'}
+            Seluruh angka rupiah dihitung grouper INA-CBG. Model tidak pernah
+            menghasilkan angka uang.
+            {c.advisory && ' Pemeriksaan ini berjalan dalam mode advisory.'}
           </p>
         </section>
 
         <section>
-          <h2>2. Where the file came from</h2>
+          <h2>2. Asal berkas</h2>
           <table className="kvtab">
             <tbody>
               <tr>
-                <td>Source</td>
+                <td>Sumber</td>
                 <td>
-                  Scanned sheets, read by {gate.engine}, {gate.pages} pages
+                  Lembar pindaian, dibaca {gate.engine}, {gate.pages} halaman
                 </td>
               </tr>
               <tr>
-                <td>Validation gate</td>
-                <td>{gate.passed ? 'Passed' : 'Held'}</td>
+                <td>Gerbang validasi</td>
+                <td>{gate.passed ? 'Lolos' : 'Ditahan'}</td>
               </tr>
               <tr>
-                <td>Itemised rows</td>
+                <td>Baris rincian</td>
                 <td>
-                  {gate.rows} rows, {Math.round(gate.rows_complete_share * 100)}%
-                  read in full, {gate.matched_episodes} matched the
-                  hospital&rsquo;s own record
+                  {gate.rows} baris, {Math.round(gate.rows_complete_share * 100)}%
+                  terbaca lengkap, {gate.matched_episodes} cocok dengan rekam
+                  rumah sakit
                 </td>
               </tr>
               <tr>
-                <td>Form fields</td>
+                <td>Kolom formulir</td>
                 <td>
-                  {gate.fields_read} read
+                  {gate.fields_read} terbaca
                   {gate.fields_missing.length
-                    ? `, failed: ${gate.fields_missing.join(', ')}`
+                    ? `, gagal: ${gate.fields_missing.join(', ')}`
                     : ''}
                 </td>
               </tr>
@@ -162,17 +158,17 @@ A further <b className="mono">{rp(conditional)}</b> could be claimed
 
         {changed.length > 0 && (
           <section>
-            <h2>3. Episodes whose value changed</h2>
+            <h2>3. Episode yang berubah nilainya</h2>
             <table className="rtab">
               <thead>
                 <tr>
                   <th>No. SEP</th>
                   <th>Episode</th>
-                  <th>INA-CBG claimed</th>
-                  <th>INA-CBG draft</th>
-                  <th className="num">Claimed</th>
-                  <th className="num">Draft</th>
-                  <th className="num">Difference</th>
+                  <th>INA-CBG diajukan</th>
+                  <th>INA-CBG draf</th>
+                  <th className="num">Diajukan</th>
+                  <th className="num">Draf</th>
+                  <th className="num">Selisih</th>
                 </tr>
               </thead>
               <tbody>
@@ -199,26 +195,19 @@ A further <b className="mono">{rp(conditional)}</b> could be claimed
         )}
 
         <section>
-          <h2>4. Findings, with the record quoted</h2>
+          <h2>4. Temuan dan kutipan rekam medis</h2>
           <p className="lead">
-            {c.findings_count} findings across {c.episodes} episodes. Each one
-            quotes the record word for word. A finding that could not quote
-            the record was dropped by the system before it reached this page.
+            {c.findings_count} temuan pada {c.episodes} episode. Setiap temuan
+            mengutip rekam medis kata demi kata; temuan yang tidak dapat
+            mengutip sudah dibuang oleh sistem sebelum sampai ke sini.
           </p>
           <ol className="finds">
             {c.findings.map((x, i) => (
               <li key={i}>
-                {/* Label and remedy come from the UI's own wording, keyed on
-                    the machine class, not from the Indonesian strings the
-                    exporter writes for the printed FPK. The QUOTE below is
-                    never touched: it is the record verbatim, and translating
-                    it would break rule 6 outright. */}
                 <div className="fh">
-                  <b>{DEFECT_ID[x.defect_class] ?? x.label}</b>
+                  <b>{x.label}</b>
                   <span className={'rtag r-' + x.remedy_code.toLowerCase()}>
-                    {REMEDY[x.remedy_code as Remedy]
-                      ? `${REMEDY[x.remedy_code as Remedy].label} — ${REMEDY[x.remedy_code as Remedy].who}`
-                      : `${x.remedy} — ${x.actor}`}
+                    {x.remedy} — {x.actor}
                   </span>
                   <span className="fid mono">{x.episode_id}</span>
                 </div>
@@ -230,10 +219,10 @@ A further <b className="mono">{rp(conditional)}</b> could be claimed
 
         {unread.length > 0 && (
           <section>
-            <h2>5. Values a person must re-read</h2>
+            <h2>5. Nilai yang perlu dibaca ulang manusia</h2>
             <p className="lead">
-              The machine was not confident of these values. None became a
-              claim finding; each waits for someone to check the original sheet.
+              Berikut nilai yang tidak terbaca yakin oleh mesin. Tidak satu pun
+              dijadikan temuan klaim; semuanya menunggu pemeriksaan lembar asli.
             </p>
             <ul className="reads">
               {unread.map((x, i) => (
@@ -241,7 +230,7 @@ A further <b className="mono">{rp(conditional)}</b> could be claimed
                   <span className={'sev ' + SEVERITY_ID[x.severity].css}>
                     {SEVERITY_ID[x.severity].label}
                   </span>
-                  {gateText(x, data)}
+                  {x.detail}
                 </li>
               ))}
             </ul>
@@ -249,25 +238,26 @@ A further <b className="mono">{rp(conditional)}</b> could be claimed
         )}
 
         <section className="signs">
-          <h2>Approval</h2>
+          <h2>Persetujuan</h2>
           <p className="lead">
-            This draft has no effect and is not submitted until both columns
-            below are signed.
+            Draf ini tidak berlaku dan tidak diajukan sebelum kedua kolom di
+            bawah ditandatangani.
           </p>
           <div className="signrow">
             <div>
-              <span>Coder</span>
+              <span>Koder</span>
               <div className="line" />
             </div>
             <div>
-              <span>Internal verifier</span>
+              <span>Verifikator internal</span>
               <div className="line" />
             </div>
           </div>
         </section>
 
         <footer className="rfoot">
-          Vitera · internal review draft · not sent to BPJS · synthetic data
+          Vitera · draf pemeriksaan internal · tidak dikirim ke BPJS · data
+          sintetis
         </footer>
       </article>
     </div>
