@@ -517,3 +517,169 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 }
 
 @media (max-width: 900px) { .keybody { width: min(88vw, 380px); } }
+
+/* ---- scanned FPK view -------------------------------------------------- */
+
+.gatebar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 12px 16px; border-radius: var(--r); margin-bottom: 16px;
+  border: 1px solid var(--line); background: var(--surface); font-size: 12.5px;
+}
+.gatebar.ok { border-color: #cfd8c2; background: var(--recode-bg); }
+.gatebar.held { border-color: #eec8b8; background: var(--query-bg); }
+.gatebar .gdot { width: 9px; height: 9px; border-radius: 50%; background: var(--recode); }
+.gatebar.held .gdot { background: var(--orange); }
+.gatebar .gsub { color: var(--ink-2); }
+.gatebar .gbtn { margin-left: auto; }
+
+.scanwrap { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 1000px) { .scanwrap { grid-template-columns: 1fr; } }
+
+.scanpane { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.scanbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.scanbar .spacer { flex: 1; }
+
+/* The page. Boxes are positioned in percentages of this element, which is why
+ * it carries the source image's aspect ratio — the OCR's coordinates are
+ * normalised to the page, so the container must be too or every box drifts. */
+.sheet { position: relative; width: 100%; background: #fff; }
+.sheet img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.ob { position: absolute; border-radius: 2px; pointer-events: auto; cursor: default; }
+.ob.b-ok   { background: rgba(120, 140, 93, .16);  outline: 1px solid rgba(94, 112, 71, .55); }
+.ob.b-soft { background: rgba(242, 201, 76, .20);  outline: 1px solid rgba(200, 160, 40, .6); }
+.ob.b-weak { background: rgba(217, 119, 87, .20);  outline: 1px solid rgba(217, 119, 87, .75); }
+.ob.focus  { background: rgba(217, 119, 87, .30); outline: 2px solid var(--orange); }
+.scannote { margin: 0; padding: 11px 14px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--muted); line-height: 1.55; }
+
+.c-ok { color: #5e7047; } .c-soft { color: #a8850f; } .c-weak { color: #b0563a; }
+
+.fieldlist, .gatelist { list-style: none; margin: 0; padding: 0; }
+.fieldlist li {
+  display: grid; grid-template-columns: 118px minmax(0, 1fr) 42px; gap: 10px;
+  align-items: baseline; padding: 8px 14px; font-size: 12.5px;
+}
+.fieldlist li + li { border-top: 1px solid var(--line); }
+.fieldlist li.on { background: var(--query-bg); }
+.fieldlist li.gone .fv { color: var(--faint); font-style: italic; }
+.fieldlist .fn { color: var(--muted); font-size: 11.5px; }
+.fieldlist .fv { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf { font-family: var(--mono); font-size: 11px; text-align: right; border-radius: 4px; padding: 1px 4px; }
+.cf.b-ok   { background: var(--recode-bg); color: #4c5c38; }
+.cf.b-soft { background: #fbf3d8; color: #8a6d0b; }
+.cf.b-weak { background: var(--query-bg); color: #8f4526; }
+
+.gatelist li { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 10px; padding: 8px 14px; font-size: 12px; }
+.gatelist li + li { border-top: 1px solid var(--line); }
+.gatelist .gd { color: var(--ink-2); line-height: 1.5; }
+.gatelist .gmore { color: var(--faint); display: block; }
+.sev { font-size: 10px; border-radius: 4px; padding: 2px 5px; text-align: center; height: fit-content; white-space: nowrap; }
+.sev-block { background: var(--query-bg); color: #8f4526; }
+.sev-adv   { background: #fbf3d8; color: #8a6d0b; }
+.sev-read  { background: var(--obtain-bg); color: #2f4f6d; }
+
+.tablewrap { overflow-x: auto; }
+.rtab { width: 100%; border-collapse: collapse; font-size: 12px; }
+.rtab th { text-align: left; font-weight: 500; color: var(--muted); font-size: 11px; padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.rtab td { padding: 7px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.rtab .num, .rtab th.num { text-align: right; }
+.rtab tr.partial td { background: #fdfaf7; }
+.rtab td i { color: var(--faint); font-size: 11px; }
+.rtab .dim { color: var(--faint); }
+
+/* ---- generated report --------------------------------------------------- */
+
+.reportsheet {
+  position: fixed; inset: 0; z-index: 90; overflow: auto;
+  background: rgba(20, 20, 19, .45); padding: 64px 16px 40px;
+}
+.rtoolbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 2;
+  display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+  background: var(--surface); border-bottom: 1px solid var(--line); font-size: 13px;
+}
+.rtoolbar .spacer { flex: 1; }
+
+.paper {
+  position: relative; max-width: 860px; margin: 0 auto; background: #fff;
+  border-radius: var(--r); padding: 44px 52px 40px;
+  box-shadow: 0 24px 60px rgba(20, 20, 19, .28);
+}
+/* Diagonal, centred, behind the text — the same mark the printed PDF carries.
+ * Corner placement collided with the print date, and a stamp a reader can miss
+ * is not doing the job rule 1 gives it. */
+.paper .stamp {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  pointer-events: none; z-index: 0;
+  font-size: clamp(72px, 14vw, 150px); font-weight: 600; letter-spacing: .12em;
+  color: rgba(20, 20, 19, .085); transform: rotate(-24deg);
+}
+.paper > *:not(.stamp) { position: relative; z-index: 1; }
+.rhd { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; border-bottom: 2px solid var(--ink); padding-bottom: 14px; }
+.rhd h1 { font-size: 19px; font-weight: 600; letter-spacing: -.02em; margin: 0; }
+.rsub { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+.rdate { text-align: right; font-size: 11.5px; color: var(--muted); display: grid; gap: 2px; }
+
+.rnote {
+  margin: 18px 0 26px; padding: 12px 16px; border-radius: var(--r);
+  background: var(--query-bg); border: 1px solid #eec8b8; color: #7c3f24;
+  font-family: var(--serif); font-size: 12.5px; line-height: 1.6;
+}
+.paper section { margin-bottom: 28px; }
+.paper h2 { font-size: 13px; font-weight: 600; margin: 0 0 10px; }
+.paper .lead { font-family: var(--serif); font-size: 12.5px; color: var(--ink-2); margin: 0 0 12px; line-height: 1.6; }
+
+.sum { width: 100%; border-collapse: collapse; font-size: 13px; }
+.sum td { padding: 9px 0; border-bottom: 1px solid var(--line); }
+.sum td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.sum tr.delta td { font-weight: 600; border-bottom: 2px solid var(--ink); }
+.cond { margin: 14px 0 0; padding: 11px 14px; border-radius: var(--r); background: var(--obtain-bg); color: #2f4f6d; font-size: 12.5px; line-height: 1.6; font-family: var(--serif); }
+.paper .src { margin: 10px 0 0; font-size: 11px; color: var(--faint); }
+
+.kvtab { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.kvtab td { padding: 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.kvtab td:first-child { width: 170px; color: var(--muted); }
+
+.finds { margin: 0; padding-left: 20px; display: grid; gap: 14px; }
+.finds li { font-size: 12.5px; }
+.fh { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.fid { font-size: 10.5px; color: var(--faint); margin-left: auto; }
+.rtag { font-size: 10.5px; border-radius: 4px; padding: 2px 7px; }
+.rtag.r-query  { background: var(--query-bg);  color: #8f4526; }
+.rtag.r-obtain { background: var(--obtain-bg); color: #2f4f6d; }
+.rtag.r-recode { background: var(--recode-bg); color: #4c5c38; }
+.finds blockquote {
+  margin: 6px 0 0; padding-left: 12px; border-left: 2px solid var(--line-2);
+  font-family: var(--serif); font-size: 12.5px; color: var(--ink-2); line-height: 1.6;
+}
+
+.reads { margin: 0; padding-left: 18px; display: grid; gap: 7px; }
+.reads li { font-size: 12px; color: var(--ink-2); line-height: 1.55; }
+.reads .sev { display: inline-block; margin-right: 8px; }
+
+.signrow { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 22px; }
+.signrow span { font-size: 11.5px; color: var(--muted); }
+.signrow .line { margin-top: 46px; border-bottom: 1px solid var(--ink); }
+.rfoot { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 10.5px; color: var(--faint); text-align: center; }
+
+/* Print: the report is the page, everything else is chrome.
+ *
+ * Hiding siblings rather than opening a second window keeps one copy of the
+ * styles and dodges popup blockers entirely. */
+@media print {
+  .app { padding: 0 !important; }
+  .app > *:not(.reportsheet) { display: none !important; }
+  .reportsheet { position: static; background: none; padding: 0; overflow: visible; }
+  .rtoolbar { display: none !important; }
+  .paper { box-shadow: none; border-radius: 0; max-width: none; padding: 0; }
+  .paper section, .finds li { break-inside: avoid; }
+  .signs { break-inside: avoid; }
+}
+
+/* ---- pane switcher ------------------------------------------------------ */
+
+.panepill { padding: 4px; gap: 2px; }
+.panepill button {
+  height: 34px; padding: 0 14px; border-radius: 999px;
+  font-size: 12.5px; color: var(--muted); white-space: nowrap;
+}
+.panepill button.on { background: var(--light); color: var(--ink); font-weight: 500; }

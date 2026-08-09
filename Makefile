@@ -17,7 +17,7 @@ export PYTHONPATH := src
 .PHONY: help setup data train baselines detection eval arm-a demo demo-offline sweep \
         sweep-demo leakage figures test lint clean freeze-check \
         fpk intake intake-live intake-eval \
-        ui ui-data ui-build ui-dev ui-install
+        ui ui-data ui-intake ui-build ui-dev ui-install
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -85,6 +85,9 @@ intake-eval:  ## Measured OCR accuracy per scan profile     [criterion 8]
 
 ui-data:  ## Export real pipeline output for the workbench     [bucket 12]
 	$(PY) -m vitera.api.export --cohort 36 --seed $(SEED)
+
+ui-intake:  ## Export the scanned-FPK view for the workbench    [bucket 14]
+	$(PY) -m vitera.intake.export_ui
 
 ui-install:  ## Install the workbench toolchain (network, once)
 	npm ci --prefix src/vitera/ui

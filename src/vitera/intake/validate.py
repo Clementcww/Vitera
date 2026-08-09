@@ -278,7 +278,7 @@ def reconcile(
             failures.append(
                 IntakeFailure(
                     "sep_not_found",
-                    f"SEP {ln.sep_number} tidak ada pada rekam episode rumah sakit",
+                    f"{ln.sep_number} tidak ada pada rekam episode rumah sakit",
                     "blocking",
                     ln.sep_number,
                 )
@@ -291,7 +291,7 @@ def reconcile(
             failures.append(
                 IntakeFailure(
                     "date_unreadable",
-                    f"SEP {ln.sep_number}: tanggal masuk tidak terbaca, "
+                    f"{ln.sep_number}: tanggal masuk tidak terbaca, "
                     "tidak dapat dicocokkan",
                     "needs_human_read",
                     ln.sep_number,
@@ -301,7 +301,7 @@ def reconcile(
             failures.append(
                 IntakeFailure(
                     "admission_date_mismatch",
-                    f"SEP {ln.sep_number}: tanggal masuk pada FPK "
+                    f"{ln.sep_number}: tanggal masuk pada FPK "
                     f"{ln.tanggal_masuk}, pada klaim "
                     f"{claim.admission_date_claimed} (kandidat D8)",
                     "advisory",
@@ -314,7 +314,7 @@ def reconcile(
             failures.append(
                 IntakeFailure(
                     "kartu_unreadable",
-                    f"SEP {ln.sep_number}: nomor kartu tidak terbaca",
+                    f"{ln.sep_number}: nomor kartu tidak terbaca",
                     "needs_human_read",
                     ln.sep_number,
                 )
@@ -328,7 +328,7 @@ def reconcile(
             failures.append(
                 IntakeFailure(
                     "kartu_mismatch",
-                    f"SEP {ln.sep_number}: nomor kartu pada FPK {ln.no_kartu}, "
+                    f"{ln.sep_number}: nomor kartu pada FPK {ln.no_kartu}, "
                     f"pada rekam {expected_kartu}"
                     + (
                         " — beda satu digit, periksa hasil pindaian sebelum "
@@ -348,7 +348,7 @@ def reconcile(
             failures.append(
                 IntakeFailure(
                     "tariff_unreadable",
-                    f"SEP {ln.sep_number}: kode CBG atau biaya tidak terbaca, "
+                    f"{ln.sep_number}: kode CBG atau biaya tidak terbaca, "
                     "tarif tidak dapat direkonsiliasi",
                     "needs_human_read",
                     ln.sep_number,
@@ -358,7 +358,7 @@ def reconcile(
             failures.append(
                 IntakeFailure(
                     "ungroupable",
-                    f"SEP {ln.sep_number}: {group.ungroupable_reason}. "
+                    f"{ln.sep_number}: {group.ungroupable_reason}. "
                     "Tarif tidak diperkirakan.",
                     "advisory",
                     ln.sep_number,
@@ -371,7 +371,7 @@ def reconcile(
             failures.append(
                 IntakeFailure(
                     "tariff_mismatch",
-                    f"SEP {ln.sep_number}: biaya pada FPK Rp {ln.biaya_idr:,}, "
+                    f"{ln.sep_number}: biaya pada FPK Rp {ln.biaya_idr:,}, "
                     f"grouper Rp {group.tariff_idr:,} untuk {group.cbg_code}",
                     "advisory",
                     ln.sep_number,

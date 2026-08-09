@@ -39,6 +39,9 @@ const GLOSSARY: Record<string, string> = {
     'Model AI kecil (dijalankan di rumah sakit, bukan di cloud) yang menilai satu hal saja: apakah catatan medis mendukung kode yang ditulis.',
   verbatim:
     'Kutipan kata demi kata dari dokumen asli. Temuan tanpa kutipan asli otomatis dibuang oleh sistem.',
+  fpk: 'Formulir Pengajuan Klaim, lembar sampul kertas yang menyertai satu berkas klaim rumah sakit ke BPJS. Berisi jumlah kasus, jumlah hari rawat dan total biaya yang diajukan.',
+  ocr: 'Pembacaan tulisan pada gambar oleh mesin. Di sini dipakai untuk membaca formulir kertas yang dipindai, dan setiap nilai yang dibacanya disertai tingkat keyakinan.',
+  ritl: 'Rawat Inap Tingkat Lanjutan, yaitu rawat inap di rumah sakit. Berbeda dari RITP yang berlaku di klinik atau puskesmas, dan hanya RITL yang ditangani versi ini.',
 }
 
 export function Term({ k, children }: { k: string; children: React.ReactNode }) {

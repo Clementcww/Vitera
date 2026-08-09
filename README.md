@@ -43,6 +43,7 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 | `make intake` | Read a scanned FPK back in and write the corrected DRAF |
 | `make intake-eval` | Measured OCR accuracy per scan profile |
 | `make ui-data` | Export real pipeline output for the workbench |
+| `make ui-intake` | Export the scanned-FPK view for the workbench |
 | `make ui-install` | Install the workbench toolchain (network, once) |
 | `make ui-build` | Build the workbench bundle |
 | `make ui` | Serve the workbench on :5188 — static, offline |
@@ -99,6 +100,8 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | P2 | Paper round trip: scan in, corrected DRAF out | `make intake` | 14 | **done** — 47 episodes, gate passes, `results/intake/fpk_draf_perbaikan.pdf` |
 | U1 | Coder workbench: queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |
 | U2 | Detection surface (episode × day × recoverable value) | `make ui-data && make ui` | 12 | **done** (landing card) |
+| U3 | Scanned-FPK view: OCR boxes, confidences, gate verdict | `make ui-intake && make ui` | 14 | **done** |
+| U4 | Generated report: draft, citations, print to PDF | `make ui-intake && make ui` | 14 | **done** |
 
 ## Layout
 
@@ -129,6 +132,19 @@ The 3D layer is fenced three ways: lazy chunk, WebGL capability probe, error
 boundary. The canvas only mounts once its card is open, so a closed landing
 never touches WebGL, and losing the 3D layer costs an animation rather than a
 screen.
+
+Two panes sit behind the header switch. **Antrean** is the koder's day.
+**Berkas pindaian** is the paper the batch arrived on: the scanned FPK with
+every recognised line drawn back onto it as a box, coloured by the engine's own
+confidence, next to the extracted values and the validation gate's verdict.
+Showing every observation — not only the ones a field used — is the point; a
+view that drew only the successful reads would hide the half a koder needs.
+
+**Buat laporan** renders the corrected draft in the browser from the same
+export `make intake` prints as a PDF, and prints through the page rather than a
+popup. It is stamped DRAF, its signature block is empty, and the amount that
+would only become claimable if a DPJP documents care the record suggests is
+printed apart from the total and never added into it.
 
 `docs/ui/workbench-mockup.html` is the no-build-step fallback and the design
 spec the app implements.

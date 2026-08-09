@@ -7,7 +7,11 @@ import { CaseView } from './components/CaseView'
 import { StagingTray } from './components/StagingTray'
 import { HeroCards } from './components/Hero'
 import { KeyPanel } from './components/KeyPanel'
+import { ScanView } from './components/ScanView'
+import { ReportSheet } from './components/ReportSheet'
 import { keyStore } from './llm'
+import type { IntakePayload } from './intake'
+import { loadIntake } from './intake'
 
 /* One page.
  *
@@ -29,16 +33,30 @@ import { keyStore } from './llm'
 
 type Mode = 'hero' | 'work'
 
+/* Which pane the workbench is showing.
+ *
+ * `queue` is the koder's day; `scan` is the paper the batch arrived on. They
+ * are panes rather than routes for the same reason the landing is: the card
+ * that morphed into the workbench stays the same element, and a route change
+ * would throw it away. */
+type Pane = 'queue' | 'scan'
+
 export default function App() {
   const [state, setState] = useState<Loaded | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [mode, setMode] = useState<Mode>('hero')
+  const [pane, setPane] = useState<Pane>('queue')
   const [openCase, setOpenCase] = useState<string | null>(null)
   const [staged, setStaged] = useState<Set<string>>(new Set())
   const [keyTick, setKeyTick] = useState(0)
+  const [intake, setIntake] = useState<IntakePayload | null>(null)
+  const [report, setReport] = useState(false)
 
   useEffect(() => {
     load().then(setState).catch((e) => setError(String(e)))
+    // Optional, and deliberately not awaited with the main payload: a missing
+    // intake export costs one tab, never the workbench.
+    loadIntake().then(setIntake)
   }, [])
 
   if (error) {
@@ -66,6 +84,7 @@ export default function App() {
   const toHero = () => {
     setMode('hero')
     setOpenCase(null)
+    setReport(false)
   }
 
   return (
@@ -83,6 +102,26 @@ export default function App() {
             hasKey={Boolean(keyStore.get()) || keyTick < 0}
             onChange={() => setKeyTick((n) => n + 1)}
           />
+        )}
+
+        {mode === 'work' && intake && (
+          <div className="hpill panepill">
+            <button
+              className={pane === 'queue' ? 'on' : ''}
+              onClick={() => setPane('queue')}
+            >
+              Antrean
+            </button>
+            <button
+              className={pane === 'scan' ? 'on' : ''}
+              onClick={() => {
+                setPane('scan')
+                setOpenCase(null)
+              }}
+            >
+              Berkas pindaian
+            </button>
+          </div>
         )}
 
         {mode === 'work' && (
@@ -142,7 +181,9 @@ export default function App() {
             <AdvisoryBanner payload={payload} />
             <DroppedSpanBanner dropped={droppedFlags} />
             <main>
-              {ep ? (
+              {pane === 'scan' && intake ? (
+                <ScanView data={intake} onReport={() => setReport(true)} />
+              ) : ep ? (
                 <CaseView
                   ep={ep}
                   staged={staged}
@@ -160,6 +201,10 @@ export default function App() {
       </div>
 
       <StagingTray items={[...staged]} onClear={() => setStaged(new Set())} />
+
+      {report && intake && (
+        <ReportSheet data={intake} onClose={() => setReport(false)} />
+      )}
     </div>
   )
 }

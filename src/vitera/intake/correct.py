@@ -108,9 +108,15 @@ class CorrectionRun:
 def _finding(episode_id: str, sep: str, flag: Any) -> dict[str, Any]:
     remedy, actor = REMEDY_ID.get(flag.remedy.name, (flag.remedy.name, "-"))
     return {
+        # `episode_id` is the printed line's heading; `sep` and `episode` are
+        # the same two identifiers unjoined, for the UI export.
         "episode_id": f"{sep} · {episode_id}",
+        "sep": sep,
+        "episode": episode_id,
+        "defect_class": flag.defect_class.name,
         "label": DEFECT_ID.get(flag.defect_class.name, flag.defect_class.label),
         "remedy": remedy,
+        "remedy_code": flag.remedy.name,
         "actor": actor,
         # Rule 6. The span reached the flag verbatim or the pipeline dropped
         # it; printing it is what lets the koder check the finding against the
