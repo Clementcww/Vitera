@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import type { Payload } from '../types'
 import { webglAvailable } from '../three/webgl'
 import { jt } from '../format'
+import { Term } from './Term'
 
 /* The opening frame.
  *
@@ -69,6 +70,7 @@ export function Hero({
   // can support is how many per-day pipeline runs stand behind the queue —
   // one per episode per day of stay.
   const dailyRuns = payload.surface.cells.length
+  const measured = payload.measured
 
   return (
     <section className="hero">
@@ -94,11 +96,31 @@ export function Hero({
           selagi masih ada waktu memperbaikinya.
         </h1>
         <p className="herolede prose">
-          Pipeline berjalan setiap hari selama pasien masih dirawat, menemukan
-          apa yang akan membuat klaim tertunda, dan menyerahkan daftar perbaikan
-          berurutan kepada koder — setiap temuan mengutip rekam medis secara
-          verbatim.
+          Setiap malam, selama pasien masih dirawat, sistem membaca ulang{' '}
+          <Term k="rekam-medis">rekam medis</Term> dan menandai apa yang akan
+          membuat <Term k="klaim">klaim</Term> rumah sakit ke{' '}
+          <Term k="bpjs">BPJS</Term> tertunda — lalu menyerahkan daftar
+          perbaikan kepada <Term k="koder">koder</Term>, selagi masih ada waktu
+          memperbaikinya. Setiap temuan mengutip dokumen aslinya{' '}
+          <Term k="verbatim">kata demi kata</Term>.
         </p>
+
+        <ol className="herosteps">
+          <li>
+            <b>Pasien dirawat.</b> Catatan medis bertambah setiap hari — hasil
+            laboratorium, obat, catatan dokter.
+          </li>
+          <li>
+            <b>Sistem memeriksa setiap malam.</b> Bukti klinis sering muncul
+            berhari-hari sebelum ditulis sebagai diagnosis. Jendela itulah yang
+            diperiksa.
+          </li>
+          <li>
+            <b>Manusia yang memutuskan.</b> Sistem hanya menyiapkan draf;
+            koder dan dokter yang menindaklanjuti. Tidak ada yang dikirim
+            otomatis.
+          </li>
+        </ol>
 
         <div className="herostats">
           <div>
@@ -119,8 +141,19 @@ export function Hero({
           </div>
           <div>
             <b className="mono">{recoverable ? jt(recoverable) : '—'}</b>
-            <span>dapat dipulihkan · grouper</span>
+            <span>
+              dapat dipulihkan · <Term k="grouper">grouper</Term>
+            </span>
           </div>
+          {measured?.lead_time_median_days != null && (
+            <div className="measured" title={measured.source}>
+              <b className="mono">{measured.lead_time_median_days} hari</b>
+              <span>
+                median temuan terdeteksi sebelum pasien pulang — diukur pada{' '}
+                {measured.n_episodes} episode uji
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="heroacts">

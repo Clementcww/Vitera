@@ -43,6 +43,7 @@ from vitera.grouper.grouper import Grouper
 from vitera.rules.engine import RuleContext
 
 DEFAULT_OUT = Path("src/vitera/ui/public/data/demo.json")
+DETECTION_RESULTS = Path("results/detection_curve.json")
 
 # Classes the rules layer alone reaches, measured in bucket 5. Everything else
 # is unchecked when the model layer is down, and the banner has to say so.
@@ -315,7 +316,23 @@ def build(
                 }
             )
 
+    # Headline metric, measured on the FULL held-out split by
+    # experiments/detection_curve.py — never on this demo cohort. Embedded so
+    # the hero can state it with its provenance; absent file, absent block,
+    # and the UI renders nothing rather than a placeholder number.
+    measured = None
+    if DETECTION_RESULTS.exists():
+        d = json.loads(DETECTION_RESULTS.read_text(encoding="utf-8"))
+        measured = {
+            "detection_rate": d["detection_rate"],
+            "lead_time_median_days": d["lead_time_days"].get("median"),
+            "lead_time_share_ge_2_days": d["lead_time_share_ge_2_days"],
+            "n_episodes": d["n_episodes"],
+            "source": "results/detection_curve.json — full held-out split",
+        }
+
     return {
+        "measured": measured,
         "generated": {
             "seed": seed,
             "cohort": len(chosen),

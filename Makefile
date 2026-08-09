@@ -5,7 +5,7 @@ SEED ?= 20260731
 VITERA_LLM_MODE ?= cache
 export VITERA_LLM_MODE
 
-.PHONY: help setup data train baselines eval arm-a demo demo-offline sweep \
+.PHONY: help setup data train baselines detection eval arm-a demo demo-offline sweep \
         sweep-demo leakage figures test lint clean freeze-check \
         ui ui-data ui-build ui-dev ui-install
 
@@ -34,6 +34,9 @@ arm-a:  ## Rules-only baseline (arm A)                        [bucket 5]
 
 baselines:  ## Cross-encoder vs BM25 vs zero-shot LLM, per class  [bucket 8]
 	$(PY) experiments/baselines.py --data data/generated --seed $(SEED)
+
+detection:  ## Detection lead time + rate-by-day + fairness    [criteria 1,3,4]
+	$(PY) experiments/detection_curve.py --data data/generated
 
 eval:  ## Three-arm experiment + per-component baselines     [bucket 10]
 	$(PY) -m experiments.run_arms --data data/generated --seeds 3 --out results/

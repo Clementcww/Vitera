@@ -32,6 +32,7 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 | `make leakage` | Text-only leakage check; prints the number |
 | `make train` | Fine-tune the cross-encoder |
 | `make baselines` | Cross-encoder vs. BM25 vs. zero-shot LLM, per class |
+| `make detection` | Detection lead time, rate-by-day curve, fairness strata |
 | `make arm-a` | Rules-only baseline (arm A) |
 | `make eval` | Three-arm experiment across 3 seeds |
 | `make demo` | End-to-end discharge path, live LLM |
@@ -65,10 +66,10 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | F2 | Calibration curve (bins in `results/cross_encoder.json`) | `make figures` | 8 | data done, plot not started |
 | T4 | Three arms, bootstrap CIs across 3 seeds | `make eval` | 10 | not started |
 | N2 | Clean-claim false positive rate | `make eval` | 10 | not started |
-| F3 | Detection rate by day of stay | `make figures` | 10 | not started |
-| F4 | Detection lead time distribution | `make figures` | 10 | not started |
-| T5 | Fairness by hospital class and region | `make eval` | 10 | not started |
-| N3 | Latency, cost per claim, % zero-LLM episodes | `make demo` | 9 | not started |
+| F3 | Detection rate by day of stay | `make detection` | 10 | **done** (data in `results/detection_curve.json`) |
+| F4 | Detection lead time distribution | `make detection` | 10 | **done** — median 5 days, 86.7% detected |
+| T5 | Fairness by hospital class | `make detection` | 10 | **done** (rules+CE; region pending) |
+| N3 | Latency, % zero-LLM episodes | `make detection` | 9 | **partly** — 17 ms/run rules+CE, zero-LLM 100%; LLM-path cost blocked on provider |
 | T6 | Adversarial set results | `make eval` | 11 | not started |
 | F5 | Sweep: alerts/episode/day and churn | `make sweep-demo` | 13 | not started |
 | U1 | Coder workbench — queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |

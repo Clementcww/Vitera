@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { EpisodeView, Remedy } from '../types'
 import { DEFECT_ID, REMEDY, jt } from '../format'
+import { Term } from './Term'
 
 /* L0 and L1.
  *
@@ -40,9 +41,27 @@ export function QueueView({
     <section className="view">
       <h1>Antrean pagi</h1>
       <p className="lede">
-        Keluaran pipeline atas kohort tersimpan. Urutan mengikuti jendela
-        perbaikan: Query lebih dulu karena tutup saat pasien pulang.
+        Daftar <Term k="klaim">klaim</Term> yang perlu ditindaklanjuti pagi
+        ini, terurut menurut jendela perbaikan — yang butuh dokter selagi
+        pasien masih dirawat naik paling atas.
       </p>
+
+      <details className="help" style={{ margin: '0 0 16px' }}>
+        <summary>Baru pertama kali melihat layar ini?</summary>
+        <div className="detail">
+          Setiap baris adalah tagihan satu pasien ke{' '}
+          <Term k="bpjs">BPJS</Term>. Warna menunjukkan siapa yang harus
+          bertindak: <b style={{ color: 'var(--query)' }}>oranye</b> — dokter (
+          <Term k="dpjp">DPJP</Term>), selagi pasien masih di ruangan;{' '}
+          <b style={{ color: 'var(--obtain)' }}>biru</b> — petugas berkas,
+          melengkapi dokumen; <b style={{ color: 'var(--recode)' }}>hijau</b> —{' '}
+          <Term k="koder">koder</Term>, memperbaiki kode. Kolom rupiah adalah
+          selisih tarif yang bisa diselamatkan bila catatan dilengkapi —
+          dihitung <Term k="grouper">grouper</Term>, bukan model AI. Klik baris
+          untuk melihat temuannya; setiap temuan mengutip dokumen aslinya{' '}
+          <Term k="verbatim">kata demi kata</Term>.
+        </div>
+      </details>
 
       <div className="filters">
         {(['ALL', 'QUERY', 'OBTAIN', 'RECODE'] as Filter[]).map((f) => (

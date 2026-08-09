@@ -1,0 +1,197 @@
+{
+  "n_episodes": 1332,
+  "pipeline_runs": 10626,
+  "truth_pairs": 547,
+  "detected_at_discharge": 474,
+  "detection_rate": 0.8665,
+  "lead_time_days": {
+    "n": 474,
+    "mean": 5.56,
+    "median": 5.0,
+    "p25": 3.0,
+    "p75": 8.0
+  },
+  "lead_time_share_ge_2_days": 0.8608,
+  "undercoding_query_lead_time_days": {
+    "n": 115,
+    "mean": 5.03,
+    "median": 5.0,
+    "p25": 3.0,
+    "p75": 7.0
+  },
+  "detection_rate_by_share_of_stay": [
+    {
+      "share_of_stay": 0.0,
+      "detection_rate": 0.6392
+    },
+    {
+      "share_of_stay": 0.1,
+      "detection_rate": 0.6477
+    },
+    {
+      "share_of_stay": 0.2,
+      "detection_rate": 0.7046
+    },
+    {
+      "share_of_stay": 0.3,
+      "detection_rate": 0.7468
+    },
+    {
+      "share_of_stay": 0.4,
+      "detection_rate": 0.7932
+    },
+    {
+      "share_of_stay": 0.5,
+      "detection_rate": 0.8291
+    },
+    {
+      "share_of_stay": 0.6,
+      "detection_rate": 0.8418
+    },
+    {
+      "share_of_stay": 0.7,
+      "detection_rate": 0.8565
+    },
+    {
+      "share_of_stay": 0.8,
+      "detection_rate": 0.8671
+    },
+    {
+      "share_of_stay": 0.9,
+      "detection_rate": 0.8734
+    },
+    {
+      "share_of_stay": 1.0,
+      "detection_rate": 1.0
+    }
+  ],
+  "lead_time_by_class": {
+    "D1": {
+      "n": 53,
+      "mean": 0.0,
+      "median": 0.0,
+      "p25": 0.0,
+      "p75": 0.0
+    },
+    "D2": {
+      "n": 52,
+      "mean": 5.15,
+      "median": 5.0,
+      "p25": 3.0,
+      "p75": 6.25
+    },
+    "D3": {
+      "n": 121,
+      "mean": 7.02,
+      "median": 6.0,
+      "p25": 5.0,
+      "p75": 8.0
+    },
+    "D4": {
+      "n": 101,
+      "mean": 5.31,
+      "median": 5.0,
+      "p25": 3.0,
+      "p75": 7.0
+    },
+    "D5": {
+      "n": 13,
+      "mean": 7.38,
+      "median": 7.0,
+      "p25": 6.0,
+      "p75": 9.0
+    },
+    "D6": {
+      "n": 7,
+      "mean": 0.0,
+      "median": 0.0,
+      "p25": 0.0,
+      "p75": 0.0
+    },
+    "D7": {
+      "n": 79,
+      "mean": 7.15,
+      "median": 6.0,
+      "p25": 5.0,
+      "p75": 9.0
+    },
+    "D8": {
+      "n": 48,
+      "mean": 6.69,
+      "median": 6.5,
+      "p25": 4.75,
+      "p75": 8.25
+    }
+  },
+  "fairness_by_hospital_class": {
+    "A": {
+      "lead_time_days": {
+        "n": 118,
+        "mean": 5.42,
+        "median": 5.0,
+        "p25": 3.0,
+        "p75": 7.0
+      },
+      "clean_claim_false_positive_rate": 0.04,
+      "clean_claims": 225
+    },
+    "B": {
+      "lead_time_days": {
+        "n": 111,
+        "mean": 5.96,
+        "median": 6.0,
+        "p25": 4.0,
+        "p75": 8.0
+      },
+      "clean_claim_false_positive_rate": 0.031,
+      "clean_claims": 226
+    },
+    "C": {
+      "lead_time_days": {
+        "n": 116,
+        "mean": 5.05,
+        "median": 5.0,
+        "p25": 3.0,
+        "p75": 7.0
+      },
+      "clean_claim_false_positive_rate": 0.0543,
+      "clean_claims": 221
+    },
+    "D": {
+      "lead_time_days": {
+        "n": 129,
+        "mean": 5.8,
+        "median": 5.0,
+        "p25": 3.0,
+        "p75": 8.0
+      },
+      "clean_claim_false_positive_rate": 0.0229,
+      "clean_claims": 218
+    }
+  },
+  "clean_fp_rate_by_day": {
+    "0": 0.3663,
+    "1": 0.3618,
+    "2": 0.3483,
+    "3": 0.3265,
+    "4": 0.2891,
+    "5": 0.2667,
+    "6": 0.2774,
+    "7": 0.2742,
+    "8": 0.2667,
+    "9": 0.2746,
+    "10": 0.2759,
+    "11": 0.252,
+    "12": 0.2326,
+    "13": 0.2273
+  },
+  "latency": {
+    "seconds_per_run_mean": 0.0174,
+    "hardware": "Apple silicon (MPS), local",
+    "llm_calls": 0,
+    "zero_llm_share": 1.0,
+    "note": "rules + cross-encoder only, by construction \u2014 the LLM layer writes prose and does not detect. Not a discovery; a design property, measured to substantiate the scalability argument."
+  },
+  "seed": 20260731,
+  "model": "models/cross_encoder"
+}

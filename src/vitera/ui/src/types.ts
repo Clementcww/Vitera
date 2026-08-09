@@ -86,7 +86,17 @@ export interface SurfaceCell {
   codes: Record<string, string>
 }
 
+export interface Measured {
+  detection_rate: number
+  lead_time_median_days: number | null
+  lead_time_share_ge_2_days: number | null
+  n_episodes: number
+  source: string
+}
+
 export interface Payload {
+  /** Headline metric from the full held-out split; null until measured. */
+  measured: Measured | null
   generated: {
     seed: number
     cohort: number
