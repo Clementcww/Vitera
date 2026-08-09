@@ -6,13 +6,14 @@ import { QueueView } from './components/QueueView'
 import { CaseView } from './components/CaseView'
 import { StagingTray } from './components/StagingTray'
 import { SurfaceView } from './three/SurfaceView'
+import { Hero } from './components/Hero'
 
-type Tab = 'queue' | 'surface'
+type Tab = 'hero' | 'queue' | 'surface'
 
 export default function App() {
   const [state, setState] = useState<Loaded | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [tab, setTab] = useState<Tab>('queue')
+  const [tab, setTab] = useState<Tab>('hero')
   const [openCase, setOpenCase] = useState<string | null>(null)
   const [staged, setStaged] = useState<Set<string>>(new Set())
 
@@ -42,6 +43,18 @@ export default function App() {
       n.delete(key)
       return n
     })
+
+  // The hero is an entry state, not a page: full bleed, no chrome, and it is
+  // never returned to once the koder is working.
+  if (tab === 'hero') {
+    return (
+      <Hero
+        payload={payload}
+        onEnter={() => setTab('queue')}
+        onSurface={() => setTab('surface')}
+      />
+    )
+  }
 
   return (
     <>
