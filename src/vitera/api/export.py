@@ -84,10 +84,15 @@ def _documents(ep: Episode, claim: CodedClaim, day: int) -> list[dict[str, Any]]
     return out
 
 
-def _money(
+def money_view(
     grouper: Grouper, claim: CodedClaim, result: PipelineResult
 ) -> dict[str, Any]:
     """Two grouper calls. Rule 7 — the model never produces a monetary figure.
+
+    Public, and shared with `intake.correct`, deliberately. The workbench and
+    the corrected FPK must show the same two figures for the same episode; two
+    implementations of "what is this claim worth now" is how a screen and a
+    printout end up disagreeing in front of a judge.
 
     `now` groups only the codes the pipeline did not flag as unsupported: that
     is what survives a BPJS verifier today. `if_confirmed` adds back the codes
@@ -187,7 +192,7 @@ def _episode_json(
         "advisory": result.trace.degraded,
         "classes_checked": checked,
         "classes_unchecked": [d.name for d in DefectClass if d.name not in checked],
-        "money": _money(grouper, claim, result),
+        "money": money_view(grouper, claim, result),
         "flags": [_flag_json(f) for f in result.decision.flags],
         "documents": _documents(ep, claim, day),
         "validation_failures": [
@@ -296,7 +301,7 @@ def build(
         for day in range(0, last_day + 1):
             r = run_pipeline(RuleContext(ep, claim, day), scorer=scorer)
             codes = _flagged_codes(r)
-            money = _money(grouper, claim, r)
+            money = money_view(grouper, claim, r)
             top = min(
                 (f for f in r.decision.flags),
                 key=lambda f: (f.remedy.decay_rank, -f.score),

@@ -4,9 +4,19 @@ PY := python3
 SEED ?= 20260731
 VITERA_LLM_MODE ?= cache
 export VITERA_LLM_MODE
+# Paper intake replays a recorded OCR read by default, so `make intake` works
+# on a machine with no OCR engine. Set VITERA_OCR_MODE=auto to record a fresh
+# one where an engine is available.
+VITERA_OCR_MODE ?= cache
+export VITERA_OCR_MODE
+# Run from the checkout without requiring `make setup` first. An editable
+# install puts src on the path the same way; this just means a fresh clone
+# reproduces a figure without an install step in between.
+export PYTHONPATH := src
 
 .PHONY: help setup data train baselines detection eval arm-a demo demo-offline sweep \
         sweep-demo leakage figures test lint clean freeze-check \
+        fpk intake intake-live intake-eval \
         ui ui-data ui-build ui-dev ui-install
 
 help:  ## Show this help
@@ -54,6 +64,22 @@ sweep:  ## One night against the configured cohort           [bucket 13]
 
 sweep-demo:  ## Replay 7 seeded days in under a minute       [bucket 13]
 	VITERA_LLM_MODE=cache $(PY) -m vitera.sweep.runner --replay 7 --seed $(SEED)
+
+## --- paper intake (FPK OCR) ------------------------------------------------
+
+fpk:  ## Render FPK forms for the demo cohort              [bucket 14]
+	$(PY) -m vitera.intake.cli --out results/intake render -n 4
+
+intake:  ## Read the committed sample scan, write the corrected DRAF  [bucket 14]
+	$(PY) -m vitera.intake.cli --out results/intake correct \
+	  data/intake/scan_rs009_maret2026
+
+intake-live:  ## Same, but render and simulate the scan fresh (needs an OCR engine)
+	VITERA_OCR_MODE=auto $(PY) -m vitera.intake.cli --out results/intake \
+	  correct --profile office
+
+intake-eval:  ## Measured OCR accuracy per scan profile     [criterion 8]
+	$(PY) -m vitera.intake.cli --out results/intake eval -n 3
 
 ## --- workbench UI ----------------------------------------------------------
 

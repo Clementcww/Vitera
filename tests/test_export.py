@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from vitera.api.export import _documents, _money, build
+from vitera.api.export import _documents, build, money_view
 from vitera.contracts import (
     ClinicalText,
     Document,
@@ -169,7 +169,7 @@ def test_confirming_a_query_never_lowers_the_tariff() -> None:
         class decision:  # noqa: N801 - test double
             flags = ()
 
-    money = _money(grouper, claim, _Fake)  # type: ignore[arg-type]
+    money = money_view(grouper, claim, _Fake)  # type: ignore[arg-type]
     assert money["delta_idr"] == 0
     assert money["now"]["tariff_idr"] == money["if_confirmed"]["tariff_idr"]
 

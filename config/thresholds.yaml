@@ -59,6 +59,29 @@ alert_fatigue:
   max_alerts_per_episode_per_day: 3
   max_flag_churn_rate: 0.15
 
+intake:
+  # Paper intake (FPK OCR). These gate what a scanned form is allowed to hand
+  # to the rest of the system, and they are here rather than in code for the
+  # same reason the router's are: a hospital that scans at 150 dpi on a tired
+  # MFP will need to move them, and moving them must be visible in a diff.
+  #
+  # `min_field_confidence` is the OCR engine's own confidence, not a
+  # calibrated probability. Apple Vision reports it coarsely — in practice
+  # 0.3 / 0.5 / 1.0 — so this is a floor on "the engine was not guessing",
+  # not a probability of correctness. Do not report it as one.
+  min_field_confidence: 0.3
+  # Below this share of rincian rows read completely, the batch goes back to
+  # the scanner rather than into the pipeline. Measured on a clean 200 dpi
+  # render the rate is ~0.98; the floor is set for degraded scans.
+  min_rows_complete: 0.80
+  # A form whose printed total and whose rows disagree by more than this is a
+  # read failure or an arithmetic error, and either way is not safe to reason
+  # over. Zero: the two are the same number by construction.
+  max_total_mismatch_idr: 0
+  # Service types this build is scoped to. RITP (FKTP) and outpatient are out
+  # of scope by design, not by omission — see CLAUDE.md, locked decisions.
+  accepted_jenis_pelayanan: ["RITL"]
+
 budget:
   # rule 9, per episode
   max_tool_calls: 8

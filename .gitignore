@@ -22,6 +22,11 @@ data/generated/*
 # The LLM cache IS committed — demo-offline depends on it.
 !data/generated/llm_cache/
 
+# So is the OCR cache, for the same reason: `make intake` replays a recorded
+# read of the committed sample scan in data/intake/, so a judge with no OCR
+# engine still gets the corrected draft.
+!data/generated/ocr_cache/
+
 # Model weights go to HuggingFace, not to git. `models/` is the local
 # checkpoint directory `make train` writes; calibration.json is copied into
 # results/ so the numbers survive without the weights.
@@ -34,6 +39,12 @@ data/generated/*
 *.bin
 
 # results/ IS committed: every paper figure and metrics JSON lives there.
+# Its intake working directories are not — page rasters and degraded scans are
+# regenerated on demand, and the sample scan that must survive lives in
+# data/intake/ instead.
+results/intake/.pages/
+results/intake/.scanned/
+results/intake/.eval/
 
 # Workbench UI build artifacts. `make ui-install && make ui-build` regenerates
 # both. The committed fallback if the toolchain is unavailable on the day is

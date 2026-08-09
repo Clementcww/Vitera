@@ -19,6 +19,18 @@ dev = [
     "ruff>=0.6",
     "mypy>=1.11",
 ]
+intake = [
+    # Paper intake: FPK rendering and scan simulation.
+    "reportlab>=4.0",
+    "pillow>=10.0",
+]
+intake-macos = [
+    # Apple Vision, the OCR backend the reported numbers were measured on.
+    # macOS only, hence its own extra: `pip install -e ".[intake]"` gets a
+    # working render and cache-replay path on any platform, and this adds the
+    # ability to record a fresh read. A tesseract backend covers Linux.
+    "pyobjc-framework-Vision>=10.0",
+]
 ml = [
     "torch>=2.4",
     "transformers>=4.44",
@@ -49,6 +61,14 @@ warn_unreachable = true
 
 [[tool.mypy.overrides]]
 module = ["yaml", "pandas.*", "numpy.*", "scipy.*", "sklearn.*", "torch.*", "transformers.*"]
+ignore_missing_imports = true
+
+# Paper intake. reportlab ships no stubs; Vision/Foundation are pyobjc bridges
+# to Objective-C frameworks and cannot meaningfully have any. Both are used
+# behind narrow adapters (`intake.render`, `intake.scan._vision`) precisely so
+# the untyped surface stays one function wide.
+[[tool.mypy.overrides]]
+module = ["reportlab.*", "Vision", "Quartz", "Foundation", "PIL.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

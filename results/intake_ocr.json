@@ -1,0 +1,350 @@
+{
+  "seed": 20260731,
+  "dpi": 200,
+  "engine": "vision",
+  "forms": 3,
+  "profiles": {
+    "clean": {
+      "description": "render langsung, tanpa cetak dan pindai",
+      "cells_expected": 822,
+      "cells_correct": 809,
+      "cells_wrong": 5,
+      "cells_unread": 8,
+      "cells_never_reached": 0,
+      "header_missing": 3,
+      "cell_accuracy": 0.9842,
+      "cell_error_rate": 0.0061,
+      "cell_unread_rate": 0.0097,
+      "per_form": [
+        {
+          "rows_expected": 47,
+          "rows_read": 47,
+          "cells_expected": 282,
+          "cells_correct": 278,
+          "cells_wrong": 1,
+          "cells_unread": 3,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9858,
+          "cell_error_rate": 0.0035,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": [
+            {
+              "sep": "SEP000728",
+              "field": "cbg_code",
+              "want": "J-4-16-I",
+              "got": "I-4-16-I"
+            }
+          ]
+        },
+        {
+          "rows_expected": 46,
+          "rows_read": 46,
+          "cells_expected": 276,
+          "cells_correct": 275,
+          "cells_wrong": 0,
+          "cells_unread": 1,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9964,
+          "cell_error_rate": 0.0,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": []
+        },
+        {
+          "rows_expected": 44,
+          "rows_read": 44,
+          "cells_expected": 264,
+          "cells_correct": 256,
+          "cells_wrong": 4,
+          "cells_unread": 4,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9697,
+          "cell_error_rate": 0.0152,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": [
+            {
+              "sep": "SEP000380",
+              "field": "cbg_code",
+              "want": "J-4-16-II",
+              "got": "I-4-16-II"
+            },
+            {
+              "sep": "SEP000512",
+              "field": "cbg_code",
+              "want": "J-4-16-II",
+              "got": "I-4-16-II"
+            },
+            {
+              "sep": "SEP000608",
+              "field": "cbg_code",
+              "want": "J-4-16-I",
+              "got": "I-4-16-I"
+            },
+            {
+              "sep": "SEP003188",
+              "field": "cbg_code",
+              "want": "N-4-11-III",
+              "got": "N-4-11-I"
+            }
+          ]
+        }
+      ]
+    },
+    "office": {
+      "description": "MFP rumah sakit 200 dpi, sekali pindai",
+      "cells_expected": 822,
+      "cells_correct": 817,
+      "cells_wrong": 2,
+      "cells_unread": 3,
+      "cells_never_reached": 0,
+      "header_missing": 3,
+      "cell_accuracy": 0.9939,
+      "cell_error_rate": 0.0024,
+      "cell_unread_rate": 0.0036,
+      "per_form": [
+        {
+          "rows_expected": 47,
+          "rows_read": 47,
+          "cells_expected": 282,
+          "cells_correct": 280,
+          "cells_wrong": 0,
+          "cells_unread": 2,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9929,
+          "cell_error_rate": 0.0,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": []
+        },
+        {
+          "rows_expected": 46,
+          "rows_read": 46,
+          "cells_expected": 276,
+          "cells_correct": 274,
+          "cells_wrong": 2,
+          "cells_unread": 0,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9928,
+          "cell_error_rate": 0.0072,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": [
+            {
+              "sep": "SEP001197",
+              "field": "cbg_code",
+              "want": "I-4-14-III",
+              "got": "I-4-14-II"
+            },
+            {
+              "sep": "SEP003237",
+              "field": "cbg_code",
+              "want": "I-4-12-III",
+              "got": "I-4-12-I"
+            }
+          ]
+        },
+        {
+          "rows_expected": 44,
+          "rows_read": 44,
+          "cells_expected": 264,
+          "cells_correct": 263,
+          "cells_wrong": 0,
+          "cells_unread": 1,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9962,
+          "cell_error_rate": 0.0,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": []
+        }
+      ]
+    },
+    "photocopy": {
+      "description": "fotokopi satu generasi lalu dipindai 150 dpi",
+      "cells_expected": 822,
+      "cells_correct": 814,
+      "cells_wrong": 3,
+      "cells_unread": 5,
+      "cells_never_reached": 0,
+      "header_missing": 3,
+      "cell_accuracy": 0.9903,
+      "cell_error_rate": 0.0036,
+      "cell_unread_rate": 0.0061,
+      "per_form": [
+        {
+          "rows_expected": 47,
+          "rows_read": 47,
+          "cells_expected": 282,
+          "cells_correct": 280,
+          "cells_wrong": 0,
+          "cells_unread": 2,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9929,
+          "cell_error_rate": 0.0,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": []
+        },
+        {
+          "rows_expected": 46,
+          "rows_read": 46,
+          "cells_expected": 276,
+          "cells_correct": 271,
+          "cells_wrong": 2,
+          "cells_unread": 3,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9819,
+          "cell_error_rate": 0.0072,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": [
+            {
+              "sep": "SEP000861",
+              "field": "cbg_code",
+              "want": "K-4-17-III",
+              "got": "K-4-17-II"
+            },
+            {
+              "sep": "SEP001197",
+              "field": "cbg_code",
+              "want": "I-4-14-III",
+              "got": "I-4-14-II"
+            }
+          ]
+        },
+        {
+          "rows_expected": 44,
+          "rows_read": 44,
+          "cells_expected": 264,
+          "cells_correct": 263,
+          "cells_wrong": 1,
+          "cells_unread": 0,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.9962,
+          "cell_error_rate": 0.0038,
+          "header_fields_read": 11,
+          "header_fields_missing": [
+            "telpon"
+          ],
+          "examples": [
+            {
+              "sep": "SEP001388",
+              "field": "cbg_code",
+              "want": "J-4-16-III",
+              "got": "J-4-16-II"
+            }
+          ]
+        }
+      ]
+    },
+    "phone": {
+      "description": "difoto dengan ponsel, miring dan cahaya tidak rata",
+      "cells_expected": 822,
+      "cells_correct": 709,
+      "cells_wrong": 4,
+      "cells_unread": 109,
+      "cells_never_reached": 0,
+      "header_missing": 6,
+      "cell_accuracy": 0.8625,
+      "cell_error_rate": 0.0049,
+      "cell_unread_rate": 0.1326,
+      "per_form": [
+        {
+          "rows_expected": 47,
+          "rows_read": 47,
+          "cells_expected": 282,
+          "cells_correct": 238,
+          "cells_wrong": 2,
+          "cells_unread": 42,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.844,
+          "cell_error_rate": 0.0071,
+          "header_fields_read": 10,
+          "header_fields_missing": [
+            "telpon",
+            "peserta"
+          ],
+          "examples": [
+            {
+              "sep": "SEP001748",
+              "field": "cbg_code",
+              "want": "K-1-20-III",
+              "got": "K-1-20-II"
+            },
+            {
+              "sep": "SEP003488",
+              "field": "cbg_code",
+              "want": "K-4-17-II",
+              "got": "K-4-17-I"
+            }
+          ]
+        },
+        {
+          "rows_expected": 46,
+          "rows_read": 46,
+          "cells_expected": 276,
+          "cells_correct": 236,
+          "cells_wrong": 2,
+          "cells_unread": 38,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.8551,
+          "cell_error_rate": 0.0072,
+          "header_fields_read": 10,
+          "header_fields_missing": [
+            "telpon",
+            "peserta"
+          ],
+          "examples": [
+            {
+              "sep": "SEP001797",
+              "field": "cbg_code",
+              "want": "N-4-11-II",
+              "got": "N-4-11-I"
+            },
+            {
+              "sep": "SEP002853",
+              "field": "biaya_idr",
+              "want": "15600000",
+              "got": "156"
+            }
+          ]
+        },
+        {
+          "rows_expected": 44,
+          "rows_read": 44,
+          "cells_expected": 264,
+          "cells_correct": 235,
+          "cells_wrong": 0,
+          "cells_unread": 29,
+          "cells_never_reached": 0,
+          "cell_accuracy": 0.8902,
+          "cell_error_rate": 0.0,
+          "header_fields_read": 10,
+          "header_fields_missing": [
+            "telpon",
+            "peserta"
+          ],
+          "examples": []
+        }
+      ]
+    }
+  }
+}

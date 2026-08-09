@@ -1,0 +1,27 @@
+{
+  "intake": {
+    "passed": true,
+    "engine": "vision (cache)",
+    "pages": 2,
+    "fields_read": 11,
+    "fields_missing": [
+      "telpon"
+    ],
+    "mean_field_confidence": 0.527,
+    "rows": 47,
+    "rows_complete_share": 0.979,
+    "matched_episodes": 47,
+    "unmatched_sep": [],
+    "failures": {
+      "needs_human_read": 2
+    }
+  },
+  "episodes": 47,
+  "findings": 23,
+  "total_before_idr": 441985000,
+  "total_after_idr": 361035000,
+  "total_if_confirmed_idr": 381385000,
+  "advisory": false,
+  "errors": [],
+  "source": "grouper INA-CBG"
+}

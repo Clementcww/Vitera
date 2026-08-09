@@ -39,6 +39,9 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 | `make demo-offline` | Same path, replayed from cache |
 | `make sweep` | One night against the configured cohort |
 | `make sweep-demo` | Replay 7 seeded days in under a minute |
+| `make fpk` | Render FPK forms (BPJS claim submission form) from the cohort |
+| `make intake` | Read a scanned FPK back in and write the corrected DRAF |
+| `make intake-eval` | Measured OCR accuracy per scan profile |
 | `make ui-data` | Export real pipeline output for the workbench |
 | `make ui-install` | Install the workbench toolchain (network, once) |
 | `make ui-build` | Build the workbench bundle |
@@ -48,6 +51,12 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 
 `VITERA_LLM_MODE` = `live` | `record` | `cache`. Rehearse in `record` to
 populate the cache that `demo-offline` replays. Never demo by waiting for a clock.
+
+`VITERA_OCR_MODE` = `auto` | `cache`. Same idea for paper intake. `make intake`
+defaults to `cache` and reads the committed sample scan in
+`data/intake/scan_rs009_maret2026/`, so it runs with no OCR engine installed.
+`make intake-live` renders a fresh form, simulates a scan of it and reads that,
+which needs Apple Vision (`pip install -e ".[intake-macos]"`) or tesseract.
 
 The provider needs `VITERA_LLM_API_KEY` (or `OPENAI_API_KEY`) in the
 environment; `VITERA_LLM_BASE_URL` and `VITERA_LLM_MODEL` override endpoint and
@@ -86,6 +95,8 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | E1 | End-to-end run, 20 cases, no crash | `make demo-offline` | 9 | **done** — `results/demo_run.json`, asserted in `tests/test_demo.py` |
 | T6 | Adversarial set results | `make eval` | 11 | not started |
 | F5 | Sweep: alerts/episode/day and churn | `make sweep-demo` | 13 | not started |
+| P1 | FPK OCR intake: cell accuracy per scan profile | `make intake-eval` | 14 | **done** — office 0.994, photocopy 0.990, phone 0.863 (`results/intake_ocr.json`) |
+| P2 | Paper round trip: scan in, corrected DRAF out | `make intake` | 14 | **done** — 47 episodes, gate passes, `results/intake/fpk_draf_perbaikan.pdf` |
 | U1 | Coder workbench: queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |
 | U2 | Detection surface (episode × day × recoverable value) | `make ui-data && make ui` | 12 | **done** (landing card) |
 
@@ -93,8 +104,8 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 
 ```
 config/      defects.yaml (a citation per rate) · sites.yaml · thresholds.yaml · sweep.yaml
-data/        reference/ · generated/ (+ seeds + LLM cache) · adversarial/ (SEALED)
-src/vitera/  contracts.py · config.py · generator · rules · grouper · models · agent · sweep · api · ui
+data/        reference/ · generated/ (+ seeds + LLM/OCR cache) · intake/ (sample scan) · adversarial/ (SEALED)
+src/vitera/  contracts.py · config.py · generator · rules · grouper · models · agent · sweep · intake · api · ui
 experiments/ arm_a · arm_b · arm_c · ablations · leakage_check
 results/     committed figures + metrics JSON
 docs/        ARCHITECTURE · DATA_CARD · MODEL_CARD · CLAIMS
@@ -121,6 +132,37 @@ screen.
 
 `docs/ui/workbench-mockup.html` is the no-build-step fallback and the design
 spec the app implements.
+
+### Paper intake
+
+`src/vitera/intake/` closes the loop at the two ends the hospital actually
+touches: paper in, paper out. The FPK — *Formulir Pengajuan Klaim*, the cover
+form submitted with a batch of claims — is rendered in the layout of the real
+form, read back off a scan with OCR, checked at the validation gate, and
+returned as a corrected **draft**.
+
+It is not a second pipeline. `intake/correct.py` calls the same `run_pipeline`
+as `demo.py`, `export.py` and the sweep, and takes its rupiah figures from the
+same `export.money_view` the workbench renders, so the printout and the screen
+cannot disagree.
+
+Four properties are load-bearing:
+
+- **OCR is perception, extraction is deterministic.** `scan.py` returns text
+  with a box and a confidence. `extract.py` decides what it means with anchored
+  geometry and regular expressions — no model. A wrong value is therefore
+  attributable to either a bad read or a bad rule, and you can tell which.
+- **The gate runs before anything else** (rule 4). An illegible sheet, a total
+  that disagrees with its own rows, or an out-of-scope form (FKTP RITP) is
+  stopped rather than reasoned over.
+- **A misread is never dressed up as a claim defect.** Every reconciliation
+  checks the read quality of the fields it depends on and downgrades itself to
+  `needs_human_read` when they are weak.
+- **The output is a draft** (rule 1). Stamped DRAF on every page, signature
+  block empty, nothing written back to the claim of record and nothing sent to
+  BPJS. The corrected form also prints, separately and untotalled, the amount
+  that would only become claimable if a DPJP documents care the record merely
+  suggests.
 
 `src/vitera/contracts.py` is the interface every module codes against. The hard
 architectural rules from `CLAUDE.md` are encoded there as types, so they fail at
