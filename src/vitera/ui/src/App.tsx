@@ -70,7 +70,7 @@ export default function App() {
       </div>
     )
   }
-  if (!state) return <div className="loading">memuat…</div>
+  if (!state) return <div className="loading">loading…</div>
 
   const { payload, droppedFlags } = state
   const ep = payload.episodes.find((e) => e.episode_id === openCase) ?? null
@@ -155,7 +155,7 @@ export default function App() {
             </>
           ) : (
             <>
-              <span aria-hidden="true">←</span> Beranda
+              <span aria-hidden="true">←</span> Home
             </>
           )}
         </button>

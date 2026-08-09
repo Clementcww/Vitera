@@ -207,13 +207,40 @@ def test_the_demo_cohort_declares_that_it_is_not_a_random_sample(
 
 def test_surface_is_the_pipeline_per_day_not_a_diff(payload: dict) -> None:
     """Concurrent monitoring is the discharge pipeline invoked N times. Every
-    day of every episode's stay must be present — a diff would have gaps."""
+    day of every episode's stay must be present — a diff would have gaps.
+
+    The surface always spans the WHOLE stay, day 0 to the last day known. The
+    workbench's own `day` may be earlier than that, because a share of the
+    cohort is evaluated mid-stay, which is the concurrent product rather than
+    an inconsistency; asserting against `ep["day"]` would silently forbid it.
+    """
     by_ep: dict[str, set[int]] = {}
     for c in payload["surface"]["cells"]:
         by_ep.setdefault(c["episode_id"], set()).add(c["d"])
     for ep in payload["episodes"]:
         days = by_ep[ep["episode_id"]]
-        assert days == set(range(ep["day"] + 1))
+        last = (
+            ep["discharge_day"] if ep["discharge_day"] is not None else ep["los_so_far"]
+        )
+        assert days == set(range(last + 1))
+        assert ep["day"] in days
+
+
+def test_a_share_of_the_cohort_is_still_on_the_ward(payload: dict) -> None:
+    """The one repair window that actually expires needs a patient on a ward.
+
+    A cohort evaluated entirely at discharge makes every Query row point at
+    someone who has already gone home, and makes the unit summary's lead figure
+    structurally zero. `still_admitted` must therefore be true for some of it,
+    and each such episode must have been run before its own discharge day.
+    """
+    admitted = [e for e in payload["episodes"] if e["still_admitted"]]
+    assert admitted, "no episode is mid-stay; the concurrent claim has no demo"
+    assert payload["generated"]["on_ward"] == len(admitted)
+    for e in admitted:
+        assert e["discharge_day"] is None or e["day"] < e["discharge_day"]
+        # Days 0-1 carry too little signal to run, per config/sweep.yaml.
+        assert e["day"] >= 2
 
 
 def test_payload_is_json_serialisable(payload: dict) -> None:

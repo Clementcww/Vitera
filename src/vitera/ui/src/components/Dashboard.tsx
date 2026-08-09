@@ -1,5 +1,6 @@
 import type { Payload, EpisodeView, Remedy } from '../types'
 import { jt, REMEDY } from '../format'
+import { Term } from './Term'
 
 /* L2 — the unit view.
  *
@@ -56,6 +57,11 @@ export function Dashboard({ payload }: { payload: Payload }) {
 
   // Findings whose repair still needs the patient on the ward. This is the
   // number that decays overnight, so it leads.
+  //
+  // `admitted` counts every episode evaluated mid-stay, flagged or not, because
+  // the lede is describing the ward and not the queue. `onWard` narrows to the
+  // ones that actually have something to fix.
+  const admitted = eps.filter((e) => windowState(e) === 'open')
   const onWard = flagged.filter((e) => windowState(e) === 'open')
   const onWardQueries = onWard
     .flatMap((e) => e.flags)
@@ -69,9 +75,10 @@ export function Dashboard({ payload }: { payload: Payload }) {
     <section className="view dash">
       <h1>Unit summary</h1>
       <p className="lede">
-        {payload.generated.cohort} inpatient episodes. Every rupiah figure is
-        the grouper&rsquo;s; episodes it could not group are counted here but
-        left out of the money.
+        {payload.generated.cohort} inpatient episodes, {admitted.length} of them
+        still on the ward this morning. Every rupiah figure is the
+        grouper&rsquo;s; episodes it could not group are counted here but left
+        out of the money.
       </p>
 
       {payload.generated.advisory && (
@@ -88,7 +95,9 @@ export function Dashboard({ payload }: { payload: Payload }) {
           <span>
             {onWardQueries
               ? 'These shut at discharge. Everything else can wait a day.'
-              : 'Nothing is time-critical this morning.'}
+              : admitted.length
+                ? 'Nothing on the ward needs the doctor this morning.'
+                : 'No episode in this cohort is still admitted, so no repair window is open.'}
           </span>
         </div>
       </div>
@@ -167,10 +176,16 @@ export function Dashboard({ payload }: { payload: Payload }) {
         <p className="dash-empty">Not yet measured on the held-out split.</p>
       )}
 
+      {/* Precision matters here: `llm_calls` counts calls to the language
+          model, which writes prose and decides nothing. Every episode was
+          still scored by the cross-encoder, which is a model — so "no LLM
+          call" is true and "deterministic rules alone" would not be. */}
       <p className="dash-cost">
-        <span>{llmCalls}</span> model calls across the cohort ·{' '}
+        <span>{llmCalls}</span> language-model calls across the cohort ·{' '}
         <span>{Math.round((zeroLlm / Math.max(1, eps.length)) * 100)}%</span> of
-        episodes settled on deterministic rules alone
+        episodes settled with no language-model call at all. Detection is rules
+        plus the in-hospital <Term k="cross-encoder">cross-encoder</Term>; the
+        language model only writes the explanations.
       </p>
 
       <p className="dash-foot">

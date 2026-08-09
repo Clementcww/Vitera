@@ -277,6 +277,7 @@ def build(
     seed: int,
     model_dir: Path,
     stratify: bool = True,
+    ward_share: float = 0.4,
 ) -> dict[str, Any]:
     scorer, unavailable = _scorer(model_dir)
     grouper = Grouper()
@@ -286,15 +287,39 @@ def build(
 
     episodes: list[dict[str, Any]] = []
     surface: list[dict[str, Any]] = []
+    # Deterministic and independent of the selection RNG, so changing the
+    # cohort size does not reshuffle which episodes are on the ward.
+    ward_rng = random.Random(seed + 977)
+    on_ward_count = 0
 
     for idx, row in enumerate(chosen):
         ep = episode_from_dict(row["episode"])
         claim = claim_from_dict(row["claim"])
         last_day = ep.discharge_day or ep.los_so_far
 
-        # --- the workbench: one run at the latest available day -----------
-        result = run_pipeline(RuleContext(ep, claim, last_day), scorer=scorer)
-        episodes.append(_episode_json(ep, claim, last_day, result, grouper))
+        # --- the workbench: one run, on the day this episode is really on -
+        #
+        # A share of the cohort is evaluated mid-stay rather than at
+        # discharge. That is not a demo trick: it is the same `run_pipeline`
+        # at `day < discharge_day`, which is precisely what concurrent
+        # monitoring IS, and what the sweep would have produced last night.
+        #
+        # It matters because the alternative was a queue in which nobody was
+        # still admitted. Every Query row would have pointed at a patient who
+        # had already gone home, the one repair window that actually expires
+        # would have read as permanently shut, and the unit summary would have
+        # led on a number that could only ever be zero. A morning queue in a
+        # real hospital is a mix of both, and so is this one.
+        #
+        # Floor of day 2 matches `config/sweep.yaml`'s cohort filter: days 0-1
+        # carry too little signal to be worth a run.
+        day = last_day
+        if ward_share > 0 and last_day >= 4 and ward_rng.random() < ward_share:
+            day = last_day - ward_rng.randint(1, min(3, last_day - 2))
+            on_ward_count += 1
+
+        result = run_pipeline(RuleContext(ep, claim, day), scorer=scorer)
+        episodes.append(_episode_json(ep, claim, day, result, grouper))
 
         # --- the surface: the SAME pipeline, once per day of stay ---------
         # Not a diff. Bucket 13 owns diffing, ordering and suppression.
@@ -342,6 +367,13 @@ def build(
             "seed": seed,
             "cohort": len(chosen),
             "cohort_selection": selection,
+            "on_ward": on_ward_count,
+            "ward_note": (
+                f"{on_ward_count} of {len(chosen)} episodes are evaluated "
+                "mid-stay, at day < discharge — the same pipeline the sweep "
+                "runs nightly. The rest are evaluated at discharge. No episode "
+                "appears twice."
+            ),
             "model": str(model_dir) if scorer is not None else None,
             "model_unavailable": unavailable,
             "advisory": scorer is None,
@@ -373,6 +405,12 @@ def main() -> None:
         action="store_true",
         help="uniform sample instead of the stratified demo cohort",
     )
+    p.add_argument(
+        "--ward-share",
+        type=float,
+        default=0.4,
+        help="share of the cohort evaluated mid-stay rather than at discharge",
+    )
     a = p.parse_args()
 
     rows = load_jsonl(a.data / "test.jsonl")
@@ -382,6 +420,7 @@ def main() -> None:
         seed=a.seed,
         model_dir=a.model,
         stratify=not a.uniform,
+        ward_share=a.ward_share,
     )
 
     a.out.parent.mkdir(parents=True, exist_ok=True)

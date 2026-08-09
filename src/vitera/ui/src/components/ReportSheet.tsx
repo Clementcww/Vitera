@@ -1,6 +1,7 @@
 import type { IntakePayload } from '../intake'
-import { SEVERITY_ID } from '../intake'
-import { rp } from '../format'
+import { SEVERITY_ID, gateText } from '../intake'
+import { DEFECT_ID, REMEDY, rp } from '../format'
+import type { Remedy } from '../types'
 
 /* The generated report: what the check found, on one sheet a human signs.
  *
@@ -13,7 +14,7 @@ import { rp } from '../format'
  * nothing has been sent to BPJS. A report that could be mistaken for a
  * submission would defeat the point of having a human commit.
  *
- * Rule 7 governs the numbers. `Diajukan`, `Draf perbaikan` and the conditional
+ * Rule 7 governs the numbers. `Claimed`, `After review` and the conditional
  * line are three grouper figures carried through the export untouched. The
  * conditional amount — what would become claimable only if a DPJP documents
  * care the record merely suggests — is printed apart from the total and is
@@ -25,7 +26,7 @@ import { rp } from '../format'
  */
 
 const today = () =>
-  new Date().toLocaleDateString('id-ID', {
+  new Date().toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
@@ -54,28 +55,31 @@ export function ReportSheet({
         <b>Internal review report</b>
         <span className="spacer" />
         <button className="act" onClick={onClose}>
-          Tutup
+          Close
         </button>
         <button className="act primary" onClick={() => window.print()}>
-          Cetak / simpan PDF
+          Print / save as PDF
         </button>
       </div>
 
       <article className="paper">
+        {/* English, unlike the PDF `make intake` prints. That one imitates
+            an Indonesian regulatory form and stays in Bahasa; this is the
+            workbench's own document and follows the workbench. */}
         <div className="stamp" aria-hidden="true">
-          DRAF
+          DRAFT
         </div>
 
         <header className="rhd">
           <div>
             <h1>Internal Review of the Claim File</h1>
             <p className="rsub">
-              {f.nama_ppk} · Kode PPK {f.kode_ppk} · {f.bulan_pelayanan} ·{' '}
+              {f.nama_ppk} · PPK code {f.kode_ppk} · {f.bulan_pelayanan} ·{' '}
               {f.jenis_pelayanan}
             </p>
           </div>
           <div className="rdate">
-            <span>Dicetak</span>
+            <span>Printed</span>
             <b>{today()}</b>
           </div>
         </header>
@@ -96,29 +100,28 @@ export function ReportSheet({
                 <td className="num mono">{rp(c.total_before_idr)}</td>
               </tr>
               <tr>
-                <td>Setelah pemeriksaan (draf)</td>
+                <td>After review (draft)</td>
                 <td className="num mono">{rp(c.total_after_idr)}</td>
               </tr>
               <tr className="delta">
-                <td>Selisih</td>
+                <td>Difference</td>
                 <td className="num mono">
-                  {delta < 0 ? 'turun ' : 'naik '}
+                  {delta < 0 ? 'down ' : 'up '}
                   {rp(Math.abs(delta))}
                 </td>
               </tr>
             </tbody>
           </table>
           <p className="cond">
-            Berpotensi <b className="mono">{rp(conditional)}</b> lebih tinggi
+A further <b className="mono">{rp(conditional)}</b> could be claimed
             if the doctor documents the comorbidities already visible in the
             notes. This conditional figure is <b>not</b> included in the total
             above and must not be claimed before that documentation exists.
           </p>
           <p className="src">
             Every rupiah figure is computed by the INA-CBG grouper. The model
-            never
-            menghasilkan angka uang.
-            {c.advisory && ' Pemeriksaan ini berjalan dalam mode advisory.'}
+            never produces a monetary figure.
+            {c.advisory && ' This review ran in advisory mode.'}
           </p>
         </section>
 
@@ -127,29 +130,29 @@ export function ReportSheet({
           <table className="kvtab">
             <tbody>
               <tr>
-                <td>Sumber</td>
+                <td>Source</td>
                 <td>
                   Scanned sheets, read by {gate.engine}, {gate.pages} pages
                 </td>
               </tr>
               <tr>
-                <td>Gerbang validasi</td>
-                <td>{gate.passed ? 'Lolos' : 'Ditahan'}</td>
+                <td>Validation gate</td>
+                <td>{gate.passed ? 'Passed' : 'Held'}</td>
               </tr>
               <tr>
-                <td>Baris rincian</td>
+                <td>Itemised rows</td>
                 <td>
-                  {gate.rows} baris, {Math.round(gate.rows_complete_share * 100)}%
-                  read in full, {gate.matched_episodes} matched the record
-                  rumah sakit
+                  {gate.rows} rows, {Math.round(gate.rows_complete_share * 100)}%
+                  read in full, {gate.matched_episodes} matched the
+                  hospital&rsquo;s own record
                 </td>
               </tr>
               <tr>
-                <td>Kolom formulir</td>
+                <td>Form fields</td>
                 <td>
-                  {gate.fields_read} terbaca
+                  {gate.fields_read} read
                   {gate.fields_missing.length
-                    ? `, gagal: ${gate.fields_missing.join(', ')}`
+                    ? `, failed: ${gate.fields_missing.join(', ')}`
                     : ''}
                 </td>
               </tr>
@@ -165,11 +168,11 @@ export function ReportSheet({
                 <tr>
                   <th>No. SEP</th>
                   <th>Episode</th>
-                  <th>INA-CBG diajukan</th>
-                  <th>INA-CBG draf</th>
-                  <th className="num">Diajukan</th>
-                  <th className="num">Draf</th>
-                  <th className="num">Selisih</th>
+                  <th>INA-CBG claimed</th>
+                  <th>INA-CBG draft</th>
+                  <th className="num">Claimed</th>
+                  <th className="num">Draft</th>
+                  <th className="num">Difference</th>
                 </tr>
               </thead>
               <tbody>
@@ -199,16 +202,23 @@ export function ReportSheet({
           <h2>4. Findings, with the record quoted</h2>
           <p className="lead">
             {c.findings_count} findings across {c.episodes} episodes. Each one
-            quotes the record word for word. A finding that cannot
-            mengutip sudah dibuang oleh sistem sebelum sampai ke sini.
+            quotes the record word for word. A finding that could not quote
+            the record was dropped by the system before it reached this page.
           </p>
           <ol className="finds">
             {c.findings.map((x, i) => (
               <li key={i}>
+                {/* Label and remedy come from the UI's own wording, keyed on
+                    the machine class, not from the Indonesian strings the
+                    exporter writes for the printed FPK. The QUOTE below is
+                    never touched: it is the record verbatim, and translating
+                    it would break rule 6 outright. */}
                 <div className="fh">
-                  <b>{x.label}</b>
+                  <b>{DEFECT_ID[x.defect_class] ?? x.label}</b>
                   <span className={'rtag r-' + x.remedy_code.toLowerCase()}>
-                    {x.remedy} — {x.actor}
+                    {REMEDY[x.remedy_code as Remedy]
+                      ? `${REMEDY[x.remedy_code as Remedy].label} — ${REMEDY[x.remedy_code as Remedy].who}`
+                      : `${x.remedy} — ${x.actor}`}
                   </span>
                   <span className="fid mono">{x.episode_id}</span>
                 </div>
@@ -231,7 +241,7 @@ export function ReportSheet({
                   <span className={'sev ' + SEVERITY_ID[x.severity].css}>
                     {SEVERITY_ID[x.severity].label}
                   </span>
-                  {x.detail}
+                  {gateText(x, data)}
                 </li>
               ))}
             </ul>
@@ -239,10 +249,10 @@ export function ReportSheet({
         )}
 
         <section className="signs">
-          <h2>Persetujuan</h2>
+          <h2>Approval</h2>
           <p className="lead">
             This draft has no effect and is not submitted until both columns
-            bawah ditandatangani.
+            below are signed.
           </p>
           <div className="signrow">
             <div>

@@ -64,7 +64,7 @@ export function CaseView({
 
         <div className="strip">
           <div className="kv">
-            <div className="k">Tarif saat ini</div>
+            <div className="k">Tariff as it stands</div>
             <div className="v mono">
               {tariff(ep.money.now)}
               <span className="src">grouper</span>
@@ -132,7 +132,7 @@ export function CaseView({
                      `Flag.suppression_key` is defect_class + evidence_hash, and
                      two findings about DIFFERENT codes collide on it whenever
                      they cite the same anchor line — which D5 and D7 do all the
-                     time, because an absence-based finding cites the berkas
+                     time, because an absence-based finding cites the claim file
                      cover sheet. Without the index, staging or dismissing one
                      silently applies to the other. See the note in
                      docs/ARCHITECTURE.md; the real fix is a subject field on

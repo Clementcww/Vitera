@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { IntakePayload, ReadField } from '../intake'
-import { FIELD_ID, SEVERITY_ID, band } from '../intake'
+import { FIELD_ID, SEVERITY_ID, band, gateText } from '../intake'
 import { rp } from '../format'
 import { Term } from './Term'
 
@@ -18,7 +18,7 @@ import { Term } from './Term'
  *   half a koder needs. The default is fields-only for legibility; one toggle
  *   shows everything the engine saw.
  * - **Cells the reader could not get are marked, never blank.** A blank in a
- *   rupiah column reads as a zero. `tidak terbaca` reads as what it is.
+ *   rupiah column reads as a zero. `unreadable` reads as what it is.
  * - **The gate's verdict sits above the data, not below it.** If the sheet was
  *   held, nothing downstream ran, and that has to be the first thing on screen
  *   rather than a footnote under a table of numbers.
@@ -63,15 +63,15 @@ export function ScanView({
       <p className="lede">
         The scanned <Term k="fpk">FPK</Term> sheet with the machine&rsquo;s
         reading drawn on top. Each box is the place on the page a value
-        ditemukan, bukan gambar ulang.
+        was found, not a redrawing of it.
       </p>
 
       <div className={'gatebar ' + (held ? 'held' : 'ok')}>
         <span className="gdot" />
         <b>{held ? 'Held at the validation gate' : 'Passed the validation gate'}</b>
         <span className="gsub">
-          {gate.engine} · {gate.rows} baris rincian ·{' '}
-          {Math.round(gate.rows_complete_share * 100)}% terbaca lengkap ·{' '}
+          {gate.engine} · {gate.rows} itemised rows ·{' '}
+          {Math.round(gate.rows_complete_share * 100)}% read in full ·{' '}
           {gate.matched_episodes} matched the hospital record
         </span>
         {!held && (
@@ -104,7 +104,7 @@ export function ScanView({
                 className={'f' + (i === page ? ' on' : '')}
                 onClick={() => setPage(i)}
               >
-                Halaman {i + 1}
+                Page {i + 1}
               </button>
             ))}
             <span className="spacer" />
@@ -112,13 +112,13 @@ export function ScanView({
               className={'f' + (mode === 'fields' ? ' on' : '')}
               onClick={() => setMode('fields')}
             >
-              Kolom terbaca
+              Fields read
             </button>
             <button
               className={'f' + (mode === 'all' ? ' on' : '')}
               onClick={() => setMode('all')}
             >
-              Semua bacaan <span className="n">{p.obs.length}</span>
+              Every reading <span className="n">{p.obs.length}</span>
             </button>
           </div>
 
@@ -158,7 +158,14 @@ export function ScanView({
               ))}
           </div>
 
-          <p className="scannote prose">{data.generated.note}</p>
+          {/* The workbench's own words, not the exporter's. `generated.note`
+              is written in Bahasa for the CLI and the printed FPK; what it
+              says is repeated here in the language of this screen. */}
+          <p className="scannote prose">
+            A synthetic scanned sheet, read by a local OCR engine. The boxes are
+            the reader&rsquo;s own coordinates, not a redrawing. Every rupiah
+            figure comes from the INA-CBG grouper.
+          </p>
         </div>
 
         <div className="scanside">
@@ -177,7 +184,7 @@ export function ScanView({
           {gate.failures_detail.length > 0 && (
             <div className="panel" style={{ marginTop: 16 }}>
               <div className="phd">
-                <b>Catatan gerbang</b>
+                <b>Gate notes</b>
                 <span className="c">{gate.failures_detail.length}</span>
               </div>
               <ul className="gatelist">
@@ -186,12 +193,12 @@ export function ScanView({
                     <span className={'sev ' + SEVERITY_ID[f.severity].css}>
                       {SEVERITY_ID[f.severity].label}
                     </span>
-                    <span className="gd">{f.detail}</span>
+                    <span className="gd">{gateText(f, data)}</span>
                   </li>
                 ))}
                 {gate.failures_detail.length > 14 && (
                   <li className="gmore">
-                    dan {gate.failures_detail.length - 14} lainnya
+                    and {gate.failures_detail.length - 14} more
                   </li>
                 )}
               </ul>
@@ -200,7 +207,7 @@ export function ScanView({
         </div>
       </div>
 
-      <Rincian data={data} />
+      <Itemised data={data} />
     </section>
   )
 }
@@ -219,9 +226,9 @@ function FieldList({
   return (
     <div className="panel">
       <div className="phd">
-        <b>Kolom formulir</b>
+        <b>Form fields</b>
         <span className="c">
-          {fields.length} terbaca{missing.length ? `, ${missing.length} gagal` : ''}
+          {fields.length} read{missing.length ? `, ${missing.length} failed` : ''}
         </span>
       </div>
       <ul className="fieldlist">
@@ -233,7 +240,7 @@ function FieldList({
           >
             <span className="fn">{FIELD_ID[f.name] ?? f.name}</span>
             <span className="fv">{f.value}</span>
-            <span className={'cf b-' + band(f.confidence)} title="keyakinan mesin">
+            <span className={'cf b-' + band(f.confidence)} title="how sure the machine was">
               {f.confidence.toFixed(2)}
             </span>
           </li>
@@ -250,7 +257,7 @@ function FieldList({
   )
 }
 
-function Rincian({ data }: { data: IntakePayload }) {
+function Itemised({ data }: { data: IntakePayload }) {
   const [all, setAll] = useState(false)
   const rows = all ? data.lines : data.lines.slice(0, 12)
   const t = data.totals
@@ -271,11 +278,11 @@ function Rincian({ data }: { data: IntakePayload }) {
               <th>No.</th>
               <th>No. SEP</th>
               <th>Episode</th>
-              <th>Tgl masuk</th>
-              <th>Hari</th>
+              <th>Admitted</th>
+              <th>Days</th>
               <th>INA-CBG</th>
-              <th className="num">Biaya</th>
-              <th className="num">Yakin</th>
+              <th className="num">Amount</th>
+              <th className="num">Sure</th>
             </tr>
           </thead>
           <tbody>
@@ -300,7 +307,7 @@ function Rincian({ data }: { data: IntakePayload }) {
       </div>
       {data.lines.length > 12 && (
         <button className="open-btn" style={{ margin: 12 }} onClick={() => setAll(!all)}>
-          {all ? 'Show top 12' : `Tampilkan semua ${data.lines.length} baris`}
+          {all ? 'Show top 12' : `Show all ${data.lines.length} rows`}
         </button>
       )}
     </div>

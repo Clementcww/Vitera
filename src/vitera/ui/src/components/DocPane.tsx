@@ -46,7 +46,7 @@ export function DocPane({
   return (
     <div className="panel">
       <div className="phd">
-        <h3>Rekam medis</h3>
+        <h3>Medical record</h3>
         <span className="c">as far as the day checked</span>
       </div>
       {documents.map((d) => {

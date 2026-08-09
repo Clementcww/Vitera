@@ -12,14 +12,14 @@
 
 export function webglAvailable(): { ok: boolean; reason?: string } {
   if (typeof WebGLRenderingContext === 'undefined') {
-    return { ok: false, reason: 'WebGL tidak tersedia di peramban ini' }
+    return { ok: false, reason: 'WebGL is not available in this browser' }
   }
   try {
     const canvas = document.createElement('canvas')
     const gl =
       canvas.getContext('webgl2') ??
       (canvas.getContext('webgl') as WebGLRenderingContext | null)
-    if (!gl) return { ok: false, reason: 'Konteks WebGL tidak dapat dibuat' }
+    if (!gl) return { ok: false, reason: 'A WebGL context could not be created' }
 
     const dbg = gl.getExtension('WEBGL_debug_renderer_info')
     const renderer = dbg

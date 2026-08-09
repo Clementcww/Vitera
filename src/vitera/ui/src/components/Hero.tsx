@@ -111,7 +111,7 @@ export function HeroCards({
                 e.stopPropagation()
                 setOpen(false)
               }}
-              aria-label="Tutup"
+              aria-label="Close"
             >
               ×
             </button>

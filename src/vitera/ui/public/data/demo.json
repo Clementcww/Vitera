@@ -10,6 +10,8 @@
   "seed": 20260731,
   "cohort": 36,
   "cohort_selection": "stratified for demo coverage — up to 3 episodes per defect class, remainder clean claims. NOT a random sample; no measured result is computed from this cohort.",
+  "on_ward": 13,
+  "ward_note": "13 of 36 episodes are evaluated mid-stay, at day < discharge — the same pipeline the sweep runs nightly. The rest are evaluated at discharge. No episode appears twice.",
   "model": "models/cross_encoder",
   "model_unavailable": null,
   "advisory": false,
@@ -127,17 +129,17 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.1587,
+    "elapsed_seconds": 0.2242,
     "tool_calls": [
      {
       "tool": "rules",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0045
+      "elapsed_seconds": 0.004
      },
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.1542
+      "elapsed_seconds": 0.2202
      }
     ]
    }
@@ -283,7 +285,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0638,
+    "elapsed_seconds": 0.0611,
     "tool_calls": [
      {
       "tool": "rules",
@@ -293,7 +295,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0638
+      "elapsed_seconds": 0.0611
      }
     ]
    }
@@ -301,10 +303,10 @@
   {
    "episode_id": "EP000417",
    "site_id": "RS010",
-   "day": 7,
+   "day": 6,
    "los_so_far": 7,
    "discharge_day": 7,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-06-17",
    "verdict": "flagged",
    "verdict_reason": "1 temuan di atas ambang 0.0015",
@@ -403,25 +405,13 @@
      "day": 6,
      "absent": false,
      "text": "Hari perawatan ke-6.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_7",
-     "day": 7,
-     "absent": false,
-     "text": "Hari perawatan ke-7.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 7,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 7 hari.\nDiagnosis utama: Pneumonia dan influenza (J18.9).\nDiagnosis sekunder: tidak ada.\n\nPerjalanan penyakit:\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0001,
+    "elapsed_seconds": 0.0,
     "tool_calls": [
      {
       "tool": "rules",
@@ -535,7 +525,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0227,
+    "elapsed_seconds": 0.0221,
     "tool_calls": [
      {
       "tool": "rules",
@@ -545,7 +535,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0227
+      "elapsed_seconds": 0.0221
      }
     ]
    }
@@ -553,10 +543,10 @@
   {
    "episode_id": "EP000466",
    "site_id": "RS011",
-   "day": 9,
+   "day": 7,
    "los_so_far": 9,
    "discharge_day": 9,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-02-08",
    "verdict": "flagged",
    "verdict_reason": "1 temuan di atas ambang 0.0015",
@@ -595,15 +585,15 @@
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
-     "score": 0.8871,
+     "score": 0.8659,
      "source": "cross_encoder",
      "rationale": "bukti klinis untuk J96.0 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
      "span": {
-      "doc_id": "cppt_hari_8",
+      "doc_id": "cppt_hari_7",
       "start": 56,
       "end": 85,
       "text": "  - Saturasi oksigen ↓ (90 %)",
-      "evidence_hash": "07491d324b929640"
+      "evidence_hash": "77ac23a4c786f897"
      }
     }
    ],
@@ -661,31 +651,13 @@
      "day": 7,
      "absent": false,
      "text": "Hari perawatan ke-7.\nDiagnosis kerja: Stroke hemoragik.\n  - Saturasi oksigen ↓ (90 %)\n  - Ventilasi mekanik\n  - Analisa gas darah abnormal (pH < 7.35)\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_8",
-     "day": 8,
-     "absent": false,
-     "text": "Hari perawatan ke-8.\nDiagnosis kerja: Stroke hemoragik.\n  - Saturasi oksigen ↓ (90 %)\n  - Ventilasi mekanik\n  - Analisa gas darah abnormal (pH < 7.35)\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_9",
-     "day": 9,
-     "absent": true,
-     "text": ""
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 9,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 9 hari.\nDiagnosis utama: Stroke hemoragik (I61.9).\nDiagnosis sekunder: tidak ada.\n\nPerjalanan penyakit:\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0224,
+    "elapsed_seconds": 0.0218,
     "tool_calls": [
      {
       "tool": "rules",
@@ -695,7 +667,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0224
+      "elapsed_seconds": 0.0218
      }
     ]
    }
@@ -817,7 +789,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0001,
+    "elapsed_seconds": 0.0,
     "tool_calls": [
      {
       "tool": "rules",
@@ -835,10 +807,10 @@
   {
    "episode_id": "EP000539",
    "site_id": "RS012",
-   "day": 11,
+   "day": 8,
    "los_so_far": 11,
    "discharge_day": 11,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-01-17",
    "verdict": "flagged",
    "verdict_reason": "1 temuan di atas ambang 0.0015",
@@ -877,15 +849,15 @@
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
-     "score": 0.8389,
+     "score": 0.786,
      "source": "cross_encoder",
      "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
      "span": {
-      "doc_id": "cppt_hari_11",
-      "start": 57,
-      "end": 93,
+      "doc_id": "cppt_hari_8",
+      "start": 56,
+      "end": 92,
       "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
-      "evidence_hash": "7e4e71bac8579a0a"
+      "evidence_hash": "0add35f2d4416170"
      }
     }
    ],
@@ -949,37 +921,13 @@
      "day": 8,
      "absent": false,
      "text": "Hari perawatan ke-8.\nDiagnosis kerja: Stroke hemoragik.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_9",
-     "day": 9,
-     "absent": false,
-     "text": "Hari perawatan ke-9.\nDiagnosis kerja: Stroke hemoragik.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_10",
-     "day": 10,
-     "absent": false,
-     "text": "Hari perawatan ke-10.\nDiagnosis kerja: Stroke hemoragik.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_11",
-     "day": 11,
-     "absent": false,
-     "text": "Hari perawatan ke-11.\nDiagnosis kerja: Stroke hemoragik.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 11,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 11 hari.\nDiagnosis utama: Stroke hemoragik (I61.9).\nDiagnosis sekunder: tidak ada.\n\nPerjalanan penyakit:\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0224,
+    "elapsed_seconds": 0.0219,
     "tool_calls": [
      {
       "tool": "rules",
@@ -989,7 +937,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0224
+      "elapsed_seconds": 0.0218
      }
     ]
    }
@@ -997,13 +945,13 @@
   {
    "episode_id": "EP000717",
    "site_id": "RS010",
-   "day": 7,
+   "day": 6,
    "los_so_far": 7,
    "discharge_day": 7,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-01-23",
    "verdict": "flagged",
-   "verdict_reason": "1 temuan di atas ambang 0.0015",
+   "verdict_reason": "2 temuan di atas ambang 0.0015",
    "advisory": false,
    "classes_checked": [
     "D1",
@@ -1018,9 +966,9 @@
    "classes_unchecked": [],
    "money": {
     "now": {
-     "cbg_code": "A-4-15-II",
-     "severity": 2,
-     "tariff_idr": 17825000,
+     "cbg_code": "A-4-15-I",
+     "severity": 1,
+     "tariff_idr": 11500000,
      "ungroupable_reason": null
     },
     "if_confirmed": {
@@ -1029,7 +977,7 @@
      "tariff_idr": 29900000,
      "ungroupable_reason": null
     },
-    "delta_idr": 12075000,
+    "delta_idr": 18400000,
     "source": "grouper"
    },
    "flags": [
@@ -1039,15 +987,32 @@
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
-     "score": 0.8592,
+     "score": 0.8487,
      "source": "cross_encoder",
      "rationale": "bukti klinis untuk N18.3 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
      "span": {
-      "doc_id": "cppt_hari_7",
+      "doc_id": "cppt_hari_6",
       "start": 149,
       "end": 182,
       "text": "  - Kreatinin serum ↑ (1.5 mg/dL)",
-      "evidence_hash": "b5a0276316fafd0d"
+      "evidence_hash": "1783513413b4e0ad"
+     }
+    },
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8047,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_6",
+      "start": 46,
+      "end": 82,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "2a5dd265024de824"
      }
     }
    ],
@@ -1099,25 +1064,13 @@
      "day": 6,
      "absent": false,
      "text": "Hari perawatan ke-6.\nDiagnosis kerja: Sepsis.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Kreatinin serum ↑ (1.5 mg/dL)\n  - Ureum ↑ (50 mg/dL)\n  - eGFR ↓ (60 mL/min)\n  - Infus Ringer Laktat loading\n  - Nadi ↑ (100 x/menit)\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_7",
-     "day": 7,
-     "absent": false,
-     "text": "Hari perawatan ke-7.\nDiagnosis kerja: Sepsis.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Kreatinin serum ↑ (1.5 mg/dL)\n  - Ureum ↑ (50 mg/dL)\n  - eGFR ↓ (60 mL/min)\n  - Infus Ringer Laktat loading\n  - Nadi ↑ (100 x/menit)\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 7,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 7 hari.\nDiagnosis utama: Sepsis (A41.9).\nDiagnosis sekunder:\n  - Diabetes mellitus tipe 2 tanpa komplikasi (E11.9)\n\nPerjalanan penyakit:\n  DM tipe 2 lama, mendapat terapi metformin.\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0411,
+    "elapsed_seconds": 0.04,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1126,8 +1079,8 @@
      },
      {
       "tool": "cross_encoder",
-      "result_digest": "1 flags",
-      "elapsed_seconds": 0.041
+      "result_digest": "2 flags",
+      "elapsed_seconds": 0.04
      }
     ]
    }
@@ -1243,7 +1196,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0411,
+    "elapsed_seconds": 0.0401,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1253,7 +1206,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.041
+      "elapsed_seconds": 0.0401
      }
     ]
    }
@@ -1397,7 +1350,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0233
+      "elapsed_seconds": 0.0234
      }
     ]
    }
@@ -1501,7 +1454,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0227,
+    "elapsed_seconds": 0.0218,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1511,7 +1464,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0227
+      "elapsed_seconds": 0.0218
      }
     ]
    }
@@ -1519,10 +1472,10 @@
   {
    "episode_id": "EP001126",
    "site_id": "RS011",
-   "day": 9,
+   "day": 8,
    "los_so_far": 9,
    "discharge_day": 9,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-03-02",
    "verdict": "flagged",
    "verdict_reason": "1 temuan di atas ambang 0.0015",
@@ -1561,15 +1514,15 @@
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
-     "score": 0.0163,
+     "score": 0.2791,
      "source": "cross_encoder",
      "rationale": "bukti klinis untuk E44.0 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
      "span": {
-      "doc_id": "cppt_hari_9",
+      "doc_id": "cppt_hari_8",
       "start": 90,
       "end": 114,
       "text": "  - Albumin ↓ (3.0 g/dL)",
-      "evidence_hash": "eb4b3646a32ac1a4"
+      "evidence_hash": "7ed24dd5fe021c2c"
      }
     }
    ],
@@ -1633,25 +1586,13 @@
      "day": 8,
      "absent": false,
      "text": "Hari perawatan ke-8.\nDiagnosis kerja: Sepsis.\n  - Kalium serum ↓ (3.5 mEq/L)\n  - KCl drip\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_9",
-     "day": 9,
-     "absent": false,
-     "text": "Hari perawatan ke-9.\nDiagnosis kerja: Sepsis.\n  - Kalium serum ↓ (3.5 mEq/L)\n  - KCl drip\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 9,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 9 hari.\nDiagnosis utama: Sepsis (A41.9).\nDiagnosis sekunder:\n  - Malnutrisi protein-energi sedang (E44.0)\n\nPerjalanan penyakit:\n  Hipoalbuminemia, koreksi albumin.\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0224,
+    "elapsed_seconds": 0.0219,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1661,7 +1602,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0223
+      "elapsed_seconds": 0.0219
      }
     ]
    }
@@ -1777,7 +1718,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0225,
+    "elapsed_seconds": 0.0232,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1787,7 +1728,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0225
+      "elapsed_seconds": 0.0232
      }
     ]
    }
@@ -1938,17 +1879,17 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0251,
+    "elapsed_seconds": 0.0218,
     "tool_calls": [
      {
       "tool": "rules",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0001
+      "elapsed_seconds": 0.0
      },
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.025
+      "elapsed_seconds": 0.0218
      }
     ]
    }
@@ -1956,10 +1897,10 @@
   {
    "episode_id": "EP001654",
    "site_id": "RS011",
-   "day": 4,
+   "day": 3,
    "los_so_far": 4,
    "discharge_day": 4,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-09-19",
    "verdict": "flagged",
    "verdict_reason": "1 temuan di atas ambang 0.0015",
@@ -1998,15 +1939,15 @@
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
-     "score": 0.8591,
+     "score": 0.864,
      "source": "cross_encoder",
      "rationale": "kode I11.9 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
      "span": {
-      "doc_id": "resume_medis",
-      "start": 56,
-      "end": 115,
-      "text": "Diagnosis utama: Gastroenteritis dan kolitis infeksi (A09).",
-      "evidence_hash": "b2d43d8da36b8428"
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 144,
+      "text": "Diagnosis masuk: Gastroenteritis dan kolitis infeksi (A09)",
+      "evidence_hash": "02a97080c8c4bceb"
      }
     }
    ],
@@ -2040,25 +1981,13 @@
      "day": 3,
      "absent": false,
      "text": "Hari perawatan ke-3.\nDiagnosis kerja: Gastroenteritis dan kolitis infeksi.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Omeprazol 40 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_4",
-     "day": 4,
-     "absent": false,
-     "text": "Hari perawatan ke-4.\nDiagnosis kerja: Gastroenteritis dan kolitis infeksi.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Omeprazol 40 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 4,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 4 hari.\nDiagnosis utama: Gastroenteritis dan kolitis infeksi (A09).\nDiagnosis sekunder:\n  - Hipertensi esensial (primer) (I10)\n\nPerjalanan penyakit:\n  Riwayat hipertensi sejak 5 tahun, saat ini dalam terapi.\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0229,
+    "elapsed_seconds": 0.0218,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2068,7 +1997,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0228
+      "elapsed_seconds": 0.0218
      }
     ]
    }
@@ -2254,7 +2183,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.023,
+    "elapsed_seconds": 0.0226,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2264,7 +2193,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0229
+      "elapsed_seconds": 0.0225
      }
     ]
    }
@@ -2455,7 +2384,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0412,
+    "elapsed_seconds": 0.0401,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2465,7 +2394,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "2 flags",
-      "elapsed_seconds": 0.041
+      "elapsed_seconds": 0.04
      }
     ]
    }
@@ -2593,7 +2522,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0223,
+    "elapsed_seconds": 0.0219,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2603,7 +2532,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0223
+      "elapsed_seconds": 0.0219
      }
     ]
    }
@@ -2799,7 +2728,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0847,
+    "elapsed_seconds": 0.0757,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2809,7 +2738,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "3 flags",
-      "elapsed_seconds": 0.0846
+      "elapsed_seconds": 0.0756
      }
     ]
    }
@@ -2817,10 +2746,10 @@
   {
    "episode_id": "EP002686",
    "site_id": "RS011",
-   "day": 8,
+   "day": 5,
    "los_so_far": 8,
    "discharge_day": 8,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-10-18",
    "verdict": "flagged",
    "verdict_reason": "1 temuan di atas ambang 0.0015",
@@ -2859,15 +2788,15 @@
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
-     "score": 0.0034,
+     "score": 0.0171,
      "source": "cross_encoder",
      "rationale": "bukti klinis untuk E44.0 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
      "span": {
-      "doc_id": "cppt_hari_8",
+      "doc_id": "cppt_hari_5",
       "start": 132,
       "end": 156,
       "text": "  - Albumin ↓ (3.0 g/dL)",
-      "evidence_hash": "7ed24dd5fe021c2c"
+      "evidence_hash": "7e2ebae061f1a158"
      }
     }
    ],
@@ -2913,37 +2842,13 @@
      "day": 5,
      "absent": false,
      "text": "Hari perawatan ke-5.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_6",
-     "day": 6,
-     "absent": false,
-     "text": "Hari perawatan ke-6.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_7",
-     "day": 7,
-     "absent": false,
-     "text": "Hari perawatan ke-7.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_8",
-     "day": 8,
-     "absent": false,
-     "text": "Hari perawatan ke-8.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 8,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 8 hari.\nDiagnosis utama: Pneumonia dan influenza (J18.9).\nDiagnosis sekunder:\n  - Malnutrisi protein-energi sedang (E44.0)\n\nPerjalanan penyakit:\n  Hipoalbuminemia, koreksi albumin.\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0226,
+    "elapsed_seconds": 0.0218,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2953,7 +2858,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0226
+      "elapsed_seconds": 0.0218
      }
     ]
    }
@@ -2961,10 +2866,10 @@
   {
    "episode_id": "EP002794",
    "site_id": "RS011",
-   "day": 10,
+   "day": 7,
    "los_so_far": 10,
    "discharge_day": 10,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-01-08",
    "verdict": "flagged",
    "verdict_reason": "3 temuan di atas ambang 0.0015",
@@ -3003,15 +2908,15 @@
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
-     "score": 0.8384,
+     "score": 0.7878,
      "source": "cross_encoder",
      "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
      "span": {
-      "doc_id": "cppt_hari_10",
-      "start": 128,
-      "end": 164,
+      "doc_id": "cppt_hari_7",
+      "start": 127,
+      "end": 163,
       "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
-      "evidence_hash": "b9fcaba48899088f"
+      "evidence_hash": "cbbdacc6bf6a3ea4"
      }
     },
     {
@@ -3037,15 +2942,15 @@
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
-     "score": 0.9019,
+     "score": 0.8972,
      "source": "cross_encoder",
      "rationale": "kode A41.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
      "span": {
-      "doc_id": "resume_medis",
-      "start": 57,
-      "end": 96,
-      "text": "Diagnosis utama: Stroke infark (I63.9).",
-      "evidence_hash": "a5a8baec192f9f98"
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 124,
+      "text": "Diagnosis masuk: Stroke infark (I63.9)",
+      "evidence_hash": "e1ccc9fd8a308586"
      }
     }
    ],
@@ -3103,47 +3008,23 @@
      "day": 7,
      "absent": false,
      "text": "Hari perawatan ke-7.\nDiagnosis kerja: Stroke infark.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_8",
-     "day": 8,
-     "absent": false,
-     "text": "Hari perawatan ke-8.\nDiagnosis kerja: Stroke infark.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_9",
-     "day": 9,
-     "absent": false,
-     "text": "Hari perawatan ke-9.\nDiagnosis kerja: Stroke infark.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_10",
-     "day": 10,
-     "absent": false,
-     "text": "Hari perawatan ke-10.\nDiagnosis kerja: Stroke infark.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 10,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 10 hari.\nDiagnosis utama: Stroke infark (I63.9).\nDiagnosis sekunder:\n  - Anemia, tidak dispesifikasi (D64.9)\n\nPerjalanan penyakit:\n  Hb rendah saat masuk, koreksi dengan transfusi.\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0621,
+    "elapsed_seconds": 0.067,
     "tool_calls": [
      {
       "tool": "rules",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0001
+      "elapsed_seconds": 0.0
      },
      {
       "tool": "cross_encoder",
       "result_digest": "2 flags",
-      "elapsed_seconds": 0.062
+      "elapsed_seconds": 0.067
      }
     ]
    }
@@ -3151,13 +3032,13 @@
   {
    "episode_id": "EP002927",
    "site_id": "RS012",
-   "day": 4,
+   "day": 2,
    "los_so_far": 4,
    "discharge_day": 4,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-02-27",
-   "verdict": "flagged",
-   "verdict_reason": "1 temuan di atas ambang 0.0015",
+   "verdict": "abstain",
+   "verdict_reason": "tidak dapat dikelompokkan: grup K-1-20 memerlukan prosedur 47.09, tidak ada pada klaim",
    "advisory": false,
    "classes_checked": [
     "D1",
@@ -3186,25 +3067,7 @@
     "delta_idr": null,
     "source": "grouper"
    },
-   "flags": [
-    {
-     "defect_class": "D6",
-     "defect_label": "Procedure-diagnosis incoherence",
-     "remedy": "RECODE",
-     "actor": "Koder",
-     "decay_rank": 2,
-     "score": 1.0,
-     "source": "rules",
-     "rationale": "prosedur 45.73 dikode namun tidak tercatat dilakukan pada rekam medis",
-     "span": {
-      "doc_id": "resume_medis",
-      "start": 131,
-      "end": 166,
-      "text": "Tindakan: Apendektomi lain (47.09).",
-      "evidence_hash": "5b116370e88520dc"
-     }
-    }
-   ],
+   "flags": [],
    "documents": [
     {
      "doc_id": "berkas_klaim",
@@ -3229,24 +3092,6 @@
      "day": 2,
      "absent": false,
      "text": "Hari perawatan ke-2.\nDiagnosis kerja: Prosedur apendiks.\n  - Infus Ringer Laktat loading\n  - Nadi ↑ (100 x/menit)\n  - Omeprazol 40 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_3",
-     "day": 3,
-     "absent": false,
-     "text": "Hari perawatan ke-3.\nDiagnosis kerja: Prosedur apendiks.\n  - Infus Ringer Laktat loading\n  - Nadi ↑ (100 x/menit)\n  - Omeprazol 40 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_4",
-     "day": 4,
-     "absent": false,
-     "text": "Hari perawatan ke-4.\nDiagnosis kerja: Prosedur apendiks.\n  - Infus Ringer Laktat loading\n  - Nadi ↑ (100 x/menit)\n  - Omeprazol 40 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 4,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 4 hari.\nDiagnosis utama: Prosedur apendiks (K35.8).\nDiagnosis sekunder: tidak ada.\nTindakan: Apendektomi lain (47.09).\n\nPerjalanan penyakit:\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
@@ -3257,7 +3102,7 @@
     "tool_calls": [
      {
       "tool": "rules",
-      "result_digest": "1 flags",
+      "result_digest": "0 flags",
       "elapsed_seconds": 0.0
      },
      {
@@ -3379,7 +3224,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0229,
+    "elapsed_seconds": 0.022,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3389,7 +3234,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0229
+      "elapsed_seconds": 0.0219
      }
     ]
    }
@@ -3511,7 +3356,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0227,
+    "elapsed_seconds": 0.0218,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3521,7 +3366,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0227
+      "elapsed_seconds": 0.0218
      }
     ]
    }
@@ -3722,7 +3567,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0936,
+    "elapsed_seconds": 0.0913,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3732,7 +3577,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "3 flags",
-      "elapsed_seconds": 0.0935
+      "elapsed_seconds": 0.0913
      }
     ]
    }
@@ -3836,7 +3681,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0227,
+    "elapsed_seconds": 0.0219,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3846,7 +3691,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0227
+      "elapsed_seconds": 0.0219
      }
     ]
    }
@@ -3854,13 +3699,13 @@
   {
    "episode_id": "EP003190",
    "site_id": "RS011",
-   "day": 5,
+   "day": 3,
    "los_so_far": 5,
    "discharge_day": 5,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-01-29",
    "verdict": "flagged",
-   "verdict_reason": "4 temuan di atas ambang 0.0015",
+   "verdict_reason": "3 temuan di atas ambang 0.0015",
    "advisory": false,
    "classes_checked": [
     "D1",
@@ -3896,32 +3741,15 @@
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
-     "score": 0.8092,
+     "score": 0.8061,
      "source": "cross_encoder",
      "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
      "span": {
-      "doc_id": "cppt_hari_5",
+      "doc_id": "cppt_hari_3",
       "start": 63,
       "end": 99,
       "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
-      "evidence_hash": "cf824905009771c5"
-     }
-    },
-    {
-     "defect_class": "D1",
-     "defect_label": "Berkas tidak lengkap",
-     "remedy": "OBTAIN",
-     "actor": "Petugas berkas",
-     "decay_rank": 1,
-     "score": 1.0,
-     "source": "rules",
-     "rationale": "resume_medis tidak dilampirkan pada berkas klaim",
-     "span": {
-      "doc_id": "berkas_klaim",
-      "start": 135,
-      "end": 214,
-      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
-      "evidence_hash": "b2c56ee3e9511f0b"
+      "evidence_hash": "3e6325848c673b30"
      }
     },
     {
@@ -3947,7 +3775,7 @@
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
-     "score": 0.6067,
+     "score": 0.6044,
      "source": "cross_encoder",
      "rationale": "kode E44.0 tidak didukung bukti apa pun pada rekam medis yang tersedia",
      "span": {
@@ -3989,41 +3817,23 @@
      "day": 3,
      "absent": false,
      "text": "Hari perawatan ke-3.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_4",
-     "day": 4,
-     "absent": false,
-     "text": "Hari perawatan ke-4.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_5",
-     "day": 5,
-     "absent": false,
-     "text": "Hari perawatan ke-5.\nDiagnosis kerja: Pneumonia dan influenza.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 5,
-     "absent": true,
-     "text": ""
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0408,
+    "elapsed_seconds": 0.0397,
     "tool_calls": [
      {
       "tool": "rules",
-      "result_digest": "2 flags",
+      "result_digest": "1 flags",
       "elapsed_seconds": 0.0
      },
      {
       "tool": "cross_encoder",
       "result_digest": "2 flags",
-      "elapsed_seconds": 0.0408
+      "elapsed_seconds": 0.0396
      }
     ]
    }
@@ -4031,10 +3841,10 @@
   {
    "episode_id": "EP003261",
    "site_id": "RS010",
-   "day": 7,
+   "day": 5,
    "los_so_far": 7,
    "discharge_day": 7,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-06-19",
    "verdict": "clean",
    "verdict_reason": "tidak ada temuan di atas ambang",
@@ -4109,24 +3919,6 @@
      "day": 5,
      "absent": false,
      "text": "Hari perawatan ke-5.\nDiagnosis kerja: Sepsis.\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_6",
-     "day": 6,
-     "absent": false,
-     "text": "Hari perawatan ke-6.\nDiagnosis kerja: Sepsis.\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_7",
-     "day": 7,
-     "absent": false,
-     "text": "Hari perawatan ke-7.\nDiagnosis kerja: Sepsis.\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 7,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 7 hari.\nDiagnosis utama: Sepsis (A41.9).\nDiagnosis sekunder: tidak ada.\n\nPerjalanan penyakit:\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
@@ -4391,10 +4183,10 @@
   {
    "episode_id": "EP003526",
    "site_id": "RS011",
-   "day": 13,
+   "day": 12,
    "los_so_far": 13,
    "discharge_day": 13,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-09-30",
    "verdict": "flagged",
    "verdict_reason": "1 temuan di atas ambang 0.0015",
@@ -4433,15 +4225,15 @@
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
-     "score": 0.8872,
+     "score": 0.8829,
      "source": "cross_encoder",
      "rationale": "kode E14.9 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
      "span": {
-      "doc_id": "resume_medis",
-      "start": 57,
-      "end": 96,
-      "text": "Diagnosis utama: Stroke infark (I63.9).",
-      "evidence_hash": "a5a8baec192f9f98"
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 124,
+      "text": "Diagnosis masuk: Stroke infark (I63.9)",
+      "evidence_hash": "e1ccc9fd8a308586"
      }
     }
    ],
@@ -4529,25 +4321,13 @@
      "day": 12,
      "absent": false,
      "text": "Hari perawatan ke-12.\nDiagnosis kerja: Stroke infark.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_13",
-     "day": 13,
-     "absent": false,
-     "text": "Hari perawatan ke-13.\nDiagnosis kerja: Stroke infark.\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 13,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 13 hari.\nDiagnosis utama: Stroke infark (I63.9).\nDiagnosis sekunder:\n  - Diabetes mellitus tipe 2 tanpa komplikasi (E11.9)\n\nPerjalanan penyakit:\n  Pasien dengan riwayat DM tipe 2, gula darah terkontrol dengan insulin.\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0227,
+    "elapsed_seconds": 0.0218,
     "tool_calls": [
      {
       "tool": "rules",
@@ -4557,7 +4337,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0226
+      "elapsed_seconds": 0.0218
      }
     ]
    }
@@ -4973,13 +4753,13 @@
   {
    "episode_id": "EP003861",
    "site_id": "RS010",
-   "day": 7,
+   "day": 4,
    "los_so_far": 7,
    "discharge_day": 7,
-   "still_admitted": false,
+   "still_admitted": true,
    "admission_date": "2026-01-08",
    "verdict": "flagged",
-   "verdict_reason": "3 temuan di atas ambang 0.0015",
+   "verdict_reason": "4 temuan di atas ambang 0.0015",
    "advisory": false,
    "classes_checked": [
     "D1",
@@ -4994,9 +4774,9 @@
    "classes_unchecked": [],
    "money": {
     "now": {
-     "cbg_code": "N-4-10-II",
-     "severity": 2,
-     "tariff_idr": 12245000,
+     "cbg_code": "N-4-10-I",
+     "severity": 1,
+     "tariff_idr": 7900000,
      "ungroupable_reason": null
     },
     "if_confirmed": {
@@ -5005,7 +4785,7 @@
      "tariff_idr": 12245000,
      "ungroupable_reason": null
     },
-    "delta_idr": 0,
+    "delta_idr": 4345000,
     "source": "grouper"
    },
    "flags": [
@@ -5015,15 +4795,32 @@
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
-     "score": 0.0021,
+     "score": 0.3611,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E87.6 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_2",
+      "start": 202,
+      "end": 232,
+      "text": "  - Kalium serum ↓ (3.5 mEq/L)",
+      "evidence_hash": "7cd6b225dc3bf920"
+     }
+    },
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0041,
      "source": "cross_encoder",
      "rationale": "bukti klinis untuk E44.0 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
      "span": {
-      "doc_id": "cppt_hari_7",
-      "start": 349,
-      "end": 373,
+      "doc_id": "cppt_hari_2",
+      "start": 246,
+      "end": 270,
       "text": "  - Albumin ↓ (3.0 g/dL)",
-      "evidence_hash": "8386bccaa966fd74"
+      "evidence_hash": "4473be1e44274f39"
      }
     },
     {
@@ -5049,15 +4846,15 @@
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
-     "score": 0.9015,
+     "score": 0.9004,
      "source": "cross_encoder",
      "rationale": "kode A41.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
      "span": {
-      "doc_id": "resume_medis",
-      "start": 56,
-      "end": 101,
-      "text": "Diagnosis utama: Gagal ginjal kronik (N18.5).",
-      "evidence_hash": "78a20599e4132da3"
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 130,
+      "text": "Diagnosis masuk: Gagal ginjal kronik (N18.5)",
+      "evidence_hash": "119e6297c075152f"
      }
     }
    ],
@@ -5097,37 +4894,13 @@
      "day": 4,
      "absent": true,
      "text": ""
-    },
-    {
-     "doc_id": "cppt_hari_5",
-     "day": 5,
-     "absent": false,
-     "text": "Hari perawatan ke-5.\nDiagnosis kerja: Gagal ginjal kronik.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\n  - Kalium serum ↓ (3.5 mEq/L)\n  - KCl drip\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_6",
-     "day": 6,
-     "absent": false,
-     "text": "Hari perawatan ke-6.\nDiagnosis kerja: Gagal ginjal kronik.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\n  - Kalium serum ↓ (3.5 mEq/L)\n  - KCl drip\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "cppt_hari_7",
-     "day": 7,
-     "absent": false,
-     "text": "Hari perawatan ke-7.\nDiagnosis kerja: Gagal ginjal kronik.\n  - Tekanan darah ↑ (140/90 mmHg)\n  - Amlodipin 10 mg\n  - Captopril 25 mg\n  - Gula darah sewaktu ↑ (200 mg/dL)\n  - HbA1c ↑ (6.5 %)\n  - Insulin rapid acting\n  - Metformin 500 mg\n  - Hemoglobin ↓ (10 g/dL)\n  - Hematokrit ↓ (30 %)\n  - Transfusi PRC\n  - Kalium serum ↓ (3.5 mEq/L)\n  - KCl drip\n  - Albumin ↓ (3.0 g/dL)\n  - Infus albumin 20%\nKeadaan umum tampak sakit sedang, kesadaran compos mentis."
-    },
-    {
-     "doc_id": "resume_medis",
-     "day": 7,
-     "absent": false,
-     "text": "RESUME MEDIS PASIEN RAWAT INAP\n\nLama perawatan: 7 hari.\nDiagnosis utama: Gagal ginjal kronik (N18.5).\nDiagnosis sekunder:\n  - Anemia, tidak dispesifikasi (D64.9)\n  - Hipokalemia (E87.6)\n  - Malnutrisi protein-energi sedang (E44.0)\n\nPerjalanan penyakit:\n  Anemia, telah dilakukan transfusi PRC 2 kolf.\n  Hipokalemia, koreksi dengan KCl drip.\n  Hipoalbuminemia, koreksi albumin.\nPasien dipulangkan dalam keadaan perbaikan."
     }
    ],
    "validation_failures": [],
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.082,
+    "elapsed_seconds": 0.0791,
     "tool_calls": [
      {
       "tool": "rules",
@@ -5136,8 +4909,8 @@
      },
      {
       "tool": "cross_encoder",
-      "result_digest": "2 flags",
-      "elapsed_seconds": 0.0819
+      "result_digest": "3 flags",
+      "elapsed_seconds": 0.0791
      }
     ]
    }

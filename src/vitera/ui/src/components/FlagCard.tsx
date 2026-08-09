@@ -112,7 +112,7 @@ export function FlagCard({
           <div className="acts">
             <button className="act primary" onClick={onStage} disabled={staged}>
               {staged
-                ? 'Sudah di baki'
+                ? 'Already staged'
                 : isQuery
                   ? 'Stage the question'
                   : 'Stage the fix'}
