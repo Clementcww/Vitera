@@ -13,9 +13,12 @@ difference, so every finding carries rupiah, not a severity label.
 
 ```bash
 python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
-./venv/bin/python -m pytest             # 3 tests, ~1s
-./venv/bin/python main.py               # http://localhost:8000/docs
+./venv/bin/python -m pytest             # 5 tests, ~1s
+./venv/bin/python main.py               # http://localhost:8000
 ```
+
+Open `http://localhost:8000` for the demo UI (pick an episode, click Review),
+or `http://localhost:8000/docs` for the raw API.
 
 ```bash
 curl -X POST localhost:8000/api/v1/claims/review \
@@ -23,8 +26,13 @@ curl -X POST localhost:8000/api/v1/claims/review \
   -d @sample-data/EP-2026-04471.json
 ```
 
-On the sample episode: `Rp 18.400.000 → Rp 21.950.000` recoverable,
-`Rp 4.800.000` at risk.
+Three sample episodes, three outcomes:
+
+| Episode | Status | What it shows |
+|---|---|---|
+| `EP-2026-04471` | review | `Rp 18.400.000 → Rp 21.950.000` recoverable, `Rp 4.800.000` at risk — under-coded transfusion, wrong CKD stage, MRI ordered with no radiologi result attached |
+| `EP-2026-04472` | clean | fully documented, correctly coded — no findings |
+| `EP-2026-04473` | review | resume medis has no DPJP signature — caught by `rules` alone, before the encoder ever runs |
 
 `torch` and `transformers` are in `requirements.txt` but unused while
 `encoder.model_path` is `null` — the pipeline runs end to end without weights.
@@ -86,3 +94,11 @@ retrain.
 
 Handwriting is out of scope. A page that will not OCR is marked unreadable and
 surfaced — never silently dropped.
+
+## Demo UI
+
+`web/index.html`, served by FastAPI's `StaticFiles` mount in `main.py` — no
+build step, no separate process. Picks an episode from `sample-data/`, calls
+`POST /api/v1/claims/review`, renders the status badge, the three rupiah
+figures, and each finding with its quoted span. Not a product surface — it
+exists so the pitch video has something to point a camera at besides `curl`.

@@ -13,10 +13,15 @@ from service.redact import PII_PATTERNS, to_safe_episode
 from src.claim.usecase import ClaimUsecase
 
 SAMPLE = Path(__file__).resolve().parent.parent / "sample-data" / "EP-2026-04471.json"
+SAMPLE_DIR = SAMPLE.parent
 
 
 def _sample() -> RawEpisode:
     return RawEpisode(**json.loads(SAMPLE.read_text()))
+
+
+def _episode(filename: str) -> RawEpisode:
+    return RawEpisode(**json.loads((SAMPLE_DIR / filename).read_text()))
 
 
 def test_redaction_removes_pii():
@@ -72,3 +77,28 @@ def test_review_recovers_documented_tariff():
             assert finding.span
             doc = next(d for d in to_safe_episode(_sample()).docs if d.doc_id == finding.doc)
             assert finding.span.casefold() in doc.text.casefold()
+
+
+def test_clean_episode_produces_no_findings():
+    """Claim: a fully-documented, correctly-coded episode is not flagged.
+
+    A pipeline that only ever finds problems is not trustworthy — this is the
+    counter-example demo/pitch episodes need alongside EP-2026-04471.
+    """
+    report = ClaimUsecase().review_episode(_episode("EP-2026-04472.json"))
+
+    assert report.status == "clean"
+    assert report.findings == []
+    assert report.adjusted == report.baseline
+    assert report.at_risk == 0
+
+
+def test_missing_signature_caught_without_the_model():
+    """Claim: a completeness defect (C2) is caught by rules alone, before the
+    encoder ever runs — no cross-encoder weights required for this class."""
+    report = ClaimUsecase().review_episode(_episode("EP-2026-04473.json"))
+
+    assert report.status == "review"
+    classes = {f.cls for f in report.findings}
+    assert DefectClass.C2_MISSING_SIGNATURE in classes
+    assert all(f.src == "rules" for f in report.findings)

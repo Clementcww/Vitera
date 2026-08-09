@@ -1,0 +1,84 @@
+{
+  "episode_id": "EP-2026-04473",
+  "admitted_at": "2026-08-01",
+  "discharged_at": "2026-08-05",
+  "hospital_day": 5,
+  "demographics": {
+    "name": "Wahyu Setiawan",
+    "nik": "3273010504700001",
+    "sep": "0301R0110826V004412",
+    "sex": "M",
+    "age_years": 55
+  },
+  "docs": [
+    {
+      "doc_id": "d1",
+      "doc_type": "sep",
+      "stage": "checkin",
+      "received_at": "2026-08-01",
+      "extraction": "digital",
+      "signed": null,
+      "text": "SURAT ELIGIBILITAS PESERTA. No SEP 0301R0110826V004412. Nama peserta WAHYU SETIAWAN. NIK 3273010504700001. Jenis rawat: Rawat Inap. Diagnosa awal: Sepsis dengan penyakit ginjal kronik."
+    },
+    {
+      "doc_id": "d2",
+      "doc_type": "spri",
+      "stage": "checkin",
+      "received_at": "2026-08-01",
+      "extraction": "digital",
+      "signed": true,
+      "text": "SURAT PERINTAH RAWAT INAP. Pasien WAHYU SETIAWAN dirawat inap atas indikasi sepsis dengan penyakit ginjal kronik stadium 3. Kelas rawat 1."
+    },
+    {
+      "doc_id": "d3",
+      "doc_type": "lab",
+      "stage": "instay",
+      "received_at": "2026-08-02",
+      "extraction": "digital",
+      "signed": null,
+      "text": "HASIL PEMERIKSAAN LABORATORIUM. Ureum 58 mg/dL. Kreatinin 1.8 mg/dL. eGFR 48 mL/min/1.73m2. Albumin 3.9 g/dL. Hb 13.0 g/dL."
+    },
+    {
+      "doc_id": "d4",
+      "doc_type": "cppt",
+      "stage": "instay",
+      "received_at": "2026-08-03",
+      "extraction": "digital",
+      "signed": true,
+      "text": "CATATAN PERKEMBANGAN PASIEN TERINTEGRASI. Hari rawat 3. Kondisi stabil, demam turun bertahap. Terapi antibiotik dilanjutkan."
+    },
+    {
+      "doc_id": "d5",
+      "doc_type": "resume_medis",
+      "stage": "checkout",
+      "received_at": "2026-08-05",
+      "extraction": "digital",
+      "signed": false,
+      "text": "RESUME MEDIS. Diagnosa utama: Sepsis. Diagnosa sekunder: Penyakit ginjal kronik stadium 3. Kondisi pulang: membaik, rawat jalan poliklinik penyakit dalam."
+    },
+    {
+      "doc_id": "d6",
+      "doc_type": "tagihan",
+      "stage": "checkout",
+      "received_at": "2026-08-05",
+      "extraction": "digital",
+      "signed": null,
+      "text": "RINCIAN TAGIHAN. Rawat inap kelas 1, 5 hari. Obat dan BHP sesuai formularium nasional."
+    },
+    {
+      "doc_id": "d7",
+      "doc_type": "grouping",
+      "stage": "checkout",
+      "received_at": "2026-08-05",
+      "extraction": "digital",
+      "signed": null,
+      "text": "HASIL GROUPING INA-CBG. Kode A41.9, N18.3. Grup A-4-13-II."
+    }
+  ],
+  "claim": {
+    "principal_dx": "A41.9",
+    "secondary_dx": ["N18.3"],
+    "procedures": [],
+    "severity_level": 2
+  }
+}

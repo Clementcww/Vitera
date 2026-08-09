@@ -4,6 +4,7 @@ load_dotenv()
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from dto.exceptions import RFC9457ErrorResponse
 from fastapi.responses import JSONResponse
 from src.claim.delivery import router as claim_router
@@ -31,6 +32,11 @@ app.add_middleware(
 )
 
 app.include_router(claim_router)
+
+# Demo UI. Not production — a static page over the review endpoint, so the
+# pipeline has something to show besides curl during the pitch video.
+app.mount("/sample-data", StaticFiles(directory="sample-data"), name="sample-data")
+app.mount("/", StaticFiles(directory="web", html=True), name="web")
 
 
 @app.exception_handler(RFC9457ErrorResponse)

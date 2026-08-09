@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitera — Claim Integrity Review</title>
+<style>
+  :root {
+    --ink: #1a1f2b;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --clean: #16a34a;
+    --review: #d97706;
+    --urgent: #dc2626;
+    --accent: #2563eb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 24px 60px; }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .panel h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 14px; }
+  .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  select, button {
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+  button.primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  button.primary:hover { background: #1d4ed8; }
+  button.primary:disabled { background: #93b4f5; cursor: not-allowed; }
+  .status-row { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 13px;
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .badge.clean { background: #dcfce7; color: var(--clean); }
+  .badge.review { background: #fef3c7; color: var(--review); }
+  .badge.urgent { background: #fee2e2; color: var(--urgent); }
+  .money-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+  .money-card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .money-card .label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .money-card .value { font-size: 20px; font-weight: 700; }
+  .money-card.up .value { color: var(--clean); }
+  .money-card.risk .value { color: var(--urgent); }
+  .finding {
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: #fff;
+  }
+  .finding.model { border-left-color: #7c3aed; }
+  .finding-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .finding-cls { font-weight: 700; font-size: 13px; color: var(--accent); }
+  .finding.model .finding-cls { color: #7c3aed; }
+  .finding-conf { font-size: 12px; color: var(--muted); }
+  .finding-msg { margin: 6px 0 8px; font-size: 14px; }
+  .finding-span { font-size: 13px; color: var(--muted); background: var(--bg); padding: 8px 10px; border-radius: 6px; font-style: italic; }
+  .finding-span::before { content: "\201C"; }
+  .finding-span::after { content: "\201D"; }
+  .finding-delta { font-size: 12px; margin-top: 6px; font-weight: 600; }
+  .empty { color: var(--muted); font-size: 14px; padding: 20px 0; text-align: center; }
+  .src-tag { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: 4px; background: var(--bg); color: var(--muted); margin-left: 6px; }
+  .loading { color: var(--muted); font-size: 14px; }
+  .apibox { font-family: ui-monospace, Menlo, monospace; font-size: 12px; background: #0f172a; color: #cbd5e1; padding: 12px 14px; border-radius: 8px; overflow-x: auto; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding-bottom: 40px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Vitera</h1>
+    <p>Hospital-side BPJS claim integrity engine</p>
+  </div>
+  <div class="apibox" id="apiTarget">POST /api/v1/claims/review</div>
+</header>
+
+<div class="wrap">
+
+  <div class="panel">
+    <h2>Pilih Episode</h2>
+    <div class="controls">
+      <select id="episodeSelect"></select>
+      <button class="primary" id="reviewBtn">Review Klaim</button>
+      <span class="loading" id="loadingText" style="display:none;">Memproses…</span>
+    </div>
+  </div>
+
+  <div class="panel" id="resultPanel" style="display:none;">
+    <h2>Hasil Review</h2>
+    <div class="status-row">
+      <span class="badge" id="statusBadge"></span>
+      <span id="episodeMeta" style="color: var(--muted); font-size: 13px;"></span>
+    </div>
+    <div class="money-grid">
+      <div class="money-card">
+        <div class="label">Tarif Saat Ini (baseline)</div>
+        <div class="value" id="valBaseline">—</div>
+      </div>
+      <div class="money-card up">
+        <div class="label">Tarif Sesuai Dokumentasi</div>
+        <div class="value" id="valAdjusted">—</div>
+      </div>
+      <div class="money-card risk">
+        <div class="label">Berisiko Pending</div>
+        <div class="value" id="valRisk">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="findingsPanel" style="display:none;">
+    <h2>Temuan</h2>
+    <div id="findingsList"></div>
+  </div>
+
+</div>
+
+<footer>Vitera Claim Integrity Engine — demo UI, tidak untuk produksi</footer>
+
+<script>
+const API_BASE = window.location.origin.includes("file") ? "http://localhost:8000" : "";
+const episodeSelect = document.getElementById("episodeSelect");
+const reviewBtn = document.getElementById("reviewBtn");
+const loadingText = document.getElementById("loadingText");
+const resultPanel = document.getElementById("resultPanel");
+const findingsPanel = document.getElementById("findingsPanel");
+
+const CLASS_LABELS = {
+  C1: "Dokumen Tidak Lengkap", C2: "Tanpa Tanda Tangan DPJP", C3: "Tindakan Tanpa Bukti",
+  R1: "Kode Tidak Valid", R2: "Konflik Demografis", R3: "Kombinasi Kode Terlarang",
+  M1: "Spesifisitas Kurang Tepat", M2: "Diagnosis Tidak Didukung",
+  M3: "Keparahan Tidak Didukung", M4: "Indikasi Upcoding", D8: "Under-coded",
+};
+
+function formatIDR(n) {
+  return "Rp " + Number(n).toLocaleString("id-ID");
+}
+
+async function loadEpisodeList() {
+  // Static list matching sample-data/. Update here if new files are added.
+  const episodes = [
+    { file: "EP-2026-04471.json", label: "EP-2026-04471 — Sepsis + CKD, hari rawat 3 (model + risiko dokumen)" },
+    { file: "EP-2026-04472.json", label: "EP-2026-04472 — Sepsis + CKD, terdokumentasi lengkap (bersih)" },
+    { file: "EP-2026-04473.json", label: "EP-2026-04473 — Sepsis + CKD, resume medis belum ditandatangani" },
+  ];
+  episodeSelect.innerHTML = episodes.map(e => `<option value="${e.file}">${e.label}</option>`).join("");
+}
+
+async function runReview() {
+  const file = episodeSelect.value;
+  reviewBtn.disabled = true;
+  loadingText.style.display = "inline";
+  resultPanel.style.display = "none";
+  findingsPanel.style.display = "none";
+
+  try {
+    const episodeResp = await fetch(`sample-data/${file}`);
+    const episode = await episodeResp.json();
+
+    const reviewResp = await fetch(`${API_BASE}/api/v1/claims/review`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(episode),
+    });
+    if (!reviewResp.ok) throw new Error(`HTTP ${reviewResp.status}`);
+    const report = await reviewResp.json();
+    render(report);
+  } catch (err) {
+    alert("Gagal memproses: " + err.message + "\n\nPastikan server API jalan di localhost:8000.");
+  } finally {
+    reviewBtn.disabled = false;
+    loadingText.style.display = "none";
+  }
+}
+
+function render(report) {
+  const badge = document.getElementById("statusBadge");
+  badge.className = "badge " + report.status;
+  badge.textContent = report.status === "clean" ? "Bersih"
+    : report.status === "review" ? "Perlu Ditinjau" : "Mendesak";
+
+  document.getElementById("episodeMeta").textContent =
+    `${report.episode_id} · hari rawat ${report.hospital_day}`;
+
+  document.getElementById("valBaseline").textContent = formatIDR(report.baseline);
+  document.getElementById("valAdjusted").textContent = formatIDR(report.adjusted);
+  document.getElementById("valRisk").textContent = formatIDR(report.at_risk);
+
+  resultPanel.style.display = "block";
+  findingsPanel.style.display = "block";
+
+  const list = document.getElementById("findingsList");
+  if (!report.findings.length) {
+    list.innerHTML = `<div class="empty">Tidak ada temuan — klaim ini konsisten dengan rekam medis.</div>`;
+    return;
+  }
+
+  list.innerHTML = report.findings.map(f => `
+    <div class="finding ${f.src}">
+      <div class="finding-head">
+        <span class="finding-cls">${CLASS_LABELS[f.cls] || f.cls} <span class="src-tag">${f.src}</span></span>
+        ${f.conf != null ? `<span class="finding-conf">keyakinan ${(f.conf * 100).toFixed(0)}%</span>` : ""}
+      </div>
+      <div class="finding-msg">${f.msg}</div>
+      ${f.span ? `<div class="finding-span">${f.span}</div>` : ""}
+      ${f.delta ? `<div class="finding-delta" style="color:${f.delta > 0 ? '#16a34a' : '#dc2626'}">
+        ${f.delta > 0 ? '+' : ''}${formatIDR(f.delta)} jika ditindaklanjuti</div>` : ""}
+      ${f.risk ? `<div class="finding-delta" style="color:#dc2626">${formatIDR(f.risk)} berisiko pending</div>` : ""}
+    </div>
+  `).join("");
+}
+
+reviewBtn.addEventListener("click", runReview);
+loadEpisodeList();
+</script>
+</body>
+</html>
