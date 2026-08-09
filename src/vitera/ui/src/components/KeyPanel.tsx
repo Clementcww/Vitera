@@ -52,20 +52,21 @@ export function KeyPanel({
         onClick={() => setOpen(!open)}
       >
         <span className="kled" />
-        {hasKey ? 'Kunci API aktif' : 'Pakai kunci API sendiri'}
+        {hasKey ? 'API key active' : 'Use your own API key'}
       </button>
 
       {open && (
         <div className="keybody">
           <p className="prose">
-            Deteksi tidak memakai kunci ini. Temuan, skor, kutipan dan tarif
-            sudah dihitung oleh aturan, cross-encoder dan grouper tanpa
+            Detection does not use this key. Findings, scores, quotes and
+            tariffs are already settled by the rules, the cross-encoder and the
+            grouper without
             provider mana pun. Kunci hanya menyalakan satu hal: kalimat
-            penjelasan pada tiap temuan.
+            it. The key only writes the explanation on each finding.
           </p>
 
           <label>
-            <span>Kunci OpenAI</span>
+            <span>OpenAI key</span>
             <input
               type="password"
               autoComplete="off"
@@ -90,32 +91,32 @@ export function KeyPanel({
 
           <div className="keyacts">
             <button className="act primary" onClick={save} disabled={!draft.trim()}>
-              Simpan untuk sesi ini
+              Save for this session
             </button>
             {hasKey && (
               <button className="act" onClick={clear}>
-                Hapus kunci
+                Remove key
               </button>
             )}
           </div>
 
           <ul className="keynote">
             <li>
-              Disimpan di <b>sessionStorage</b> peramban Anda dan hilang saat
-              tab ditutup. Tidak pernah ditulis ke disk, tidak pernah dikirim
+              Held in your browser&rsquo;s <b>sessionStorage</b> and gone when
+              the tab closes. Never written to disk, never sent
               ke kami.
             </li>
             <li>
-              Permintaan berangkat langsung dari peramban Anda ke provider.
-              Kami tidak punya server di antaranya.
+              Requests go straight from your browser to the provider. There
+              is no server of ours in between.
             </li>
             <li>
-              Teks disamarkan lebih dulu (nama, NIK, nomor SEP, nomor rekam
+              Text is pseudonymised first: name, NIK, SEP number, record
               medis, tanggal, telepon) sebelum dikirim, sesuai aturan
               arsitektur 3. Data demo ini sintetis.
             </li>
             <li>
-              Tanpa kunci, seluruh aplikasi tetap berjalan dengan penjelasan
+              Without a key the whole application still runs, with the
               deterministik.
             </li>
           </ul>

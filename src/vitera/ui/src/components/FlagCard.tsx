@@ -97,13 +97,13 @@ export function FlagCard({
 
           {isQuery && (
             <div className="draft">
-              <b>Draf pertanyaan untuk DPJP</b>
+              <b>Draft question for the doctor</b>
               <span className="prose">
-                “Mohon konfirmasi apakah kondisi ini ditegakkan dan dikelola pada
-                perawatan ini. Bukti pada catatan: {flag.span.text}”
+                &ldquo;Please confirm whether this condition was established and managed during
+                this admission. What the record shows: {flag.span.text}&rdquo;
               </span>
               <span className="no">
-                Dicetak dan diserahkan. Sistem tidak pernah mengirim apa pun
+                Printed and handed over. The system never sends anything out
                 keluar.
               </span>
             </div>
@@ -114,8 +114,8 @@ export function FlagCard({
               {staged
                 ? 'Sudah di baki'
                 : isQuery
-                  ? 'Siapkan pertanyaan'
-                  : 'Siapkan perbaikan'}
+                  ? 'Stage the question'
+                  : 'Stage the fix'}
             </button>
             <button className="act" onClick={onDismiss}>
               Tolak

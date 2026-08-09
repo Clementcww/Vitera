@@ -3,6 +3,8 @@ import type { Loaded } from './types'
 import { load } from './data'
 import { AdvisoryBanner, DroppedSpanBanner } from './components/Banners'
 import { QueueView } from './components/QueueView'
+import { Dashboard } from './components/Dashboard'
+import { Logo } from './components/Logo'
 import { CaseView } from './components/CaseView'
 import { StagingTray } from './components/StagingTray'
 import { HeroCards } from './components/Hero'
@@ -39,7 +41,7 @@ type Mode = 'hero' | 'work'
  * are panes rather than routes for the same reason the landing is: the card
  * that morphed into the workbench stays the same element, and a route change
  * would throw it away. */
-type Pane = 'queue' | 'scan'
+type Pane = 'queue' | 'dash' | 'scan'
 
 export default function App() {
   const [state, setState] = useState<Loaded | null>(null)
@@ -62,7 +64,7 @@ export default function App() {
   if (error) {
     return (
       <div className="fatal">
-        <h1>Data tidak dapat dimuat</h1>
+        <h1>Could not load the data</h1>
         <p className="prose">{error}</p>
         <pre>make ui-data</pre>
       </div>
@@ -91,7 +93,7 @@ export default function App() {
     <div className="app" data-mode={mode}>
       <header className="floathdr">
         <button className="hpill brandpill" onClick={toHero}>
-          <span className="dot" />
+          <Logo size={17} />
           Vitera
         </button>
 
@@ -104,30 +106,41 @@ export default function App() {
           />
         )}
 
-        {mode === 'work' && intake && (
+        {mode === 'work' && (
           <div className="hpill panepill">
             <button
               className={pane === 'queue' ? 'on' : ''}
               onClick={() => setPane('queue')}
             >
-              Antrean
+              Queue
             </button>
             <button
-              className={pane === 'scan' ? 'on' : ''}
+              className={pane === 'dash' ? 'on' : ''}
               onClick={() => {
-                setPane('scan')
+                setPane('dash')
                 setOpenCase(null)
               }}
             >
-              Berkas pindaian
+              Summary
             </button>
+            {intake && (
+              <button
+                className={pane === 'scan' ? 'on' : ''}
+                onClick={() => {
+                  setPane('scan')
+                  setOpenCase(null)
+                }}
+              >
+                Scanned form
+              </button>
+            )}
           </div>
         )}
 
         {mode === 'work' && (
           <div className="hpill statpill">
             <span className="led" />
-            {payload.episodes.length} episode · seed{' '}
+            {payload.episodes.length} episodes · seed{' '}
             <b className="mono">{payload.generated.seed}</b>
           </div>
         )}
@@ -138,7 +151,7 @@ export default function App() {
         >
           {mode === 'hero' ? (
             <>
-              Buka antrean <span aria-hidden="true">→</span>
+              Open the queue <span aria-hidden="true">→</span>
             </>
           ) : (
             <>
@@ -158,9 +171,9 @@ export default function App() {
         >
           <div className="teaser">
             <h2>
-              Antrean
+              This morning&rsquo;s
               <br />
-              pagi
+              queue
             </h2>
             <div className="rings" aria-hidden="true">
               <i />
@@ -172,7 +185,7 @@ export default function App() {
               <span className="rdot" style={{ background: 'var(--obtain)' }} />
               <span className="rdot" style={{ background: 'var(--recode)' }} />
               <span className="chip outline">
-                {payload.episodes.reduce((n, e) => n + e.flags.length, 0)} temuan
+                {payload.episodes.reduce((n, e) => n + e.flags.length, 0)} findings
               </span>
             </div>
           </div>
@@ -183,6 +196,8 @@ export default function App() {
             <main>
               {pane === 'scan' && intake ? (
                 <ScanView data={intake} onReport={() => setReport(true)} />
+              ) : pane === 'dash' ? (
+                <Dashboard payload={payload} />
               ) : ep ? (
                 <CaseView
                   ep={ep}

@@ -7,7 +7,7 @@ import { BRAND, CLEAN_HEX, REMEDY_HEX } from './palette'
 /* The hero animation.
  *
  * It animates the REAL detection surface — the same `surface.cells` the
- * Permukaan tab renders, which are real `run_pipeline` calls at each day of
+ * detection surface renders, which are real `run_pipeline` calls at each day of
  * each episode's stay. Nothing here is decorative geometry standing in for
  * data. That matters more than it sounds: a hero built from invented shapes
  * would be the one screen in this app that lies, and it would be the first
@@ -62,7 +62,7 @@ function Bars({
         // and read as nothing at all, so the scene switches to white at
         // varying opacity: value becomes weight rather than hue. Remedy is
         // still legible everywhere it decides something (queue, flags, the
-        // Permukaan tab); here the bar is showing magnitude over time.
+        // detection surface); here the bar is showing magnitude over time.
         const light = tint === 'light'
         return {
           day: c.d,

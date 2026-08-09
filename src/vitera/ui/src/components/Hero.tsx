@@ -61,32 +61,35 @@ export function HeroCards({
       <section className="card card-main">
         {m?.n_episodes != null && (
           <span className="badge">
-            Diukur pada {m.n_episodes} episode uji
+            Measured on {m.n_episodes} held-out episodes
             <i aria-hidden="true">→</i>
           </span>
         )}
         <h1>
-          Kami uji klaim
+          We find what BPJS
           <br />
-          sebelum BPJS melakukannya
+          would find
         </h1>
-        <p className="sub prose">Selagi masih ada waktu memperbaikinya.</p>
+        <p className="sub prose">
+          While the patient is still on the ward and the record can still be
+          put right.
+        </p>
         <button className="solid" onClick={onEnter}>
-          Buka antrean pagi
+          Open this morning&rsquo;s queue
         </button>
 
         <div className="mainfoot">
           <div>
             <b className="mono">{episodes}</b>
-            <span>episode</span>
+            <span>episodes</span>
           </div>
           <div>
             <b className="mono">{findings}</b>
-            <span>temuan</span>
+            <span>findings</span>
           </div>
           <div>
             <b className="mono">{recoverable ? jt(recoverable) : '·'}</b>
-            <span>dapat dipulihkan</span>
+            <span>recoverable</span>
           </div>
         </div>
       </section>
@@ -97,9 +100,9 @@ export function HeroCards({
       >
         <div className="cardhd">
           <h2>
-            Permukaan
+            When each
             <br />
-            deteksi
+            claim was caught
           </h2>
           {open && (
             <button
@@ -117,7 +120,7 @@ export function HeroCards({
 
         {m?.lead_time_median_days != null && (
           <span className="chip yellow">
-            {m.lead_time_median_days} hari lebih awal
+            {m.lead_time_median_days} days earlier
           </span>
         )}
 
@@ -139,13 +142,13 @@ export function HeroCards({
         {open && (
           <div className="widgets">
             <div className="w w1">
-              <span>Terdeteksi sebelum pulang</span>
+              <span>Found before discharge</span>
               <b className="mono">
                 {m ? Math.round(m.detection_rate * 100) : '·'}%
               </b>
             </div>
             <div className="w w2">
-              <span>Jendela perbaikan ≥ 2 hari</span>
+              <span>Two days or more to act</span>
               <b className="mono">
                 {m?.lead_time_share_ge_2_days != null
                   ? Math.round(m.lead_time_share_ge_2_days * 100)
@@ -154,12 +157,12 @@ export function HeroCards({
               </b>
             </div>
             <div className="w w3">
-              <span>Pemeriksaan harian</span>
+              <span>Checked every day</span>
               <b className="mono">{payload.surface.cells.length}</b>
             </div>
             <p className="wnote">
-              Satu batang, satu kali pipeline dijalankan pada hari itu. Tinggi
-              batang adalah nilai yang dapat dipulihkan menurut grouper.
+              One bar is one run of the pipeline on that day of the stay.
+              Bar height is what the grouper says is recoverable.
             </p>
           </div>
         )}

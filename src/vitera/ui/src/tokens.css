@@ -1,7 +1,9 @@
-/* Anthropic brand tokens.
+/* Vitera design tokens.
  *
- * Seven colours and two typefaces. Everything else in this app is layout, so
- * there is no design system to install and nothing to keep in sync.
+ * The palette is the product's own, not a vendor's. It is built from the two
+ * materials the koder actually works between: the printed BPJS form, which is
+ * cool white with a navy rule, and the clinical record, which is warm paper.
+ * Petrol is the resolving colour — it is what a checked claim looks like.
  *
  *   Poppins  chrome, headings, labels — the product's voice
  *   Lora     clinical prose, rationale, quoted record — the hospital's voice
@@ -10,7 +12,8 @@
  *
  * The remedy colours are the one place brand meets domain. They are not
  * decoration: remedy decides who acts and how fast the repair window shuts, so
- * the colour carries the urgency the queue is ordered by.
+ * the colour carries the urgency the queue is ordered by. Their meanings are
+ * fixed and must not be reassigned to suit a layout.
  */
 
 /* latin subsets only. The default @fontsource entrypoint ships devanagari and
@@ -24,33 +27,51 @@
 @import '@fontsource/lora/latin-400-italic.css';
 
 :root {
-  /* main */
-  --dark: #141413;
-  --light: #faf9f5;
-  --mid: #b0aea5;
-  --line: #e8e6dc;
+  /* main. Neutrals carry a slight petrol bias so they sit with the accent
+     rather than reading as a separate grey system bolted alongside it. */
+  --dark: #101c1f;
+  --light: #f4f7f7;
+  --mid: #9aa8ab;
+  --line: #dde5e6;
 
-  /* accent */
-  --orange: #d97757;
-  --blue: #6a9bcc;
-  --green: #788c5d;
+  /* accent. Petrol is the brand; it appears on the mark, the primary action
+     and nowhere that competes with a remedy colour. */
+  --petrol: #0e5a63;
+  --petrol-deep: #093f47;
+  --petrol-lit: #12798a;
+  --petrol-bg: #e6f0f1;
 
   /* derived surfaces */
   --ink: var(--dark);
-  --ink-2: #4a4844;
-  --muted: #8a877e;
+  --ink-2: #3d4b4e;
+  --muted: #6d7c80;
   --faint: var(--mid);
   --canvas: var(--light);
   --surface: #ffffff;
-  --line-2: #d9d6c9;
+  --line-2: #c9d5d7;
 
-  /* remedy — who acts, and how fast the window shuts */
-  --query: var(--orange);   /* DPJP, while the patient is still on the ward */
-  --query-bg: #fbeee9;
-  --obtain: #4f7ba8;        /* petugas berkas, survives discharge */
-  --obtain-bg: #eaf1f8;
-  --recode: #5e7047;        /* koder, survives until submission */
-  --recode-bg: #eef1e9;
+  /* remedy — who acts, and how fast the window shuts.
+     amber  DPJP, while the patient is still on the ward. Shuts fastest.
+     steel  petugas berkas, survives discharge.
+     moss   koder, survives until submission. */
+  --query: #b4611c;
+  --query-bg: #fbeee2;
+  --obtain: #2f6b9a;
+  --obtain-bg: #e8f0f7;
+  --recode: #4a7343;
+  --recode-bg: #eaf1e8;
+
+  /* kept as aliases so existing rules that reference the old accent names
+     keep working; new work should use the semantic names above. */
+  --orange: var(--query);
+  --blue: var(--obtain);
+  --green: var(--recode);
+
+  /* state */
+  --danger: #9c2f26;
+  --danger-bg: #f8e5e3;
+  --ok: #2f6b4f;
+  --ok-bg: #e6f1eb;
 
   --sans: 'Poppins', Arial, Helvetica, sans-serif;
   --serif: 'Lora', Georgia, 'Times New Roman', serif;

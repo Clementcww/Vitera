@@ -63,12 +63,12 @@ export const keyStore = {
 }
 
 const SYSTEM =
-  'Anda menulis satu kalimat penjelasan dalam Bahasa Indonesia untuk koder ' +
-  'klinis di rumah sakit. Temuan sudah ditetapkan oleh sistem deterministik; ' +
-  'tugas Anda hanya menjelaskannya dengan bahasa yang jelas. Jangan menambah ' +
-  'temuan baru, jangan mengubah kesimpulan, jangan menyebut angka yang tidak ' +
-  'diberikan, dan jangan memberi tahu dokter apa yang harus ditulis. ' +
-  'Jawab maksimal satu kalimat, tanpa pembuka.'
+  'You write one sentence of plain English for a medical coder in an ' +
+  'Indonesian hospital. The finding has already been settled by a ' +
+  'deterministic system; your only job is to explain it clearly. Do not add a ' +
+  'new finding, do not change the conclusion, do not mention any figure you ' +
+  'were not given, and never tell a doctor what to write. Answer in at most ' +
+  'one sentence, with no preamble.'
 
 export class ReidentifiedTextError extends Error {}
 
@@ -77,9 +77,9 @@ export async function explain(
   opts: { key: string; model?: string; signal?: AbortSignal } ,
 ): Promise<string> {
   const prompt = pseudonymise(
-    `Jelaskan dalam satu kalimat, untuk koder klinis, mengapa temuan berikut ` +
-      `perlu ditindaklanjuti.\nTemuan: ${args.defect}\n` +
-      `Kutipan rekam medis: ${args.quote}\nCatatan sistem: ${args.rationale}`,
+    `In one sentence, for a medical coder, explain why the following finding ` +
+      `needs acting on.\nFinding: ${args.defect}\n` +
+      `Quote from the record: ${args.quote}\nSystem note: ${args.rationale}`,
   )
 
   const leaked = looksReidentified(prompt)
@@ -115,9 +115,9 @@ export async function explain(
     // "Failed to fetch" tells a judge nothing. The causes worth naming are the
     // ones they can act on.
     throw new Error(
-      'Permintaan tidak sampai ke provider. Periksa koneksi, atau pemblokir ' +
-        'permintaan di peramban (ekstensi, kebijakan korporat, atau peramban ' +
-        'ter-sandbox yang menahan header kredensial).',
+      'The request never reached the provider. Check the connection, or ' +
+        'anything blocking requests in the browser: an extension, a corporate ' +
+        'policy, or a sandboxed browser withholding the credential header.',
     )
   }
 

@@ -3,7 +3,7 @@
  * The koder knows every one of these words; a judge, an investor or a member
  * of the public does not, and the UI has to hold both audiences without
  * splitting into two apps. So domain terms render with a dotted underline and
- * a one-sentence definition on hover/focus — written in plain Bahasa, defining
+ * a one-sentence definition on hover/focus, written in plain language, defining
  * the thing, never marketing it.
  *
  * Native `title` plus a visible affordance, no tooltip library: it works on
@@ -12,36 +12,36 @@
  */
 
 const GLOSSARY: Record<string, string> = {
-  bpjs: 'BPJS Kesehatan, asuransi kesehatan nasional Indonesia. Rumah sakit menagih biaya perawatan ke BPJS lewat klaim.',
+  bpjs: 'BPJS Kesehatan, Indonesia’s national health insurer. Hospitals bill it for the care they deliver, one claim per admission.',
   klaim:
-    'Tagihan rumah sakit ke BPJS atas perawatan satu pasien. Jika dokumennya tidak lengkap atau kodenya salah, klaim dikembalikan dan pembayaran tertunda.',
+    'A hospital’s bill to BPJS for one patient’s care. If a document is missing or a code is wrong it comes back unpaid.',
   'klaim-pending':
-    'Klaim yang dikembalikan BPJS karena ada masalah. Rumah sakit harus memperbaiki dan mengirim ulang, pembayaran tertunda berminggu-minggu.',
+    'A claim BPJS returned instead of paying. The hospital corrects it and resubmits, and payment slips by weeks.',
   koder:
-    'Petugas rumah sakit yang menerjemahkan catatan dokter menjadi kode diagnosis standar. Pengguna utama aplikasi ini.',
-  dpjp: 'Dokter Penanggung Jawab Pelayanan, dokter yang merawat pasien dan menulis ringkasan medisnya.',
-  sep: 'Surat Eligibilitas Peserta, surat jaminan BPJS yang diterbitkan saat pasien masuk rawat inap.',
-  cbg: 'Kelompok tarif INA-CBG. Setiap kombinasi diagnosis masuk ke satu kelompok dengan tarif paket tetap. Kode yang salah berarti tarif yang salah.',
+    'The hospital staff member who turns a doctor’s notes into standard diagnosis codes. The main user of this application.',
+  dpjp: 'The attending doctor: the one responsible for the patient and for writing the discharge summary.',
+  sep: 'The eligibility letter BPJS issues when a patient is admitted, confirming the admission is covered.',
+  cbg: 'An INA-CBG tariff group. Each combination of diagnoses falls into one group with a fixed package price, so a wrong code means a wrong price.',
   grouper:
-    'Perangkat lunak deterministik yang menghitung kelompok tarif dari kode diagnosis. Satu-satunya sumber angka rupiah di aplikasi ini. Model AI tidak pernah menghasilkan angka uang.',
+    'Deterministic software that works out the tariff group from the codes. The only source of rupiah figures here. The AI never produces a monetary figure.',
   'resume-medis':
-    'Ringkasan perawatan yang ditulis dokter saat pasien pulang. Dokumen utama yang diperiksa BPJS.',
-  cppt: 'Catatan perkembangan harian pasien, ditulis setiap hari selama dirawat.',
+    'The discharge summary the doctor writes when the patient goes home. The document BPJS reads most closely.',
+  cppt: 'The daily progress note, written each day of the admission.',
   'rekam-medis':
-    'Seluruh catatan perawatan pasien: catatan harian, hasil laboratorium, daftar obat, ringkasan pulang.',
+    'Everything recorded about the patient’s care: daily notes, laboratory results, medication list, discharge summary.',
   komorbiditas:
-    'Penyakit penyerta di samping diagnosis utama, misalnya diabetes pada pasien pneumonia. Jika tidak tertulis di dokumen, BPJS tidak membayarnya.',
+    'A condition alongside the main diagnosis, such as diabetes in a pneumonia patient. If it is not written down, BPJS does not pay for it.',
   abstain:
-    'Sistem menyatakan tidak yakin dan menyerahkan penilaian ke manusia, bukan menebak. Kejujuran ini disengaja dan diukur.',
+    'The system says it cannot tell, and hands the judgement to a person rather than guessing. That honesty is deliberate, and it is measured.',
   advisory:
-    'Mode saat lapisan AI mati: hanya pemeriksaan aturan sederhana yang berjalan, dan sistem mengatakannya terang-terangan.',
+    'The mode the system runs in when the AI layer is unavailable: simple rule checks only, and it says so plainly rather than looking complete.',
   'cross-encoder':
-    'Model AI kecil (dijalankan di rumah sakit, bukan di cloud) yang menilai satu hal saja: apakah catatan medis mendukung kode yang ditulis.',
+    'A small AI model, run inside the hospital rather than in the cloud, that judges one thing only: whether the record supports the code.',
   verbatim:
-    'Kutipan kata demi kata dari dokumen asli. Temuan tanpa kutipan asli otomatis dibuang oleh sistem.',
-  fpk: 'Formulir Pengajuan Klaim, lembar sampul kertas yang menyertai satu berkas klaim rumah sakit ke BPJS. Berisi jumlah kasus, jumlah hari rawat dan total biaya yang diajukan.',
-  ocr: 'Pembacaan tulisan pada gambar oleh mesin. Di sini dipakai untuk membaca formulir kertas yang dipindai, dan setiap nilai yang dibacanya disertai tingkat keyakinan.',
-  ritl: 'Rawat Inap Tingkat Lanjutan, yaitu rawat inap di rumah sakit. Berbeda dari RITP yang berlaku di klinik atau puskesmas, dan hanya RITL yang ditangani versi ini.',
+    'A word-for-word quote from the source document. A finding that cannot quote the record is dropped automatically.',
+  fpk: 'The paper cover sheet that accompanies a hospital’s claim file to BPJS, carrying the case count, the total days of care and the amount claimed.',
+  ocr: 'Machine reading of text in an image. Used here to read scanned paper forms, and every value it reads carries a confidence.',
+  ritl: 'Advanced inpatient care, meaning a stay in a hospital. Distinct from clinic-level care, and only hospital stays are handled in this version.',
 }
 
 export function Term({ k, children }: { k: string; children: React.ReactNode }) {

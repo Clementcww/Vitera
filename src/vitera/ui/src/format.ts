@@ -17,18 +17,18 @@ export function tariff(g: Group): string {
 
 export const REMEDY: Record<Remedy, { label: string; who: string; css: string }> = {
   QUERY: {
-    label: 'Query',
-    who: 'DPJP, perlu pasien masih di ruangan',
+    label: 'Ask the doctor',
+    who: 'Doctor, needs the patient still on the ward',
     css: 'query',
   },
   OBTAIN: {
-    label: 'Obtain',
-    who: 'Petugas berkas, masih bisa setelah pulang',
+    label: 'Attach a document',
+    who: 'Records officer, still possible after discharge',
     css: 'obtain',
   },
   RECODE: {
-    label: 'Recode',
-    who: 'Koder, masih bisa sampai submit',
+    label: 'Change the code',
+    who: 'Coder, still possible until the claim is sent',
     css: 'recode',
   },
 }
@@ -44,24 +44,24 @@ export const REMEDY: Record<Remedy, { label: string; who: string; css: string }>
  * label below states what the RECORD does not show, not what the doctor should
  * have done. */
 export const DEFECT_ID: Record<string, string> = {
-  D1: 'Berkas klaim tidak lengkap',
-  D2: 'Spesifisitas kode kurang, ada kode saudara',
-  D3: 'Diagnosis tidak didukung narasi rekam medis',
-  D4: 'Komorbiditas terbaca di catatan, belum terdokumentasi',
-  D5: 'Pemeriksaan penunjang belum dilampirkan',
-  D6: 'Prosedur tidak koheren dengan diagnosis',
-  D7: 'Pola penambahan komorbiditas tanpa bukti',
-  D8: 'Ketidakcocokan administratif (SEP, identitas, tanggal)',
+  D1: 'The claim file is incomplete',
+  D2: 'A more specific code exists for what the record describes',
+  D3: 'Nothing in the record supports this diagnosis',
+  D4: 'A comorbidity is treated in the notes but never coded',
+  D5: 'A supporting result was ordered and never attached',
+  D6: 'The procedure does not follow from the diagnosis',
+  D7: 'Comorbidities added without evidence in the record',
+  D8: 'Administrative mismatch in SEP, identity or dates',
 }
 
 export const VERDICT: Record<string, string> = {
-  clean: 'Tidak ada temuan',
-  flagged: 'Perlu perbaikan',
-  abstain: 'Perlu penilaian koder',
+  clean: 'Nothing found',
+  flagged: 'Needs work',
+  abstain: 'Needs a coder to judge',
 }
 
 export const SOURCE: Record<string, string> = {
-  rules: 'aturan',
+  rules: 'rules',
   cross_encoder: 'cross-encoder',
   router: 'router',
 }

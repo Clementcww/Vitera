@@ -47,7 +47,7 @@ export function DocPane({
     <div className="panel">
       <div className="phd">
         <h3>Rekam medis</h3>
-        <span className="c">sebatas hari yang diperiksa</span>
+        <span className="c">as far as the day checked</span>
       </div>
       {documents.map((d) => {
         const cited = flags.filter((f) => f.span.doc_id === d.doc_id)
@@ -61,14 +61,14 @@ export function DocPane({
               <span className="nm mono">{d.doc_id}</span>
               <span className="mt">
                 {cited.length > 0 && <span className="cited" />}
-                {d.absent ? 'tidak dilampirkan' : `hari ${d.day}`}
+                {d.absent ? 'not attached' : `day ${d.day}`}
               </span>
             </summary>
             <div className="body prose">
               {d.absent ? (
                 <span className="muted">
-                  Dokumen ini tidak ada pada berkas klaim, jadi tidak ada temuan
-                  yang boleh mengutipnya.
+                  This document is not in the claim file, so no finding is allowed to
+                  cite it.
                 </span>
               ) : (
                 <Highlighted text={d.text} spans={cited} />

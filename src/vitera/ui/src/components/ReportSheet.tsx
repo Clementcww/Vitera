@@ -49,9 +49,9 @@ export function ReportSheet({
   const changed = c.corrections.filter((x) => (x.delta_idr ?? 0) !== 0)
 
   return (
-    <div className="reportsheet" role="dialog" aria-label="Laporan pemeriksaan">
+    <div className="reportsheet" role="dialog" aria-label="Internal review report">
       <div className="rtoolbar">
-        <b>Laporan pemeriksaan internal</b>
+        <b>Internal review report</b>
         <span className="spacer" />
         <button className="act" onClick={onClose}>
           Tutup
@@ -68,7 +68,7 @@ export function ReportSheet({
 
         <header className="rhd">
           <div>
-            <h1>Laporan Pemeriksaan Internal Berkas Klaim</h1>
+            <h1>Internal Review of the Claim File</h1>
             <p className="rsub">
               {f.nama_ppk} · Kode PPK {f.kode_ppk} · {f.bulan_pelayanan} ·{' '}
               {f.jenis_pelayanan}
@@ -81,18 +81,18 @@ export function ReportSheet({
         </header>
 
         <p className="rnote">
-          Dokumen ini adalah <b>draf</b>. Belum ada satu pun bagian dari berkas
-          ini yang dikirim ke BPJS, dan tidak ada perubahan yang ditulis ke
-          klaim resmi. Draf berlaku hanya setelah ditandatangani koder dan
-          verifikator internal. Seluruh data pada laporan ini sintetis.
+          This is a <b>draft</b>. Nothing here has been sent to BPJS and no
+          change has been written to the claim of record. It takes effect only
+          once the coder and the internal verifier have signed it. Every figure
+          in this report is synthetic.
         </p>
 
         <section>
-          <h2>1. Ringkasan nilai</h2>
+          <h2>1. Value summary</h2>
           <table className="sum">
             <tbody>
               <tr>
-                <td>Diajukan pada formulir</td>
+                <td>Claimed on the form</td>
                 <td className="num mono">{rp(c.total_before_idr)}</td>
               </tr>
               <tr>
@@ -110,25 +110,26 @@ export function ReportSheet({
           </table>
           <p className="cond">
             Berpotensi <b className="mono">{rp(conditional)}</b> lebih tinggi
-            bila DPJP melengkapi dokumentasi komorbiditas yang sudah terlihat di
-            catatan. Angka bersyarat ini <b>tidak</b> dimasukkan ke jumlah di
-            atas dan tidak boleh diajukan sebelum dokumentasinya ada.
+            if the doctor documents the comorbidities already visible in the
+            notes. This conditional figure is <b>not</b> included in the total
+            above and must not be claimed before that documentation exists.
           </p>
           <p className="src">
-            Seluruh angka rupiah dihitung grouper INA-CBG. Model tidak pernah
+            Every rupiah figure is computed by the INA-CBG grouper. The model
+            never
             menghasilkan angka uang.
             {c.advisory && ' Pemeriksaan ini berjalan dalam mode advisory.'}
           </p>
         </section>
 
         <section>
-          <h2>2. Asal berkas</h2>
+          <h2>2. Where the file came from</h2>
           <table className="kvtab">
             <tbody>
               <tr>
                 <td>Sumber</td>
                 <td>
-                  Lembar pindaian, dibaca {gate.engine}, {gate.pages} halaman
+                  Scanned sheets, read by {gate.engine}, {gate.pages} pages
                 </td>
               </tr>
               <tr>
@@ -139,7 +140,7 @@ export function ReportSheet({
                 <td>Baris rincian</td>
                 <td>
                   {gate.rows} baris, {Math.round(gate.rows_complete_share * 100)}%
-                  terbaca lengkap, {gate.matched_episodes} cocok dengan rekam
+                  read in full, {gate.matched_episodes} matched the record
                   rumah sakit
                 </td>
               </tr>
@@ -158,7 +159,7 @@ export function ReportSheet({
 
         {changed.length > 0 && (
           <section>
-            <h2>3. Episode yang berubah nilainya</h2>
+            <h2>3. Episodes whose value changed</h2>
             <table className="rtab">
               <thead>
                 <tr>
@@ -195,10 +196,10 @@ export function ReportSheet({
         )}
 
         <section>
-          <h2>4. Temuan dan kutipan rekam medis</h2>
+          <h2>4. Findings, with the record quoted</h2>
           <p className="lead">
-            {c.findings_count} temuan pada {c.episodes} episode. Setiap temuan
-            mengutip rekam medis kata demi kata; temuan yang tidak dapat
+            {c.findings_count} findings across {c.episodes} episodes. Each one
+            quotes the record word for word. A finding that cannot
             mengutip sudah dibuang oleh sistem sebelum sampai ke sini.
           </p>
           <ol className="finds">
@@ -219,10 +220,10 @@ export function ReportSheet({
 
         {unread.length > 0 && (
           <section>
-            <h2>5. Nilai yang perlu dibaca ulang manusia</h2>
+            <h2>5. Values a person must re-read</h2>
             <p className="lead">
-              Berikut nilai yang tidak terbaca yakin oleh mesin. Tidak satu pun
-              dijadikan temuan klaim; semuanya menunggu pemeriksaan lembar asli.
+              The machine was not confident of these values. None became a
+              claim finding; each waits for someone to check the original sheet.
             </p>
             <ul className="reads">
               {unread.map((x, i) => (
@@ -240,24 +241,23 @@ export function ReportSheet({
         <section className="signs">
           <h2>Persetujuan</h2>
           <p className="lead">
-            Draf ini tidak berlaku dan tidak diajukan sebelum kedua kolom di
+            This draft has no effect and is not submitted until both columns
             bawah ditandatangani.
           </p>
           <div className="signrow">
             <div>
-              <span>Koder</span>
+              <span>Coder</span>
               <div className="line" />
             </div>
             <div>
-              <span>Verifikator internal</span>
+              <span>Internal verifier</span>
               <div className="line" />
             </div>
           </div>
         </section>
 
         <footer className="rfoot">
-          Vitera · draf pemeriksaan internal · tidak dikirim ke BPJS · data
-          sintetis
+          Vitera · internal review draft · not sent to BPJS · synthetic data
         </footer>
       </article>
     </div>
