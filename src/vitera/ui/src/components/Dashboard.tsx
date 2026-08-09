@@ -1,6 +1,7 @@
 import type { Payload, EpisodeView, Remedy } from '../types'
 import { jt, REMEDY } from '../format'
 import { Term } from './Term'
+import { AreaTrend, BarRows, StackedBar, TrendTicks } from './charts'
 
 /* L2 — the unit view.
  *
@@ -84,128 +85,162 @@ export function Dashboard({
   const llmCalls = eps.reduce((n, e) => n + e.trace.llm_calls, 0)
   const zeroLlm = eps.filter((e) => e.trace.llm_calls === 0).length
 
+  // Findings per day of stay, straight off the surface the card is drawing.
+  // Same cells, two encodings: the bars behind are per episode, this is their
+  // sum. Nothing is recomputed that the pipeline did not already produce.
+  const perDay: number[] = []
+  for (const c of payload.surface.cells) {
+    perDay[c.d] = (perDay[c.d] ?? 0) + c.flags
+  }
+  const trend = Array.from({ length: perDay.length }, (_, d) => ({
+    x: d,
+    y: perDay[d] ?? 0,
+  }))
+
+  const remedyBars = (['QUERY', 'OBTAIN', 'RECODE'] as Remedy[]).map((r) => ({
+    key: r,
+    label: REMEDY[r].label,
+    value: byRemedy(r),
+    color: `var(--${REMEDY[r].css})`,
+    note: REMEDY[r].who,
+  }))
+
+  const verdictSlices = [
+    {
+      key: 'flagged',
+      label: 'Perlu perbaikan',
+      value: flagged.length,
+      color: 'var(--query)',
+    },
+    {
+      key: 'clean',
+      label: 'Tidak ada temuan',
+      value: eps.length - flagged.length - abstain.length,
+      color: 'var(--recode)',
+    },
+    {
+      key: 'abstain',
+      label: 'Perlu penilaian koder',
+      value: abstain.length,
+      color: 'var(--obtain)',
+    },
+  ]
+
   return (
     <section className={'view dash' + (variant === 'surface' ? ' on-surface' : '')}>
       {variant === 'panel' && <h1>Ringkasan unit</h1>}
-      <p className="lede">
-        {payload.generated.cohort} episode rawat inap, {admitted.length} di
-        antaranya masih dirawat pagi ini. Semua angka rupiah berasal dari
-        grouper; episode yang tidak dapat dikelompokkan tetap dihitung sebagai
-        kasus, tetapi tidak ikut dijumlahkan nilainya.
-      </p>
 
       {payload.generated.advisory && (
         <p className="dash-warn">
-          Proses terakhir berjalan tanpa lapisan model. Sebagian kelas temuan
-          tidak diperiksa, jadi angka di bawah adalah batas bawah, bukan
-          total.
+          Berjalan tanpa lapisan model. Angka di bawah adalah batas bawah.
         </p>
       )}
 
+      {/* The one number the screen leads with, and the only prose left on it.
+          It is the figure that decays overnight; everything else keeps. */}
       <div className={'lead' + (onWardQueries ? ' urgent' : '')}>
         <b>{onWardQueries}</b>
         <div>
           <strong>perlu dokter selagi pasien masih di ruangan</strong>
           <span>
             {onWardQueries
-              ? 'Jendela ini tertutup saat pasien pulang. Sisanya masih bisa besok.'
+              ? `${admitted.length} pasien masih dirawat. Jendela ini tertutup saat mereka pulang.`
               : admitted.length
-                ? 'Pagi ini tidak ada yang perlu dokter di ruangan.'
-                : 'Tidak ada episode yang masih dirawat pada kohort ini, jadi tidak ada jendela perbaikan yang terbuka.'}
+                ? `${admitted.length} pasien masih dirawat, tidak ada yang perlu dokter.`
+                : 'Tidak ada pasien yang masih dirawat pada kohort ini.'}
           </span>
         </div>
       </div>
 
-      <div className="stats">
-        <Stat
-          label="Klaim dengan temuan"
-          value={`${flagged.length} / ${eps.length}`}
-          sub={abstain.length ? `${abstain.length} perlu penilaian koder` : undefined}
-        />
-        <Stat
-          label="Dapat dipulihkan"
-          value={jt(recoverable)}
-          sub="selisih tarif, dari grouper"
-        />
-        <Stat
-          label="Tidak dapat dikelompokkan"
-          value={String(ungroupable.length)}
-          sub={ungroupable.length ? 'tarif tidak diperkirakan' : 'tidak ada'}
-        />
+      <div className="panels">
+        <figure className="cpanel">
+          <figcaption>
+            Siapa yang harus bertindak
+            <span>{flags.length} temuan</span>
+          </figcaption>
+          <BarRows data={remedyBars} />
+        </figure>
+
+        <figure className="cpanel">
+          <figcaption>
+            Status {eps.length} klaim
+            <span>{ungroupable.length} tanpa kelompok tarif</span>
+          </figcaption>
+          <StackedBar data={verdictSlices} />
+          <Stat
+            label="Dapat dipulihkan"
+            value={jt(recoverable)}
+            sub="selisih tarif, dari grouper"
+          />
+        </figure>
+
+        <figure className="cpanel wide">
+          <figcaption>
+            Temuan menurut hari rawat
+            <span>
+              {m
+                ? `${Math.round(m.detection_rate * 100)}% terdeteksi sebelum pulang`
+                : 'belum diukur'}
+            </span>
+          </figcaption>
+          <AreaTrend
+            points={trend}
+            color="var(--query)"
+            markX={m?.lead_time_median_days ?? null}
+          />
+          <TrendTicks
+            maxDay={Math.max(0, trend.length - 1)}
+            markLabel={
+              m?.lead_time_median_days != null
+                ? `median ${m.lead_time_median_days} hari lebih awal`
+                : undefined
+            }
+          />
+        </figure>
       </div>
 
-      <h2 className="dash-h">Siapa yang harus bertindak</h2>
-      <table className="dash-tbl">
-        <thead>
-          <tr>
-            <th>Siapa</th>
-            <th>Temuan</th>
-            <th>Sisa waktu</th>
-          </tr>
-        </thead>
-        <tbody>
-          {(['QUERY', 'OBTAIN', 'RECODE'] as Remedy[]).map((r) => (
-            <tr key={r}>
-              <td>
-                <span className="rdot" style={{ background: `var(--${REMEDY[r].css})` }} />
-                {REMEDY[r].who}
-              </td>
-              <td className="num">{byRemedy(r)}</td>
-              <td className="win">
-                {r === 'QUERY'
-                  ? 'sampai pasien pulang'
-                  : r === 'OBTAIN'
-                    ? 'sampai berkas dikirim'
-                    : 'sampai klaim disubmit'}
-              </td>
+      {/* The table is not the screen, but it is never gated: colour and hover
+          both have a text fallback one click away. */}
+      <details className="dash-table">
+        <summary>Lihat angkanya</summary>
+        <table className="dash-tbl">
+          <tbody>
+            {remedyBars.map((b) => (
+              <tr key={b.key}>
+                <td>{b.note}</td>
+                <td className="num">{b.value}</td>
+              </tr>
+            ))}
+            {verdictSlices.map((v) => (
+              <tr key={v.key}>
+                <td>{v.label}</td>
+                <td className="num">{v.value}</td>
+              </tr>
+            ))}
+            {m && (
+              <tr>
+                <td>Jendela perbaikan ≥ 2 hari</td>
+                <td className="num">
+                  {m.lead_time_share_ge_2_days !== null
+                    ? `${Math.round(m.lead_time_share_ge_2_days * 100)}%`
+                    : '—'}
+                </td>
+              </tr>
+            )}
+            <tr>
+              <td>Panggilan model bahasa</td>
+              <td className="num">{llmCalls}</td>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2 className="dash-h">Deteksi</h2>
-      {m ? (
-        <div className="stats">
-          <Stat
-            label="Terdeteksi sebelum pulang"
-            value={`${Math.round(m.detection_rate * 100)}%`}
-            sub={`n = ${m.n_episodes}`}
-          />
-          <Stat
-            label="Sedini ini ditemukan"
-            value={m.lead_time_median_days !== null ? `${m.lead_time_median_days} hari` : '—'}
-            sub="median, sebelum pasien pulang"
-          />
-          <Stat
-            label="Jendela perbaikan ≥ 2 hari"
-            value={
-              m.lead_time_share_ge_2_days !== null
-                ? `${Math.round(m.lead_time_share_ge_2_days * 100)}%`
-                : '—'
-            }
-            sub="masih bisa diperbaiki"
-          />
-        </div>
-      ) : (
-        <p className="dash-empty">Belum diukur pada split uji.</p>
-      )}
-
-      {/* Precision matters here: `llm_calls` counts calls to the language
-          model, which writes prose and decides nothing. Every episode was
-          still scored by the cross-encoder, which is a model — so "no LLM
-          call" is true and "deterministic rules alone" would not be. */}
-      <p className="dash-cost">
-        <span>{llmCalls}</span> panggilan model bahasa untuk seluruh kohort ·{' '}
-        <span>{Math.round((zeroLlm / Math.max(1, eps.length)) * 100)}%</span>{' '}
-        episode selesai tanpa satu pun panggilan model bahasa. Deteksi dikerjakan
-        aturan dan <Term k="cross-encoder">cross-encoder</Term> yang berjalan di
-        rumah sakit; model bahasa hanya menulis penjelasannya.
-      </p>
+          </tbody>
+        </table>
+      </details>
 
       <p className="dash-foot">
-        Tidak ada angka per koder di layar ini, dan tidak akan pernah ada.
-        Antrean yang sekaligus menjadi penilaian kinerja adalah antrean yang
-        ditutup, bukan dikerjakan.
+        {llmCalls === 0 ? 'Tanpa' : llmCalls} panggilan model bahasa
+        {llmCalls === 0 ? '' : ` (${Math.round((zeroLlm / Math.max(1, eps.length)) * 100)}% episode nihil)`}
+        . Deteksi dikerjakan aturan dan{' '}
+        <Term k="cross-encoder">cross-encoder</Term> di rumah sakit. Tidak ada
+        angka per koder di layar ini, dan tidak akan pernah ada.
       </p>
     </section>
   )

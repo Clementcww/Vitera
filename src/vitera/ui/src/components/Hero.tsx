@@ -154,10 +154,8 @@ export function HeroCards({
                 bar. Scroll them up and the shape stays behind. */}
             <div className="dashsheet">
               <p className="wnote">
-                Satu batang di belakang, satu kali pipeline dijalankan pada
-                hari rawat itu. Tinggi batang adalah nilai yang dapat dipulihkan
-                menurut grouper. {payload.surface.cells.length} pemeriksaan
-                harian pada kohort ini.
+                {payload.surface.cells.length} pemeriksaan harian. Satu batang
+                di belakang, satu kali pipeline.
               </p>
               <Dashboard payload={payload} variant="surface" />
             </div>

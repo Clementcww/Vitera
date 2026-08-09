@@ -501,6 +501,18 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 .dash.on-surface .stat-label,
 .dash.on-surface .stat-sub { color: rgba(255, 255, 255, .78); }
 
+/* Everything inside a light panel keeps the light-surface text tokens; only
+   the card's own chrome takes the white-on-brand treatment. */
+.dash.on-surface .cpanel figcaption { color: var(--ink); }
+.dash.on-surface .cpanel .stat-label,
+.dash.on-surface .cpanel .stat-sub,
+.dash.on-surface .cpanel .cnote,
+.dash.on-surface .cpanel figcaption span { color: var(--muted); }
+.dash.on-surface .cpanel .slegend { color: var(--ink-2); }
+.dash.on-surface .cpanel .cticks { color: var(--muted); }
+.dash.on-surface .cpanel .cticks .mid { color: var(--ink-2); }
+.dash.on-surface .dash-table summary { color: rgba(255, 255, 255, .8); }
+
 .dash.on-surface .dash-h {
   color: #fff; border-bottom-color: rgba(255, 255, 255, .28);
 }
@@ -519,6 +531,76 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 .dash.on-surface .dash-cost span { color: #fff; }
 .dash.on-surface .dash-foot { border-top-color: rgba(255, 255, 255, .22); }
 .dash.on-surface .term { border-bottom-color: rgba(255, 255, 255, .5); }
+
+/* ---- charts ------------------------------------------------------------ */
+
+/* The panels are LIGHT even inside the orange card, and that is the colour
+   decision the rest follows from. The remedy hues are the product's identity —
+   a koder learned them in the queue — and they are validated against a light
+   chart surface, not against brand orange. Repainting them to sit on orange
+   would have meant the same entity wearing two colours on two screens. */
+.panels {
+  display: grid; gap: 12px; margin: 4px 0 18px;
+  grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+}
+.cpanel {
+  margin: 0; padding: 15px 17px 17px; border-radius: var(--r);
+  background: var(--surface); border: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 13px;
+  /* The panel is light inside a card whose text colour is white; without this
+     every value in it inherits white on white. */
+  color: var(--ink);
+}
+.cpanel.wide { grid-column: 1 / -1; }
+.cpanel figcaption {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  font-size: 12.5px; font-weight: 600; color: var(--ink);
+}
+.cpanel figcaption span {
+  margin-left: auto; font-weight: 400; font-size: 11.5px; color: var(--muted);
+}
+.cpanel .stat {
+  border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 11px 0 0;
+}
+
+/* Bars. Capped thickness, 4px rounded data-end, square at the baseline. */
+.chart-rows { display: grid; gap: 11px; }
+.crow { display: grid; grid-template-columns: 1fr; gap: 3px; }
+.clabel { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ink); }
+.cdot { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+.ctrack { display: flex; align-items: center; gap: 9px; }
+.cbar {
+  height: 14px; border-radius: 0 4px 4px 0; min-width: 3px;
+  transition: width .5s cubic-bezier(.22, .8, .2, 1);
+}
+.cval { font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.cnote { font-size: 11px; color: var(--muted); }
+
+/* One stacked bar. Segments separated by a gap in the surface colour, never a
+   stroke: the separation costs no ink. */
+.chart-stack { display: grid; gap: 10px; }
+.sbar { display: flex; gap: 2px; height: 16px; }
+.sseg { min-width: 3px; }
+.sseg:first-child { border-radius: 4px 0 0 4px; }
+.sseg:last-child { border-radius: 0 4px 4px 0; }
+.sseg:only-child { border-radius: 4px; }
+.slegend { display: grid; gap: 5px; font-size: 11.5px; color: var(--ink-2); }
+.slegend span { display: flex; align-items: center; gap: 7px; }
+.slegend b { margin-left: auto; font-family: var(--mono); }
+
+.chart-area { width: 100%; height: 116px; display: block; }
+/* Ticks are HTML, not SVG text. The plot is stretched to the panel width with
+   `preserveAspectRatio="none"`, which scales glyphs horizontally with it — the
+   labels came out wide and wrong. Outside the viewBox they are just text. */
+.cticks {
+  display: flex; justify-content: space-between; gap: 10px;
+  font-size: 10.5px; color: var(--muted);
+}
+.cticks .mid { color: var(--ink-2); }
+
+.dash-table { margin: 0 0 16px; }
+.dash-table summary { font-size: 12px; color: var(--muted); cursor: pointer; }
+.dash-table table { margin-top: 9px; max-width: 460px; }
 
 /* ---- narrow ------------------------------------------------------------ */
 

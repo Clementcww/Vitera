@@ -56,9 +56,9 @@
      moss   koder, survives until submission. */
   --query: #b4611c;
   --query-bg: #fbeee2;
-  --obtain: #2f6b9a;
+  --obtain: #1a6fae;   /* snapped: see the note below */
   --obtain-bg: #e8f0f7;
-  --recode: #4a7343;
+  --recode: #3d7a2e;   /* snapped: see the note below */
   --recode-bg: #eaf1e8;
 
   /* kept as aliases so existing rules that reference the old accent names
