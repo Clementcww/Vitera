@@ -41,3 +41,6 @@ data/generated/*
 src/vitera/ui/node_modules/
 src/vitera/ui/dist/
 src/vitera/ui/tsconfig.tsbuildinfo
+
+# Design reference video, kept locally for implementation. Not project material.
+design-ref.mp4

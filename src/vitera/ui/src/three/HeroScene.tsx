@@ -28,6 +28,8 @@ import { BRAND, CLEAN_HEX, REMEDY_HEX } from './palette'
  * some people ill, and this is the first thing the app shows.
  */
 
+type Tint = 'brand' | 'light'
+
 const CELL = 0.9
 const GAP = 0.1
 /* The finished state is the one that reads, so it holds for longer than the
@@ -41,11 +43,13 @@ function Bars({
   maxDay,
   maxVal,
   animate,
+  tint,
 }: {
   cells: SurfaceCell[]
   maxDay: number
   maxVal: number
   animate: boolean
+  tint: Tint
 }) {
   const refs = useRef<(Mesh | null)[]>([])
 
@@ -54,16 +58,25 @@ function Bars({
       cells.map((c) => {
         const active = c.flags > 0 && c.remedy
         const v = c.value_idr / maxVal
+        // On the accent card the remedy palette would be orange-on-orange
+        // and read as nothing at all, so the scene switches to white at
+        // varying opacity: value becomes weight rather than hue. Remedy is
+        // still legible everywhere it decides something (queue, flags, the
+        // Permukaan tab); here the bar is showing magnitude over time.
+        const light = tint === 'light'
         return {
           day: c.d,
           e: c.e,
           height: active ? 0.35 + 6.5 * v : 0.06,
-          color: active
-            ? REMEDY_HEX[c.remedy!.toUpperCase() as keyof typeof REMEDY_HEX]
-            : CLEAN_HEX,
+          color: light
+            ? '#ffffff'
+            : active
+              ? REMEDY_HEX[c.remedy!.toUpperCase() as keyof typeof REMEDY_HEX]
+              : CLEAN_HEX,
+          opacity: light ? (active ? 0.5 + 0.45 * v : 0.16) : 1,
         }
       }),
-    [cells, maxVal],
+    [cells, maxVal, tint],
   )
 
   useFrame(({ clock }) => {
@@ -98,7 +111,11 @@ function Bars({
           scale-y={animate ? 0.001 : 1}
         >
           <boxGeometry args={[CELL, b.height, CELL]} />
-          <meshLambertMaterial color={b.color} />
+          <meshLambertMaterial
+            color={b.color}
+            transparent={b.opacity < 1}
+            opacity={b.opacity}
+          />
         </mesh>
       ))}
     </group>
@@ -120,10 +137,12 @@ export default function HeroScene({
   cells,
   maxDay,
   reducedMotion,
+  tint = 'brand',
 }: {
   cells: SurfaceCell[]
   maxDay: number
   reducedMotion: boolean
+  tint?: Tint
 }) {
   const nEp = useMemo(() => new Set(cells.map((c) => c.e)).size, [cells])
   const maxVal = useMemo(
@@ -149,7 +168,12 @@ export default function HeroScene({
       <Orbit animate={animate}>
         <group position={[-centre[0], 0, -centre[2]]}>
           <gridHelper
-            args={[Math.max(spanX, spanZ) * 1.1, 18, BRAND.line, BRAND.line]}
+            args={[
+              Math.max(spanX, spanZ) * 1.1,
+              18,
+              tint === 'light' ? '#f6c4b1' : BRAND.line,
+              tint === 'light' ? '#e79a7c' : BRAND.line,
+            ]}
             position={centre}
           />
           <Bars
@@ -157,6 +181,7 @@ export default function HeroScene({
             maxDay={maxDay}
             maxVal={maxVal}
             animate={animate}
+            tint={tint}
           />
         </group>
       </Orbit>
