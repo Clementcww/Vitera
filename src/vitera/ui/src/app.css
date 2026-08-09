@@ -247,10 +247,11 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
    HERO — bento of three cards on a warm grey page
    ==========================================================================
 
-   A card here is a door, not a link: clicking one expands it to fill the
-   frame and reveals what it was summarising, with small outlined widgets
-   floating over it. Both cards have real state behind them, so the expansion
-   shows the product rather than an interstitial.
+   A card here is a door, not a link: clicking one expands it to fill the frame
+   and reveals what it was summarising. The accent card opens onto the unit
+   dashboard, drawn over the day-of-stay surface it was already showing; the
+   dark card morphs into the koder's workbench. Both have real state behind
+   them, so the expansion shows the product rather than an interstitial.
 
    The cards are absolutely positioned in percentages rather than laid out on
    a grid, because `top/left/width/height` transition and `grid-area` does
@@ -426,47 +427,123 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 .remedies { position: absolute; left: 34px; bottom: 34px; display: flex; align-items: center; gap: 8px; }
 .remedies .rdot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); margin-right: -6px; }
 
-/* ---- floating widgets, revealed on expand ------------------------------ */
+/* ---- the accent card, open: the dashboard over its own surface --------- */
 
-.widgets { position: absolute; inset: 0; pointer-events: none; }
-.widgets .w {
-  position: absolute; pointer-events: auto;
-  display: grid; gap: 3px; min-width: 172px;
-  padding: 13px 16px; border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, .32);
-  background: rgba(255, 255, 255, .07);
-  backdrop-filter: blur(6px);
-  animation: rise .5s cubic-bezier(.22, .8, .2, 1) backwards;
+/* Scrolls inside the card rather than growing it. The 3D layer is `.cardbg`,
+   pinned at inset 0, so the surface holds still while the totals move over it —
+   which is the whole point of putting them together. */
+.dashwrap {
+  position: absolute; inset: 0; z-index: 1;
+  overflow-y: auto; overflow-x: hidden;
+  animation: rise .5s .2s cubic-bezier(.22, .8, .2, 1) backwards;
 }
-.widgets .w span { font-size: 11px; opacity: .82; }
-.widgets .w b { font-size: 24px; font-weight: 500; letter-spacing: -.02em; }
-.widgets .w1 { left: 34px;  top: 168px; animation-delay: .22s; }
-.widgets .w2 { left: 34px;  top: 264px; animation-delay: .3s; }
-.widgets .w3 { right: 34px; top: 168px; animation-delay: .38s; }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+
+/* The scrim. Text is never read across a bar: the surface has the top of the
+   card to itself, and the numbers begin on solid colour below it. Scrolling
+   slides the scrim up over a surface that does not move. */
+.dashsheet {
+  margin-top: 40vh; padding: 0 34px 48px;
+  background: linear-gradient(
+    to bottom,
+    rgba(180, 97, 28, 0) 0,
+    rgba(180, 97, 28, .93) 96px,
+    var(--orange) 150px
+  );
+  padding-top: 120px;
+}
+.dashsheet > * { max-width: 1080px; margin-inline: auto; }
 
 .wnote {
-  position: absolute; left: 34px; bottom: 34px; max-width: 46ch; margin: 0;
-  font-family: var(--serif); font-size: 12.5px; line-height: 1.55;
+  margin: 0 auto 22px; max-width: 1080px;
+  font-family: var(--serif); font-size: 12.5px; line-height: 1.6;
   color: rgba(255, 255, 255, .82);
-  animation: rise .5s .46s cubic-bezier(.22, .8, .2, 1) backwards;
 }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+
+/* The card header sits above the scrolling layer, not in it — and it needs a
+   scrim of its own, or the numbers slide underneath the title and both become
+   unreadable at once. Fades out downward so the surface is still uncovered
+   where the title is not. */
+.card-accent .cardhd, .card-accent .chip { position: relative; z-index: 3; }
+.card-accent.open::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 158px;
+  z-index: 2; pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    var(--orange) 0,
+    rgba(180, 97, 28, .9) 52%,
+    rgba(180, 97, 28, 0) 100%
+  );
+}
+
+/* --- surface variant: glass on brand colour, not panels on canvas ------- */
+
+.dash.on-surface { color: #fff; }
+.dash.on-surface .lede { color: rgba(255, 255, 255, .84); max-width: 74ch; }
+
+.dash.on-surface .lead {
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .26);
+  border-left-width: 3px;
+  backdrop-filter: blur(6px);
+}
+.dash.on-surface .lead.urgent { border-left-color: #ffd479; }
+.dash.on-surface .lead b { color: #fff; }
+.dash.on-surface .lead span { color: rgba(255, 255, 255, .78); }
+
+.dash.on-surface .stat {
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .26);
+  border-top: 2px solid rgba(255, 255, 255, .4);
+  backdrop-filter: blur(6px);
+}
+.dash.on-surface .stat.t-query { border-top-color: #ffd479; }
+.dash.on-surface .stat-label,
+.dash.on-surface .stat-sub { color: rgba(255, 255, 255, .78); }
+
+.dash.on-surface .dash-h {
+  color: #fff; border-bottom-color: rgba(255, 255, 255, .28);
+}
+.dash.on-surface .dash-tbl th { color: rgba(255, 255, 255, .7); }
+.dash.on-surface .dash-tbl td { border-bottom-color: rgba(255, 255, 255, .2); }
+.dash.on-surface .dash-tbl td.win { color: rgba(255, 255, 255, .74); }
+.dash.on-surface .dash-tbl .rdot { outline: 1px solid rgba(255, 255, 255, .5); }
+
+.dash.on-surface .dash-warn {
+  background: rgba(255, 255, 255, .12);
+  border-left-color: #ffd479; color: #fff;
+}
+.dash.on-surface .dash-cost,
+.dash.on-surface .dash-foot,
+.dash.on-surface .dash-empty { color: rgba(255, 255, 255, .74); }
+.dash.on-surface .dash-cost span { color: #fff; }
+.dash.on-surface .dash-foot { border-top-color: rgba(255, 255, 255, .22); }
+.dash.on-surface .term { border-bottom-color: rgba(255, 255, 255, .5); }
 
 /* ---- narrow ------------------------------------------------------------ */
 
 @media (max-width: 900px) {
   .app { padding: 78px 14px 14px; }
   .bento { height: auto; min-height: 0; display: grid; gap: 12px; }
-  .card { position: static; width: auto !important; height: auto !important; padding: 26px; }
+  /* `relative`, not `static`. The cards stop being absolutely placed here, but
+     `.cardbg` is `position: absolute; inset: 0` and would otherwise resolve
+     against `.bento` — painting the 3D surface across the card above it. */
+  .card { position: relative; width: auto !important; height: auto !important; padding: 26px; }
   .card-accent, .card-work { min-height: 230px; }
   .card-accent.open { min-height: 420px; }
   [data-mode='work'] .card-main,
   [data-mode='work'] .card-accent { display: none; }
   [data-mode='work'] .card-work { border-radius: 16px; }
   .workpane main { padding: 18px 16px 90px; }
-  .widgets { position: static; display: grid; gap: 10px; margin-top: 20px; }
-  .widgets .w { position: static; }
-  .wnote { position: static; margin-top: 14px; }
+  .dashwrap { position: static; overflow: visible; }
+  /* No scrim on narrow: the scene is a fixed band at the top and the numbers
+     start below it, on flat colour, so nothing overlaps to soften. */
+  .dashsheet { margin-top: 168px; padding: 0; background: none; }
+  /* The card grows to its content on narrow, and `inset: 0` would give the
+     scene a drawing buffer the height of the whole dashboard — around three
+     thousand pixels of WebGL for a backdrop. Band it to the top instead. */
+  .card-accent.open .cardbg { height: 300px; bottom: auto; }
+  .card-accent.open { min-height: 0; height: auto !important; }
 }
 
 /* ---- bring-your-own-key panel ------------------------------------------ */

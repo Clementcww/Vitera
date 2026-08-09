@@ -3,7 +3,6 @@ import type { Loaded } from './types'
 import { load } from './data'
 import { AdvisoryBanner, DroppedSpanBanner } from './components/Banners'
 import { QueueView } from './components/QueueView'
-import { Dashboard } from './components/Dashboard'
 import { Logo } from './components/Logo'
 import { CaseView } from './components/CaseView'
 import { StagingTray } from './components/StagingTray'
@@ -40,8 +39,13 @@ type Mode = 'hero' | 'work'
  * `queue` is the koder's day; `scan` is the paper the batch arrived on. They
  * are panes rather than routes for the same reason the landing is: the card
  * that morphed into the workbench stays the same element, and a route change
- * would throw it away. */
-type Pane = 'queue' | 'dash' | 'scan'
+ * would throw it away.
+ *
+ * The unit summary is deliberately NOT a third pane. It answers a different
+ * question, for a different person — is the unit on top of this month — and it
+ * reads against the day-of-stay surface rather than against the queue. It
+ * lives in the accent card on the landing, where that surface already is. */
+type Pane = 'queue' | 'scan'
 
 export default function App() {
   const [state, setState] = useState<Loaded | null>(null)
@@ -113,15 +117,6 @@ export default function App() {
               onClick={() => setPane('queue')}
             >
               Antrean
-            </button>
-            <button
-              className={pane === 'dash' ? 'on' : ''}
-              onClick={() => {
-                setPane('dash')
-                setOpenCase(null)
-              }}
-            >
-              Ringkasan
             </button>
             {intake && (
               <button
@@ -196,8 +191,6 @@ export default function App() {
             <main>
               {pane === 'scan' && intake ? (
                 <ScanView data={intake} onReport={() => setReport(true)} />
-              ) : pane === 'dash' ? (
-                <Dashboard payload={payload} />
               ) : ep ? (
                 <CaseView
                   ep={ep}

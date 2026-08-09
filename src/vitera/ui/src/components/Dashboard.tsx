@@ -8,6 +8,13 @@ import { Term } from './Term'
  * is not "which claim do I open next" but "is the unit on top of this month,
  * and what is about to become unrepairable".
  *
+ * It lives inside the accent card on the landing, over the day-of-stay surface
+ * the card already draws. That pairing is the argument: the numbers on the left
+ * are what the bars behind them add up to, and putting the two on separate
+ * screens made the reader hold one in their head while looking at the other.
+ * `variant="surface"` is the styling for that context — glass on brand colour
+ * rather than panels on canvas.
+ *
  * Two constraints shape it and neither is negotiable:
  *
  *   Unit aggregates only. There is no per-koder cut anywhere on this screen
@@ -44,7 +51,13 @@ function Stat({
   )
 }
 
-export function Dashboard({ payload }: { payload: Payload }) {
+export function Dashboard({
+  payload,
+  variant = 'panel',
+}: {
+  payload: Payload
+  variant?: 'panel' | 'surface'
+}) {
   const eps = payload.episodes
   const flagged = eps.filter((e) => e.verdict === 'flagged')
   const abstain = eps.filter((e) => e.verdict === 'abstain')
@@ -72,8 +85,8 @@ export function Dashboard({ payload }: { payload: Payload }) {
   const zeroLlm = eps.filter((e) => e.trace.llm_calls === 0).length
 
   return (
-    <section className="view dash">
-      <h1>Ringkasan unit</h1>
+    <section className={'view dash' + (variant === 'surface' ? ' on-surface' : '')}>
+      {variant === 'panel' && <h1>Ringkasan unit</h1>}
       <p className="lede">
         {payload.generated.cohort} episode rawat inap, {admitted.length} di
         antaranya masih dirawat pagi ini. Semua angka rupiah berasal dari

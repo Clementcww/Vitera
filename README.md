@@ -101,8 +101,8 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | U1 | Coder workbench: queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |
 | U2 | Detection surface (episode × day × recoverable value) | `make ui-data && make ui` | 12 | **done** (landing card) |
 | U3 | Scanned-FPK view: OCR boxes, confidences, gate verdict | `make ui-intake && make ui` | 14 | **done** |
-| U5 | Unit summary: aggregates, ward window, who has to act | `make ui-data && make ui` | 14 | **done** |
 | U4 | Generated report: draft, citations, print to PDF | `make ui-intake && make ui` | 14 | **done** |
+| U5 | Unit dashboard over the detection surface | `make ui-data && make ui` | 14 | **done** |
 
 ## Layout
 
@@ -126,17 +126,21 @@ enforced a second time on the surface that a poisoned note would have to reach.
 
 It is a single page. The landing and the workbench are the same DOM: the dark
 bento card is the hinge, and entering the queue morphs that card into the
-workbench rather than routing to another screen. The detection surface lives in
-the accent card, which expands in place.
+workbench rather than routing to another screen.
+
+The **unit summary** is not a pane of the workbench. It opens from the accent
+card, over the day-of-stay surface that card already draws — the bars are the
+runs, the numbers are what the runs found, and separating them made the reader
+hold one in their head while looking at the other. Aggregates only, and the
+screen says so: there is no per-coder cut and there will not be one.
 
 The 3D layer is fenced three ways: lazy chunk, WebGL capability probe, error
 boundary. The canvas only mounts once its card is open, so a closed landing
 never touches WebGL, and losing the 3D layer costs an animation rather than a
 screen.
 
-Three panes sit behind the header switch. **Antrean** is the koder's day.
-**Ringkasan** is the unit view above it — aggregates only, never a per-coder
-cut. **Berkas pindaian** is the paper the batch arrived on: the scanned FPK with
+Two panes sit behind the header switch. **Antrean** is the koder's day, and
+**Berkas pindaian** is the paper the batch arrived on: the scanned FPK with
 every recognised line drawn back onto it as a box, coloured by the engine's own
 confidence, next to the extracted values and the validation gate's verdict.
 Showing every observation — not only the ones a field used — is the point; a

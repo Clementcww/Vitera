@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import type { Payload } from '../types'
 import { webglAvailable } from '../three/webgl'
 import { jt } from '../format'
+import { Dashboard } from './Dashboard'
 
 /* The two cards that are only the landing: the headline, and the accent card
  * carrying the detection surface.
@@ -138,31 +139,28 @@ export function HeroCards({
           )}
         </div>
 
+        {/* Open, the card is the dashboard.
+          *
+          * The three floating figures that used to sit here said less than the
+          * surface behind them already did, and the unit summary said the rest
+          * on a screen of its own. They are one thing: the bars are the runs,
+          * the numbers are what the runs found. Scrolling happens inside this
+          * layer so the 3D stays put behind it and the reader keeps the shape
+          * in view while reading the totals. */}
         {open && (
-          <div className="widgets">
-            <div className="w w1">
-              <span>Terdeteksi sebelum pulang</span>
-              <b className="mono">
-                {m ? Math.round(m.detection_rate * 100) : '·'}%
-              </b>
+          <div className="dashwrap" onClick={(e) => e.stopPropagation()}>
+            {/* The surface owns the top of the card and is left clear; the
+                numbers begin below it, on a scrim, so nothing is read across a
+                bar. Scroll them up and the shape stays behind. */}
+            <div className="dashsheet">
+              <p className="wnote">
+                Satu batang di belakang, satu kali pipeline dijalankan pada
+                hari rawat itu. Tinggi batang adalah nilai yang dapat dipulihkan
+                menurut grouper. {payload.surface.cells.length} pemeriksaan
+                harian pada kohort ini.
+              </p>
+              <Dashboard payload={payload} variant="surface" />
             </div>
-            <div className="w w2">
-              <span>Jendela perbaikan ≥ 2 hari</span>
-              <b className="mono">
-                {m?.lead_time_share_ge_2_days != null
-                  ? Math.round(m.lead_time_share_ge_2_days * 100)
-                  : '·'}
-                %
-              </b>
-            </div>
-            <div className="w w3">
-              <span>Diperiksa tiap hari</span>
-              <b className="mono">{payload.surface.cells.length}</b>
-            </div>
-            <p className="wnote">
-              Satu batang, satu kali pipeline dijalankan pada hari rawat itu.
-              Tinggi batang adalah nilai yang dapat dipulihkan menurut grouper.
-            </p>
           </div>
         )}
       </section>
