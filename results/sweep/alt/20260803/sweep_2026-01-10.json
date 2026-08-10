@@ -1,0 +1,133 @@
+{
+ "sweep_date": "2026-01-10",
+ "status": "complete",
+ "episodes_run": 25,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP002386",
+   "sweep_date": "2026-01-10",
+   "day_of_stay": 6,
+   "still_admitted": false,
+   "previous_successful_sweep": "2026-01-09",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D1",
+     "defect_label": "Berkas tidak lengkap",
+     "subject": "resume_medis",
+     "suppression_key": "D1:resume_medis:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "resume_medis tidak dilampirkan pada berkas klaim",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 129,
+      "end": 208,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP002578",
+   "sweep_date": "2026-01-10",
+   "day_of_stay": 6,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-09",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D2",
+     "defect_label": "Wrong code specificity (sibling code)",
+     "subject": "E46",
+     "suppression_key": "D2:E46:f1609c7c1cc357ad",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8076,
+     "source": "cross_encoder",
+     "rationale": "kode E46 kemungkinan salah spesifisitas; rekam medis mendukung kode lain pada kelompok yang sama",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 134,
+      "text": "Diagnosis masuk: Pneumonia dan influenza (J18.9)",
+      "evidence_hash": "f1609c7c1cc357ad"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E46",
+     "suppression_key": "D3:E46:f1609c7c1cc357ad",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8666,
+     "source": "cross_encoder",
+     "rationale": "kode E46 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 134,
+      "text": "Diagnosis masuk: Pneumonia dan influenza (J18.9)",
+      "evidence_hash": "f1609c7c1cc357ad"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003765",
+   "sweep_date": "2026-01-10",
+   "day_of_stay": 6,
+   "still_admitted": false,
+   "previous_successful_sweep": "2026-01-09",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D6",
+     "defect_label": "Procedure-diagnosis incoherence",
+     "subject": "54.11",
+     "suppression_key": "D6:54.11:5b116370e88520dc",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "prosedur 54.11 dikode namun tidak tercatat dilakukan pada rekam medis",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 131,
+      "end": 166,
+      "text": "Tindakan: Apendektomi lain (47.09).",
+      "evidence_hash": "5b116370e88520dc"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  }
+ ]
+}

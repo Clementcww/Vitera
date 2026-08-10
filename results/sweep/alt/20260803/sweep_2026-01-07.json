@@ -1,0 +1,172 @@
+{
+ "sweep_date": "2026-01-07",
+ "status": "complete",
+ "episodes_run": 34,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP000743",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 7590000,
+   "queue_weight": 7590000.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "N18.3",
+     "suppression_key": "D4:N18.3:2a1c8e41b75f1a67",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8483,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk N18.3 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 202,
+      "end": 235,
+      "text": "  - Kreatinin serum ↑ (1.5 mg/dL)",
+      "evidence_hash": "2a1c8e41b75f1a67"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "N18.3",
+     "suppression_key": "D5:N18.3:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis N18.3 dikode, hasil pemeriksaan penunjang (Kreatinin serum, Ureum, eGFR) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 131,
+      "end": 210,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "N18.3",
+     "suppression_key": "D7:N18.3:ae840866459de4bf",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8588,
+     "source": "cross_encoder",
+     "rationale": "kode N18.3 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 130,
+      "text": "Diagnosis masuk: Infark miokard akut (I21.0)",
+      "evidence_hash": "ae840866459de4bf"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP001353",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "I10",
+     "suppression_key": "D4:I10:fbe3b8cd23b46245",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0016,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk I10 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 53,
+      "end": 86,
+      "text": "  - Tekanan darah ↑ (140/90 mmHg)",
+      "evidence_hash": "fbe3b8cd23b46245"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "I10",
+     "suppression_key": "D3:I10:e1ccc9fd8a308586",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.7218,
+     "source": "cross_encoder",
+     "rationale": "kode I10 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 124,
+      "text": "Diagnosis masuk: Stroke infark (I63.9)",
+      "evidence_hash": "e1ccc9fd8a308586"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP002110",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "I10",
+     "suppression_key": "D4:I10:715313a2b7592719",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0015,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk I10 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_1",
+      "start": 53,
+      "end": 86,
+      "text": "  - Tekanan darah ↑ (140/90 mmHg)",
+      "evidence_hash": "715313a2b7592719"
+     }
+    }
+   ],
+   "documented": []
+  }
+ ]
+}

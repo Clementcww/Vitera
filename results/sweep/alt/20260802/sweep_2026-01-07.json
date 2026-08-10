@@ -1,0 +1,191 @@
+{
+ "sweep_date": "2026-01-07",
+ "status": "complete",
+ "episodes_run": 34,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP003610",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 4,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 6820000,
+   "queue_weight": 6820000.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "I10",
+     "suppression_key": "D4:I10:13af57603b2a0b14",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0016,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk I10 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_4",
+      "start": 56,
+      "end": 89,
+      "text": "  - Tekanan darah ↑ (140/90 mmHg)",
+      "evidence_hash": "13af57603b2a0b14"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "D64.9",
+     "suppression_key": "D4:D64.9:28b7704e06576e70",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.002,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk D64.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 56,
+      "end": 82,
+      "text": "  - Hemoglobin ↓ (10 g/dL)",
+      "evidence_hash": "28b7704e06576e70"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "I10",
+     "suppression_key": "D3:I10:c8f581f9ce6d907b",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.6534,
+     "source": "cross_encoder",
+     "rationale": "kode I10 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 127,
+      "text": "Diagnosis masuk: Stroke hemoragik (I61.9)",
+      "evidence_hash": "c8f581f9ce6d907b"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003551",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 4,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "D64.9",
+     "suppression_key": "D4:D64.9:2237dbce741f2045",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0017,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk D64.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_4",
+      "start": 59,
+      "end": 85,
+      "text": "  - Hemoglobin ↓ (10 g/dL)",
+      "evidence_hash": "2237dbce741f2045"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "D64.9",
+     "suppression_key": "D5:D64.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis D64.9 dikode, hasil pemeriksaan penunjang (Hemoglobin, Hematokrit) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 131,
+      "end": 210,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "D64.9",
+     "suppression_key": "D3:D64.9:119e6297c075152f",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8966,
+     "source": "cross_encoder",
+     "rationale": "kode D64.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 130,
+      "text": "Diagnosis masuk: Gagal ginjal kronik (N18.5)",
+      "evidence_hash": "119e6297c075152f"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP002927",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 4,
+   "still_admitted": false,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D6",
+     "defect_label": "Procedure-diagnosis incoherence",
+     "subject": "45.73",
+     "suppression_key": "D6:45.73:5b116370e88520dc",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "prosedur 45.73 dikode namun tidak tercatat dilakukan pada rekam medis",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 131,
+      "end": 166,
+      "text": "Tindakan: Apendektomi lain (47.09).",
+      "evidence_hash": "5b116370e88520dc"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  }
+ ]
+}

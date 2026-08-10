@@ -305,7 +305,9 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 
 .card-main   { left: 0;     top: 0;     width: 62.5%; height: 100%;   background: var(--surface); }
 .card-accent { left: 64%;   top: 0;     width: 36%;   height: 48.5%;  background: var(--orange); color: #fff; cursor: pointer; }
-.card-work   { left: 64%;   top: 51.5%; width: 36%;   height: 48.5%;  background: var(--ink);    color: var(--light); cursor: pointer; }
+/* No `cursor: pointer`: on the landing this card is About Vitera and does not
+   navigate. The way into the workbench is the accent card's button. */
+.card-work   { left: 64%;   top: 51.5%; width: 36%;   height: 48.5%;  background: var(--ink);    color: var(--light); }
 
 .card-accent.open { left: 0; top: 0; width: 100%; height: 100%; z-index: 5; cursor: default; }
 .card-accent.open ~ .card-work,
@@ -424,8 +426,136 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .card-work .teaser .rings i { animation: none; } }
 
-.remedies { position: absolute; left: 34px; bottom: 34px; display: flex; align-items: center; gap: 8px; }
-.remedies .rdot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); margin-right: -6px; }
+/* ---- the scene on the headline card ------------------------------------ */
+
+/* Full width, centred in the block. It used to live only in the right-hand
+   two thirds, masked away from the headline; the headline sits at the BOTTOM
+   of this card instead (`.badge`'s `margin-bottom: auto` pushes everything
+   after it down), so the scene's own space, above the text, is already clear
+   the whole width and no mask is needed to protect a glyph. Text keeps its own
+   `z-index: 1` regardless, so a badge or heading crossing the scene stays
+   readable on top of it rather than because the scene avoids that ground. */
+.mainbg {
+  position: absolute; inset: 0;
+  z-index: 0; pointer-events: none; opacity: .95;
+}
+.card-main > *:not(.mainbg) { position: relative; z-index: 1; }
+
+/* ---- About Vitera, on the dark card ------------------------------------ */
+
+.about { position: relative; height: 100%; display: flex; flex-direction: column; }
+.about > * { position: relative; z-index: 2; }
+.about > .rings { z-index: 0; }
+
+.aboutlede {
+  margin: 14px 0 0; max-width: 30ch;
+  font-family: var(--serif); font-size: 13px; line-height: 1.6;
+  color: rgba(244, 247, 247, .74);
+}
+
+/* Expanded, the close control belongs at the far corner of the card, not
+   tucked under the title where it reads as part of the heading. */
+.about.open .abouthd { display: flex; align-items: flex-start; justify-content: space-between; }
+
+.aboutfoot { margin: auto 0 0; }
+.aboutmore {
+  display: inline-flex; align-items: center; gap: 9px;
+  height: 38px; padding: 0 18px; border-radius: 999px;
+  border: 1px solid rgba(244, 247, 247, .26); color: var(--light);
+  font-size: 12.5px; font-weight: 500;
+  transition: background .18s, border-color .18s;
+}
+.aboutmore:hover { background: rgba(244, 247, 247, .1); border-color: rgba(244, 247, 247, .5); }
+
+/* --- expanded: the same move the accent card makes ---------------------- */
+
+.card-work.expanded {
+  left: 0; top: 0; width: 100%; height: 100%; z-index: 6; cursor: default;
+}
+.bento.aboutopen .card-main,
+.bento.aboutopen .card-accent { opacity: 0; pointer-events: none; transition: opacity .3s; }
+
+.aboutwrap {
+  position: absolute; left: 0; right: 0; top: 96px; bottom: 0; z-index: 2;
+  overflow-y: auto; overflow-x: hidden;
+  animation: rise .5s .12s cubic-bezier(.22, .8, .2, 1) backwards;
+}
+.aboutsheet { max-width: 940px; margin: 0 auto; padding: 8px 34px 56px; }
+
+.aboutkicker {
+  margin: 0 0 10px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: #e0946a; /* --orange lifted for the ink surface; see tokens.css */
+}
+.aboutbig {
+  margin: 0 0 30px; max-width: 24ch;
+  font-size: clamp(22px, 2.4vw, 34px); line-height: 1.16;
+  font-weight: 600; letter-spacing: -.03em;
+}
+
+.probgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.probcard {
+  padding: 22px; border-radius: 18px;
+  background: rgba(244, 247, 247, .05); border: 1px solid rgba(244, 247, 247, .1);
+}
+.probcard h4 {
+  margin: 0 0 14px; font-size: 12px; font-weight: 500;
+  letter-spacing: .04em; text-transform: uppercase; color: rgba(244, 247, 247, .6);
+}
+.probstat { display: block; font-size: 30px; font-weight: 500; letter-spacing: -.02em; }
+.probnote { display: block; margin-top: 4px; font-size: 11.5px; color: rgba(244, 247, 247, .6); }
+.probcard .prose { margin: 16px 0 0; font-size: 12.5px; line-height: 1.65; color: rgba(244, 247, 247, .84); }
+.probsrc {
+  margin: 14px 0 0; padding-top: 12px; border-top: 1px solid rgba(244, 247, 247, .1);
+  font-size: 11px; font-style: italic; color: rgba(244, 247, 247, .5);
+}
+
+.aboutclose { margin: 26px 0 0; font-size: 13px; line-height: 1.7; color: rgba(244, 247, 247, .84); }
+.aboutsrc {
+  margin: 18px 0 0; padding: 14px 16px; border-radius: 12px;
+  background: rgba(180, 97, 28, .16); border: 1px solid rgba(224, 148, 106, .3);
+  font-size: 11.5px; line-height: 1.6; color: rgba(244, 247, 247, .8);
+}
+
+/* ---- the accent card's click prompt ------------------------------------- */
+
+/* The door itself moved to the headline card's button; this is what is left,
+   naming the OTHER thing a click here does: opens the surface, not the queue. */
+.accentcta { position: absolute; left: 34px; right: 34px; bottom: 34px; z-index: 3; }
+.accenthint {
+  display: block;
+  font-size: 11.5px; font-weight: 500; color: rgba(255, 255, 255, .9);
+}
+
+/* ---- the key field, in the header, where the call to action used to be -- */
+
+.herokey { padding-right: 6px; gap: 10px; }
+.herokey .kled { width: 6px; height: 6px; border-radius: 50%; background: var(--mid); flex: none; }
+.herokey.on .kled { background: var(--green); }
+.hklabel { color: var(--muted); font-weight: 400; cursor: pointer; }
+.herokey input {
+  width: 150px; height: 30px; padding: 0 12px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--canvas); color: var(--ink); font-size: 12.5px;
+}
+.herokey input:focus { outline: 2px solid var(--orange); outline-offset: -1px; }
+.herokey.on input { border-color: #cfe0cf; background: #f4f8f3; }
+.hkbtn {
+  height: 30px; padding: 0 14px; border-radius: 999px;
+  background: var(--ink); color: var(--light); font-size: 12px; font-weight: 500;
+}
+.hkbtn:disabled { background: var(--line); color: var(--muted); cursor: default; }
+.hkinfo {
+  width: 22px; height: 22px; border-radius: 50%; flex: none;
+  background: var(--line); color: var(--muted); font-size: 11.5px; line-height: 1;
+}
+.hkinfo:hover { background: var(--ink); color: var(--light); }
+
+/* The panel hangs off the same anchor as the workbench one, so the two never
+   drift apart on screen either. */
+@media (max-width: 760px) {
+  .herokey .hklabel { display: none; }
+  .herokey input { width: 108px; }
+}
 
 /* ---- the accent card, open: the dashboard over its own surface --------- */
 
@@ -610,7 +740,13 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
   /* `relative`, not `static`. The cards stop being absolutely placed here, but
      `.cardbg` is `position: absolute; inset: 0` and would otherwise resolve
      against `.bento`, painting the 3D surface across the card above it. */
-  .card { position: relative; width: auto !important; height: auto !important; padding: 26px; }
+  /* `left`/`top` are reset, not just overridden by the grid: on a relatively
+     positioned card the desktop `left: 64%` is still an offset, which pushed
+     both right-hand cards off the side of a phone. */
+  .card {
+    position: relative; left: auto; top: auto;
+    width: auto !important; height: auto !important; padding: 26px;
+  }
   .card-accent, .card-work { min-height: 230px; }
   .card-accent.open { min-height: 420px; }
   [data-mode='work'] .card-main,
@@ -626,6 +762,21 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
      thousand pixels of WebGL for a backdrop. Band it to the top instead. */
   .card-accent.open .cardbg { height: 300px; bottom: auto; }
   .card-accent.open { min-height: 0; height: auto !important; }
+  /* The headline card has no spare column here: the h1 wraps across the full
+     width, so the scene would run under it wherever it is masked to. It is
+     ambient, so it is the thing that goes. This rule catches a window resized
+     down after load; Hero.tsx also declines to mount the canvas at all when
+     the page opens narrow, because hiding a canvas does not stop it drawing. */
+  .mainbg { display: none; }
+  /* An expanded card covers the others on desktop, where they are absolutely
+     placed. Here they are grid rows, so fading them out would leave their
+     height behind as a blank column above the card being read. */
+  .bento.aboutopen .card-main,
+  .bento.aboutopen .card-accent,
+  .card-accent.open ~ .card-work { display: none; }
+  .aboutwrap { position: static; overflow: visible; }
+  .aboutsheet { padding: 18px 0 8px; }
+  .probgrid { grid-template-columns: 1fr; }
 }
 
 /* ---- bring-your-own-key panel ------------------------------------------ */
@@ -1026,3 +1177,75 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 
 /* The expanded row grew a subject column. */
 .mini { grid-template-columns: 34px auto 1fr auto; }
+
+/* ---- the demo strip above the queue ------------------------------------ */
+
+/* Deliberately NOT styled like the product. It is boxed, tagged and dashed so
+   that nobody in the room mistakes it for a koder control, because the sweep
+   being unattended is a claim we make. See DemoControls.tsx. */
+.democtl {
+  position: relative;
+  margin: 0 0 16px; padding: 16px 18px 14px;
+  border: 1px dashed var(--line-2); border-radius: var(--r);
+  background: repeating-linear-gradient(
+    -45deg, transparent 0 8px, rgba(16, 28, 31, .012) 8px 16px
+  );
+}
+.demotag {
+  position: absolute; top: -8px; left: 14px; padding: 1px 8px;
+  border-radius: 20px; background: var(--ink); color: var(--light);
+  font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
+}
+/* `flex-start`, and the label keeps its column: the swept sentence is long
+   enough to wrap, and centring left the label stranded on a line of its own. */
+.demorow { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 9px; }
+.demolab {
+  width: 52px; flex: none; padding-top: 7px;
+  font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+}
+
+.seedpick { display: flex; gap: 6px; flex-wrap: wrap; }
+.seedbtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 11px; border-radius: 20px;
+  border: 1px solid var(--line); background: var(--surface);
+  font-size: 11.5px; color: var(--ink-2);
+}
+.seedbtn:hover:not(:disabled) { border-color: var(--mid); }
+.seedbtn.on { background: var(--ink); border-color: var(--ink); color: var(--light); }
+.seedbtn:disabled { opacity: .5; cursor: default; }
+.seedbtn i {
+  font-style: normal; font-size: 9px; letter-spacing: .08em; text-transform: uppercase;
+  padding: 1px 5px; border-radius: 20px; background: var(--query-bg); color: var(--query);
+}
+.seedbtn.on i { background: rgba(255, 255, 255, .16); color: var(--light); }
+
+.sweepbtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 30px; padding: 0 16px; border-radius: 20px;
+  background: var(--query); color: #fff; font-size: 12px; font-weight: 500;
+}
+.sweepbtn:hover:not(:disabled) { filter: brightness(1.06); }
+.sweepbtn:disabled { opacity: .5; cursor: default; }
+.sweptmark { flex: 1; min-width: 0; padding-top: 5px; font-size: 12px; line-height: 1.6; color: var(--ink-2); }
+.sweptmark b { color: var(--green); }
+.demonote { margin: 10px 0 0; font-size: 11px; line-height: 1.6; color: var(--muted); }
+.demonote code { font-size: 10.5px; }
+
+/* ---- grouped queue ------------------------------------------------------ */
+
+.qgroup { margin-bottom: 18px; }
+.ghead {
+  display: flex; align-items: center; gap: 9px;
+  margin: 0 0 8px; padding: 0 2px;
+  font-size: 12px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase;
+}
+.ghead .sw { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.ghead .gwho {
+  font-size: 11px; font-weight: 400; letter-spacing: 0; text-transform: none;
+  color: var(--muted);
+}
+.ghead .n {
+  margin-left: auto; padding: 1px 8px; border-radius: 20px;
+  background: var(--line); color: var(--ink-2); font-size: 11px; font-weight: 500;
+}

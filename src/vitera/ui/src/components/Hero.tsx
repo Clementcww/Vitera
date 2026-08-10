@@ -22,6 +22,7 @@ import { Dashboard } from './Dashboard'
  */
 
 const HeroScene = lazy(() => import('../three/HeroScene'))
+const AgentScene = lazy(() => import('../three/AgentScene'))
 
 class Boundary extends Component<{ children: ReactNode }, { dead: boolean }> {
   state = { dead: false }
@@ -37,13 +38,32 @@ export function HeroCards({
   payload,
   sweep,
   onEnter,
+  onSurface,
+  paused,
 }: {
   payload: Payload
   sweep?: SweepPayload | null
   onEnter: () => void
+  /** Reported upward so the headline card can drop its WebGL context while
+   *  this card covers it. Nothing else reads it. */
+  onSurface: (open: boolean) => void
+  /** True while something covers the headline card. Same reason. */
+  paused: boolean
 }) {
   const [open, setOpen] = useState(false)
+  const setSurface = (v: boolean) => {
+    setOpen(v)
+    onSurface(v)
+  }
   const capability = useMemo(() => webglAvailable(), [])
+  /* Read once, at mount. The card has no spare column on a narrow screen, so
+     the scene is not drawn there at all; the matching CSS rule covers a window
+     that is resized down afterwards. */
+  const narrow = useMemo(
+    () =>
+      typeof matchMedia === 'function' && matchMedia('(max-width: 900px)').matches,
+    [],
+  )
   const reducedMotion = useMemo(
     () =>
       typeof matchMedia === 'function' &&
@@ -62,22 +82,34 @@ export function HeroCards({
   return (
     <>
       <section className="card card-main">
+        {/* Ambient, not data: see the header of AgentScene.tsx. Masked away
+            from the left of the card in CSS so it never runs under the
+            headline, and unmounted rather than hidden whenever another card
+            covers this one, so only one WebGL context is ever alive. */}
+        <div className="mainbg" aria-hidden="true">
+          {capability.ok && !paused && !narrow && (
+            <Boundary>
+              <Suspense fallback={null}>
+                <AgentScene reducedMotion={reducedMotion} tint="ink" />
+              </Suspense>
+            </Boundary>
+          )}
+        </div>
+
         {m?.n_episodes != null && (
           <span className="badge">
             Diukur pada {m.n_episodes} episode uji
             <i aria-hidden="true">→</i>
           </span>
         )}
-        <h1>
-          Kami uji klaim
-          <br />
-          sebelum BPJS melakukannya
-        </h1>
+        <h1>Vitera</h1>
         <p className="sub prose">
-          Selagi pasien masih dirawat dan catatannya masih bisa diperbaiki.
+          Kami uji klaim sebelum BPJS melakukannya.
         </p>
+        {/* The landing's one door, moved here from the accent card: this is
+            the headline card, so this is where a first click belongs. */}
         <button className="solid" onClick={onEnter}>
-          Buka antrean pagi
+          Buka antrean pagi <span aria-hidden="true">→</span>
         </button>
 
         <div className="mainfoot">
@@ -103,7 +135,7 @@ export function HeroCards({
 
       <section
         className={'card card-accent' + (open ? ' open' : '')}
-        onClick={() => !open && setOpen(true)}
+        onClick={() => !open && setSurface(true)}
       >
         <div className="cardhd">
           <h2>
@@ -116,7 +148,7 @@ export function HeroCards({
               className="closebtn"
               onClick={(e) => {
                 e.stopPropagation()
-                setOpen(false)
+                setSurface(false)
               }}
               aria-label="Tutup"
             >
@@ -129,6 +161,19 @@ export function HeroCards({
           <span className="chip yellow">
             {m.lead_time_median_days} hari lebih awal
           </span>
+        )}
+
+        {/* The card's own door is gone; the button now lives on the headline
+            card. What is left is the prompt for the OTHER way in: clicking
+            this card opens the surface and the unit's numbers, rather than
+            the queue. */}
+        {!open && (
+          <div className="accentcta">
+            <span className="accenthint">
+              Klik kartu ini untuk inti sistemnya
+              <span aria-hidden="true"> →</span>
+            </span>
+          </div>
         )}
 
         <div className="cardbg">

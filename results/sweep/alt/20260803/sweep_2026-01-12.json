@@ -1,0 +1,118 @@
+{
+ "sweep_date": "2026-01-12",
+ "status": "complete",
+ "episodes_run": 19,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP003827",
+   "sweep_date": "2026-01-12",
+   "day_of_stay": 8,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-11",
+   "recoverable_idr": 7590000,
+   "queue_weight": 7590000.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:0add35f2d4416170",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.7886,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_8",
+      "start": 59,
+      "end": 95,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "0add35f2d4416170"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "E11.9",
+     "suppression_key": "D5:E11.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis E11.9 dikode, hasil pemeriksaan penunjang (Gula darah sewaktu, HbA1c) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 131,
+      "end": 210,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E11.9",
+     "suppression_key": "D3:E11.9:ae840866459de4bf",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8506,
+     "source": "cross_encoder",
+     "rationale": "kode E11.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 130,
+      "text": "Diagnosis masuk: Infark miokard akut (I21.0)",
+      "evidence_hash": "ae840866459de4bf"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003142",
+   "sweep_date": "2026-01-12",
+   "day_of_stay": 8,
+   "still_admitted": false,
+   "previous_successful_sweep": "2026-01-11",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D1",
+     "defect_label": "Berkas tidak lengkap",
+     "subject": "resume_medis",
+     "suppression_key": "D1:resume_medis:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "resume_medis tidak dilampirkan pada berkas klaim",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 139,
+      "end": 218,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  }
+ ]
+}

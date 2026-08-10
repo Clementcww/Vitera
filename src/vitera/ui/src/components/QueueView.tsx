@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import type { EpisodeView, Remedy, SweepPayload } from '../types'
 import { DEFECT_ID, NONE, REMEDY, jt } from '../format'
+import { queueOrder } from '../data'
 import { Term } from './Term'
 
 /* L0 and L1.
@@ -28,7 +30,26 @@ import { Term } from './Term'
  * a standing list that looks identical every morning, which is precisely the
  * monitoring product that gets switched off in week two (sweep rule 3). The
  * default filter is what CHANGED since the last sweep; the standing list is one
- * click away and clearly labelled as such. */
+ * click away and clearly labelled as such.
+ *
+ * `grouped` is the demo's before-and-after, and it governs three things at
+ * once because all three are the same thing: **triage**.
+ *
+ *     order    registry order until swept, `queueOrder` after
+ *     colour   one neutral dot until swept, the actor's colour after
+ *     filters  absent until swept
+ *
+ * Un-swept the screen is a work list: every finding the pipeline produced, by
+ * episode number, with nothing saying which to touch first. That is what a
+ * casemix unit has today and it is the comparison we are arguing against.
+ *
+ * Read the boundary carefully before moving any of it. The sweep does **not**
+ * decide remedy: `_classify` in the cross-encoder does, deterministically, and
+ * the value is sitting in the payload the whole time. What the sweep does is
+ * *stage a queue* out of that, which is ordering, grouping and the diff, and
+ * per CLAUDE.md's build order that is exactly its scope. So the colour appears
+ * with the sweep because the triage does, not because the remedy did. The
+ * caption below says that in as many words, and it needs to keep saying it. */
 
 type Filter = 'ALL' | 'DIFF' | Remedy
 type DiffMark = 'new' | 'escalated' | null
@@ -70,10 +91,17 @@ export function QueueView({
   episodes,
   sweep,
   onOpen,
+  grouped = false,
+  controls,
 }: {
   episodes: EpisodeView[]
   sweep?: SweepPayload | null
   onOpen: (id: string) => void
+  /** Arrange the rows under the actor who has to fix them. Set by the sweep. */
+  grouped?: boolean
+  /** The demo strip. Passed in rather than imported so this file keeps knowing
+   *  only about the queue. */
+  controls?: ReactNode
 }) {
   const marks = diffMarks(sweep ?? null)
   const changed = (e: EpisodeView) =>
@@ -99,7 +127,12 @@ export function QueueView({
     counts[r] = episodes.filter((e) => topRemedy(e) === r).length
   }
 
-  const shown = episodes.filter((e) =>
+  /* Registry order until the sweep stages a queue, then the queue's order.
+     `episodes` arrives sorted by episode id from `load`; the copy is so the
+     sort does not mutate the payload other screens are reading. */
+  const listed = grouped ? [...episodes].sort(queueOrder) : episodes
+
+  const shown = listed.filter((e) =>
     filter === 'ALL'
       ? true
       : filter === 'DIFF'
@@ -133,6 +166,12 @@ export function QueueView({
         </div>
       </details>
 
+      {controls}
+
+      {/* Filters are triage too: every one of them is a cut the sweep's output
+          defines. Un-swept there is nothing to cut by, so the bar is absent
+          rather than present and inert. */}
+      {grouped && (
       <div className="filters">
         {((hasDiff
           ? ['DIFF', 'ALL', 'QUERY', 'OBTAIN', 'RECODE']
@@ -157,6 +196,7 @@ export function QueueView({
           </button>
         ))}
       </div>
+      )}
 
       {filter === 'ALL' && hasDiff && (
         <p className="cnote caveat" style={{ margin: '0 0 10px' }}>
@@ -165,8 +205,23 @@ export function QueueView({
         </p>
       )}
 
-      <div className="list">
-        {shown.map((e) => {
+      {/* Before the sweep the screen is honest about being just a list, and
+          about WHY it is only a list. The second sentence is the one that
+          keeps this from overclaiming: the remedy is already in the payload,
+          decided by the cross-encoder; what is missing is the triage. */}
+      {!grouped && (
+        <p className="cnote" style={{ margin: '0 0 10px' }}>
+          {episodes.length} episode, urut nomor, belum ditriase. Setiap temuan
+          sudah punya pelaku dan jendela perbaikannya sendiri, tetapi yang
+          menyusunnya jadi antrean, yaitu urutan, pengelompokan dan penandaan
+          apa yang berubah semalam, adalah sweep.
+        </p>
+      )}
+
+      {/* One row renderer for both arrangements. Grouping must not be able to
+          change what a row says, only where it sits. */}
+      {(() => {
+        const row = (e: EpisodeView) => {
           const rm = topRemedy(e)
           const expanded = open === e.episode_id
           const delta = e.money.delta_idr
@@ -176,10 +231,22 @@ export function QueueView({
                 className="rsum"
                 onClick={() => setOpen(expanded ? null : e.episode_id)}
               >
+                {/* One neutral dot until the queue is triaged. The remedy is
+                    known either way; what the colour encodes is a queue
+                    position, and un-swept there is no queue. */}
                 <span
                   className="rdot"
-                  style={{ background: rm ? `var(--${REMEDY[rm].css})` : 'var(--mid)' }}
-                  title={rm ? REMEDY[rm].label : 'tidak ada temuan'}
+                  style={{
+                    background:
+                      grouped && rm ? `var(--${REMEDY[rm].css})` : 'var(--mid)',
+                  }}
+                  title={
+                    !grouped
+                      ? 'belum ditriase'
+                      : rm
+                        ? REMEDY[rm].label
+                        : 'tidak ada temuan'
+                  }
                 />
                 <span className="rid mono">{e.episode_id}</span>
                 {/* Subject first. It is the only token that differs between
@@ -261,8 +328,55 @@ export function QueueView({
               )}
             </div>
           )
-        })}
-      </div>
+        }
+
+        if (!grouped) {
+          return <div className="list">{shown.map(row)}</div>
+        }
+
+        /* Grouped: one section per actor, in repair-window order, then the
+           episodes the pipeline found nothing on. A group with no rows is
+           omitted rather than shown empty, so a filtered view does not leave
+           three headings hanging over nothing. */
+        const order: Remedy[] = ['QUERY', 'OBTAIN', 'RECODE']
+        const clean = shown.filter((e) => topRemedy(e) === null)
+
+        return (
+          <>
+            {order.map((r) => {
+              const rows = shown.filter((e) => topRemedy(e) === r)
+              if (!rows.length) return null
+              return (
+                <section className="qgroup" key={r}>
+                  <h2 className="ghead">
+                    <span
+                      className="sw"
+                      style={{ background: `var(--${REMEDY[r].css})` }}
+                    />
+                    {REMEDY[r].label}
+                    <span className="gwho">{REMEDY[r].who}</span>
+                    <span className="n">{rows.length}</span>
+                  </h2>
+                  <div className="list">{rows.map(row)}</div>
+                </section>
+              )
+            })}
+            {clean.length > 0 && (
+              <section className="qgroup">
+                <h2 className="ghead">
+                  <span className="sw" style={{ background: 'var(--mid)' }} />
+                  Tidak perlu tindakan
+                  <span className="gwho">
+                    Pemeriksaan selesai, tidak ada temuan terbuka
+                  </span>
+                  <span className="n">{clean.length}</span>
+                </h2>
+                <div className="list">{clean.map(row)}</div>
+              </section>
+            )}
+          </>
+        )
+      })()}
 
       <details className="help">
         <summary>Bagaimana antrean ini diurutkan?</summary>

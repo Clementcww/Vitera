@@ -1,0 +1,31 @@
+{
+ "default": 20260731,
+ "cohort": 36,
+ "note": "Setiap seed adalah kohort yang benar-benar diekspor ulang oleh pipeline yang sama, bukan pengacakan ulang di peramban. Tidak ada angka terukur yang dihitung dari kohort mana pun di sini.",
+ "seeds": [
+  {
+   "seed": 20260731,
+   "demo": "demo.json",
+   "sweep": "sweep.json",
+   "canonical": true
+  },
+  {
+   "seed": 20260801,
+   "demo": "demo-20260801.json",
+   "sweep": "sweep-20260801.json",
+   "canonical": false
+  },
+  {
+   "seed": 20260802,
+   "demo": "demo-20260802.json",
+   "sweep": "sweep-20260802.json",
+   "canonical": false
+  },
+  {
+   "seed": 20260803,
+   "demo": "demo-20260803.json",
+   "sweep": "sweep-20260803.json",
+   "canonical": false
+  }
+ ]
+}

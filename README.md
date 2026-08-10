@@ -43,6 +43,7 @@ Python 3.11+. Training runs on Apple silicon via MPS.
 | `make intake` | Read a scanned FPK back in and write the corrected DRAF |
 | `make intake-eval` | Measured OCR accuracy per scan profile |
 | `make ui-data` | Export real pipeline output for the workbench |
+| `make ui-seeds` | Three alternate cohorts for the workbench's seed control |
 | `make ui-intake` | Export the scanned-FPK view for the workbench |
 | `make ui-install` | Install the workbench toolchain (network, once) |
 | `make ui-build` | Build the workbench bundle |

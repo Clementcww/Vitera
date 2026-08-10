@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { Loaded, SweepPayload } from './types'
-import { load, loadSweep } from './data'
+import type { SeedManifest } from './types'
+import { load, loadSeeds, loadSweep } from './data'
+import { DemoControls } from './components/DemoControls'
 import {
   AdvisoryBanner,
   DroppedSpanBanner,
@@ -12,7 +14,8 @@ import { Logo } from './components/Logo'
 import { CaseView } from './components/CaseView'
 import { StagingTray } from './components/StagingTray'
 import { HeroCards } from './components/Hero'
-import { KeyPanel } from './components/KeyPanel'
+import { About } from './components/About'
+import { HeroKey, KeyPanel } from './components/KeyPanel'
 import { ScanView } from './components/ScanView'
 import { ReportSheet } from './components/ReportSheet'
 import { keyStore } from './llm'
@@ -63,6 +66,19 @@ export default function App() {
   const [intake, setIntake] = useState<IntakePayload | null>(null)
   const [sweep, setSweep] = useState<SweepPayload | null>(null)
   const [report, setReport] = useState(false)
+  // Which landing card is currently expanded over the bento. Both cover the
+  // headline card, which is why the 3D layer reads them: see Hero.tsx.
+  const [surface, setSurface] = useState(false)
+  const [about, setAbout] = useState(false)
+
+  /* The demo controls above the queue. `swept` is the queue's own state, not
+     the sweep's: the payload is loaded either way, and this decides whether
+     the workbench has been shown it yet. Pressing the button once per cohort
+     is the whole interaction; switching cohort puts it back. */
+  const [seeds, setSeeds] = useState<SeedManifest | null>(null)
+  const [seed, setSeed] = useState<number | null>(null)
+  const [swept, setSwept] = useState(false)
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     load().then(setState).catch((e) => setError(String(e)))
@@ -72,6 +88,8 @@ export default function App() {
     // Same, and with one extra rule: absent sweep output means the header says
     // no sweep has run. It must never fall back to a timestamp of its own.
     loadSweep().then(setSweep)
+    // Same again: no manifest means no seed control, on the canonical cohort.
+    loadSeeds().then(setSeeds)
   }, [])
 
   if (error) {
@@ -88,6 +106,15 @@ export default function App() {
   const { payload, droppedFlags } = state
   const ep = payload.episodes.find((e) => e.episode_id === openCase) ?? null
 
+  /* What the WORKBENCH has been shown. Until the sweep is run, the header
+     reads `belum ada sweep` and the queue carries no diff marks, which is the
+     state the app already had to handle for a missing export (sweep rule 5)
+     rather than a new one invented for the demo.
+     The landing keeps the full payload: the dashboard there reports a sweep
+     that DID run, in the past tense, and says which night it was. */
+  const queueSweep = swept ? sweep : null
+  const activeSeed = seed ?? seeds?.default ?? payload.generated.seed
+
   const stage = (key: string) => setStaged((s) => new Set(s).add(key))
   const dismiss = (key: string) =>
     setStaged((s) => {
@@ -96,10 +123,44 @@ export default function App() {
       return n
     })
 
+  /* Switching cohort reloads both files and resets the queue to un-swept.
+   *
+   * Everything derived from the old cohort goes with it: an open case and a
+   * staged correction both name episodes that no longer exist in the payload,
+   * and carrying them across would leave the staging tray holding keys against
+   * a ward that is not on screen. */
+  const chooseSeed = async (next: number) => {
+    const entry = seeds?.seeds.find((s) => s.seed === next)
+    if (!entry || busy) return
+    setBusy(true)
+    try {
+      const loaded = await load(`./data/${entry.demo}`)
+      const sw = await loadSweep(`./data/${entry.sweep}`)
+      setState(loaded)
+      setSweep(sw)
+      setSeed(next)
+      setSwept(false)
+      setOpenCase(null)
+      setStaged(new Set())
+    } catch (e) {
+      setError(String(e))
+    } finally {
+      setBusy(false)
+    }
+  }
+
   const toHero = () => {
     setMode('hero')
     setOpenCase(null)
     setReport(false)
+  }
+
+  /* The dark card is the workbench in `work` mode and About Vitera on the
+     landing. Entering the workbench while About is expanded would hand the
+     morph two geometries at once, so the expansion is closed first. */
+  const toWork = () => {
+    setAbout(false)
+    setMode('work')
   }
 
   return (
@@ -112,7 +173,14 @@ export default function App() {
 
         <div className="hspacer" />
 
-        {mode === 'work' && (
+        {/* On the landing the pill IS the key field, and it stands where the
+            call to action used to: the only thing a judge has to bring is the
+            one thing the header asks for. In the workbench it collapses back
+            to the toggle, because there the screen is the koder's, not a
+            visitor's. Same store, same copy, one component apart. */}
+        {mode === 'hero' ? (
+          <HeroKey onChange={() => setKeyTick((n) => n + 1)} />
+        ) : (
           <KeyPanel
             hasKey={Boolean(keyStore.get()) || keyTick < 0}
             onChange={() => setKeyTick((n) => n + 1)}
@@ -145,59 +213,38 @@ export default function App() {
             no clock on it renders as fresh no matter how old it is, which is
             the sweep-rule-5 failure that gets a patient discharged with an
             unrepaired record while the screen looks green. */}
-        {mode === 'work' && <SweepStatus sweep={sweep} payload={payload} />}
+        {mode === 'work' && <SweepStatus sweep={queueSweep} payload={payload} />}
 
-        <button
-          className="hpill ctapill"
-          onClick={() => (mode === 'hero' ? setMode('work') : toHero())}
-        >
-          {mode === 'hero' ? (
-            <>
-              Buka antrean <span aria-hidden="true">→</span>
-            </>
-          ) : (
-            <>
-              <span aria-hidden="true">←</span> Beranda
-            </>
-          )}
-        </button>
+        {/* No door in the header on the landing: the key field took this slot,
+            and the way in is the accent card's button. Only the way back
+            remains, and only once there is somewhere to come back from. */}
+        {mode === 'work' && (
+          <button className="hpill ctapill" onClick={toHero}>
+            <span aria-hidden="true">←</span> Beranda
+          </button>
+        )}
       </header>
 
-      <div className="bento">
+      <div className={'bento' + (about ? ' aboutopen' : '')}>
         <HeroCards
           payload={payload}
           sweep={sweep}
-          onEnter={() => setMode('work')}
+          onEnter={toWork}
+          onSurface={setSurface}
+          paused={mode === 'work' || surface || about}
         />
 
-        {/* The hinge. Card in `hero`, whole workbench in `work`. */}
-        <section
-          className="card card-work"
-          onClick={() => mode === 'hero' && setMode('work')}
-        >
-          <div className="teaser">
-            <h2>
-              Antrean
-              <br />
-              pagi
-            </h2>
-            <div className="rings" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </div>
-            <div className="remedies">
-              <span className="rdot" style={{ background: 'var(--query)' }} />
-              <span className="rdot" style={{ background: 'var(--obtain)' }} />
-              <span className="rdot" style={{ background: 'var(--recode)' }} />
-              <span className="chip outline">
-                {payload.episodes.reduce((n, e) => n + e.flags.length, 0)} temuan
-              </span>
-            </div>
-          </div>
+        {/* The hinge. Card in `hero`, whole workbench in `work`.
+         *
+         * It is still the element that morphs, but it is no longer the thing
+         * you click to make that happen: on the landing it is About Vitera,
+         * and the door is the accent card's button. Two cards that both opened
+         * the queue meant the landing had to explain which one to press. */}
+        <section className={'card card-work' + (about ? ' expanded' : '')}>
+          <About expanded={about} onExpand={setAbout} />
 
           <div className="workpane">
-            <StaleBanner sweep={sweep} />
+            <StaleBanner sweep={queueSweep} />
             <AdvisoryBanner payload={payload} />
             <DroppedSpanBanner dropped={droppedFlags} />
             <main>
@@ -213,9 +260,27 @@ export default function App() {
                 />
               ) : (
                 <QueueView
+                  /* A new cohort is a new screen, so the queue remounts rather
+                     than inheriting the last one's state. Without this the
+                     filter chosen for the previous ward survives the switch,
+                     and a cohort of 36 can land showing three rows because a
+                     remedy filter from a different ward is still applied. */
+                  key={activeSeed}
                   episodes={payload.episodes}
-                  sweep={sweep}
+                  sweep={queueSweep}
                   onOpen={setOpenCase}
+                  grouped={swept}
+                  controls={
+                    <DemoControls
+                      manifest={seeds}
+                      seed={activeSeed}
+                      onSeed={chooseSeed}
+                      swept={swept}
+                      onSweep={() => setSwept(true)}
+                      sweep={sweep}
+                      busy={busy}
+                    />
+                  }
                 />
               )}
             </main>

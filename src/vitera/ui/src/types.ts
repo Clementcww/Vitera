@@ -227,6 +227,24 @@ export interface SweepPayload {
   nights: SweepNight[]
 }
 
+/* --- the seed control (data/seeds.json, written by `make ui-seeds`) -------- */
+
+export interface SeedEntry {
+  seed: number
+  demo: string
+  sweep: string
+  /** The cohort `make ui-data` owns and every committed figure was read from.
+   *  The others are alternates, produced by the same exporter. */
+  canonical: boolean
+}
+
+export interface SeedManifest {
+  default: number
+  cohort: number
+  note: string
+  seeds: SeedEntry[]
+}
+
 /** Set by the client after re-verifying spans. See data.ts. */
 export interface Loaded {
   payload: Payload

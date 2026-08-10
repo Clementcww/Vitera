@@ -1,0 +1,45 @@
+{
+ "sweep_date": "2026-01-11",
+ "status": "complete",
+ "episodes_run": 19,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP003227",
+   "sweep_date": "2026-01-11",
+   "day_of_stay": 8,
+   "still_admitted": false,
+   "previous_successful_sweep": "2026-01-10",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 1,
+   "new": [
+    {
+     "defect_class": "D1",
+     "defect_label": "Berkas tidak lengkap",
+     "subject": "resume_medis",
+     "suppression_key": "D1:resume_medis:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "resume_medis tidak dilampirkan pada berkas klaim",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 143,
+      "end": 222,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  }
+ ]
+}

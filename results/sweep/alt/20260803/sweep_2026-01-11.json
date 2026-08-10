@@ -1,0 +1,84 @@
+{
+ "sweep_date": "2026-01-11",
+ "status": "complete",
+ "episodes_run": 20,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP002855",
+   "sweep_date": "2026-01-11",
+   "day_of_stay": 7,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-10",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D2",
+     "defect_label": "Wrong code specificity (sibling code)",
+     "subject": "E87.0",
+     "suppression_key": "D2:E87.0:cf48bed4aeb69766",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8697,
+     "source": "cross_encoder",
+     "rationale": "kode E87.0 kemungkinan salah spesifisitas; rekam medis mendukung kode lain pada kelompok yang sama",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 148,
+      "text": "Diagnosis masuk: Sirosis hati dan penyakit hati kronik (K74.6)",
+      "evidence_hash": "cf48bed4aeb69766"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "D64.9",
+     "suppression_key": "D4:D64.9:28b7704e06576e70",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0021,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk D64.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 77,
+      "end": 103,
+      "text": "  - Hemoglobin ↓ (10 g/dL)",
+      "evidence_hash": "28b7704e06576e70"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E87.0",
+     "suppression_key": "D3:E87.0:cf48bed4aeb69766",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8569,
+     "source": "cross_encoder",
+     "rationale": "kode E87.0 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 148,
+      "text": "Diagnosis masuk: Sirosis hati dan penyakit hati kronik (K74.6)",
+      "evidence_hash": "cf48bed4aeb69766"
+     }
+    }
+   ],
+   "documented": []
+  }
+ ]
+}

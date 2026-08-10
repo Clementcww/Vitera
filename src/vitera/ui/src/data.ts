@@ -1,4 +1,11 @@
-import type { EpisodeView, Flag, Loaded, Payload, SweepPayload } from './types'
+import type {
+  EpisodeView,
+  Flag,
+  Loaded,
+  Payload,
+  SeedManifest,
+  SweepPayload,
+} from './types'
 
 /* Loading, and the client half of architectural rule 6.
  *
@@ -43,7 +50,12 @@ export function verifySpans(ep: EpisodeView): { flags: Flag[]; dropped: number }
  * Matches `config/sweep.yaml`'s ordering, and the reason is clinical rather
  * than cosmetic: a Query needs the DPJP while the patient is still on the
  * ward, so it decays fastest and must surface first however small its rupiah
- * figure. Sorting by value alone would bury the only findings that expire. */
+ * figure. Sorting by value alone would bury the only findings that expire.
+ *
+ * Applied by the QUEUE, not here, and only once the sweep has staged one.
+ * Ordering is the sweep's job (`sweep/queue.py`, and CLAUDE.md's build order
+ * lists it there), so a screen that has not been swept must not already be in
+ * queue order or the sweep appears to do nothing. */
 export function queueOrder(a: EpisodeView, b: EpisodeView): number {
   const rank = (e: EpisodeView) =>
     e.flags.length ? Math.min(...e.flags.map((f) => f.decay_rank)) : 99
@@ -62,7 +74,14 @@ export async function load(url = './data/demo.json'): Promise<Loaded> {
     ep.flags = flags
     droppedFlags += dropped
   }
-  payload.episodes.sort(queueOrder)
+  /* Registry order, which is what an unswept work list actually looks like:
+     the episodes in episode-number order, the same order `sweep/runner.py`
+     reads its cohort in.
+     Deliberately NOT shuffled. Scrambling the rows would make the un-swept
+     screen worse than reality in order to flatter the swept one, which is the
+     strawman-baseline problem CLAUDE.md rules out for the arms; a demo is not
+     exempt from it just because no number is printed underneath. */
+  payload.episodes.sort((a, b) => a.episode_id.localeCompare(b.episode_id))
   return { payload, droppedFlags }
 }
 
@@ -79,6 +98,25 @@ export async function loadSweep(
     const res = await fetch(url)
     if (!res.ok) return null
     return (await res.json()) as SweepPayload
+  } catch {
+    return null
+  }
+}
+
+/** The cohorts the seed control may switch between, or null.
+ *
+ * Optional, like the sweep: a workbench where `make ui-seeds` has never run
+ * still opens, on the canonical cohort, with no seed control offered. Absent
+ * is rendered as absent rather than as a list of one, because a control with a
+ * single option invites the reader to look for the others. */
+export async function loadSeeds(
+  url = './data/seeds.json',
+): Promise<SeedManifest | null> {
+  try {
+    const res = await fetch(url)
+    if (!res.ok) return null
+    const m = (await res.json()) as SeedManifest
+    return m?.seeds?.length ? m : null
   } catch {
     return null
   }

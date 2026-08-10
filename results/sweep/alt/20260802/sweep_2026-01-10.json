@@ -1,0 +1,10 @@
+{
+ "sweep_date": "2026-01-10",
+ "status": "complete",
+ "episodes_run": 20,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": []
+}

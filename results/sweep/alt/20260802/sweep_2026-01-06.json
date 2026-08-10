@@ -1,0 +1,176 @@
+{
+ "sweep_date": "2026-01-06",
+ "status": "complete",
+ "episodes_run": 36,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP002098",
+   "sweep_date": "2026-01-06",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-05",
+   "recoverable_idr": 2145000,
+   "queue_weight": 2145000.0,
+   "citation_moved": 1,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:3e6325848c673b30",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8198,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 67,
+      "end": 103,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "3e6325848c673b30"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "A41.9",
+     "suppression_key": "D3:A41.9:cad7aca51c0ea434",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8996,
+     "source": "cross_encoder",
+     "rationale": "kode A41.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 138,
+      "text": "Diagnosis masuk: Demam tifoid dan paratifoid (A01.0)",
+      "evidence_hash": "cad7aca51c0ea434"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "E11.9",
+     "suppression_key": "D5:E11.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis E11.9 dikode, hasil pemeriksaan penunjang (Gula darah sewaktu, HbA1c) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 139,
+      "end": 218,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "A41.9",
+     "suppression_key": "D7:A41.9:cad7aca51c0ea434",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8987,
+     "source": "cross_encoder",
+     "rationale": "kode A41.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 138,
+      "text": "Diagnosis masuk: Demam tifoid dan paratifoid (A01.0)",
+      "evidence_hash": "cad7aca51c0ea434"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "E11.9",
+     "suppression_key": "D7:E11.9:cad7aca51c0ea434",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8419,
+     "source": "cross_encoder",
+     "rationale": "kode E11.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 138,
+      "text": "Diagnosis masuk: Demam tifoid dan paratifoid (A01.0)",
+      "evidence_hash": "cad7aca51c0ea434"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003464",
+   "sweep_date": "2026-01-06",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-05",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "I10",
+     "suppression_key": "D4:I10:fbe3b8cd23b46245",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0017,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk I10 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 67,
+      "end": 100,
+      "text": "  - Tekanan darah ↑ (140/90 mmHg)",
+      "evidence_hash": "fbe3b8cd23b46245"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "I10",
+     "suppression_key": "D3:I10:cad7aca51c0ea434",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8208,
+     "source": "cross_encoder",
+     "rationale": "kode I10 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 138,
+      "text": "Diagnosis masuk: Demam tifoid dan paratifoid (A01.0)",
+      "evidence_hash": "cad7aca51c0ea434"
+     }
+    }
+   ],
+   "documented": []
+  }
+ ]
+}
