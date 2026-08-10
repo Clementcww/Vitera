@@ -2,7 +2,7 @@ import { Component, Suspense, lazy, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Payload, SweepPayload } from '../types'
 import { webglAvailable } from '../three/webgl'
-import { jt } from '../format'
+import { TARIFF_CAVEAT, jt } from '../format'
 import { Dashboard } from './Dashboard'
 
 /* The two cards that are only the landing: the headline, and the accent card
@@ -131,6 +131,11 @@ export function HeroCards({
             as a measured result, which it is not, and `results/` never
             computes one from here. */}
         <p className="mainnote">{payload.generated.cohort_caveat}</p>
+        {/* The cohort caveat above says the cohort is not a sample. It does not
+            say the tariff table is unverified, and the rupiah figure beside it
+            is the most quotable number on the landing page. Both, or the
+            figure reads as measured money. */}
+        {recoverable > 0 && <p className="mainnote">{TARIFF_CAVEAT}</p>}
       </section>
 
       <section

@@ -53,7 +53,7 @@ export function verifySpans(ep: EpisodeView): { flags: Flag[]; dropped: number }
  * figure. Sorting by value alone would bury the only findings that expire.
  *
  * Applied by the QUEUE, not here, and only once the sweep has staged one.
- * Ordering is the sweep's job (`sweep/queue.py`, and CLAUDE.md's build order
+ * Ordering is the sweep's job (`sweep/queue.py`, and the design brief's build order
  * lists it there), so a screen that has not been swept must not already be in
  * queue order or the sweep appears to do nothing. */
 export function queueOrder(a: EpisodeView, b: EpisodeView): number {
@@ -79,7 +79,7 @@ export async function load(url = './data/demo.json'): Promise<Loaded> {
      reads its cohort in.
      Deliberately NOT shuffled. Scrambling the rows would make the un-swept
      screen worse than reality in order to flatter the swept one, which is the
-     strawman-baseline problem CLAUDE.md rules out for the arms; a demo is not
+     strawman-baseline problem the design brief rules out for the arms; a demo is not
      exempt from it just because no number is printed underneath. */
   payload.episodes.sort((a, b) => a.episode_id.localeCompare(b.episode_id))
   return { payload, droppedFlags }

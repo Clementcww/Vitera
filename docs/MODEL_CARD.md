@@ -84,7 +84,7 @@ Two corrections, in order:
    model.
 2. **Prior shift.** The pair corpus is ~41% positive; a hospital's is ~10%
    (`config/thresholds.yaml: deployment_prior.codes_correct`). Probabilities are
-   shifted in log-odds space, per CLAUDE.md's fourth data rule. Without this the
+   shifted in log-odds space, per the design brief's fourth data rule. Without this the
    system over-flags by roughly a factor of four, the koder stops reading the
    queue, and the adoption argument fails.
 

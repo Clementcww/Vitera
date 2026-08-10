@@ -26,6 +26,24 @@ export function tariff(g: Group): string {
   return g.tariff_idr === null ? NONE : rp(g.tariff_idr)
 }
 
+/** Ships beside every rupiah figure on the screen.
+ *
+ * Rule 7 says the grouper is authoritative for tariff. It is — but the TABLE
+ * the grouper reads is `data/reference/cbg_groups.yaml`, and every tariff in it
+ * carries `verified: false`: plausible placeholders written without an INA-CBG
+ * tariff reference. `MANIFEST.json` records the same as `domain_verified: false`.
+ *
+ * The cohort caveat in the payload covers how the demo cohort was CHOSEN. It
+ * says nothing about where the tariff came from, so a reader could take a
+ * correctly-computed rupiah figure for a real one. This is that missing half.
+ *
+ * Delete this constant and its call sites the day `verified` is flipped
+ * per entry — not before. */
+export const TARIFF_CAVEAT =
+  'Tarif berasal dari tabel referensi yang belum diverifikasi domain ' +
+  '(cbg_groups.yaml, verified: false). Rupiah di sini memperlihatkan ' +
+  'mekanismenya, bukan besaran yang boleh dikutip.'
+
 /* `label` is an instruction, not the enum name.
  *
  * QUERY / OBTAIN / RECODE are our vocabulary, not the koder's, and a screen
@@ -57,7 +75,7 @@ export const REMEDY: Record<Remedy, { label: string; who: string; css: string }>
  * user-facing wording lives here rather than being pushed back into a contract
  * that four other modules code against.
  *
- * Wording rule from CLAUDE.md: never tell a clinician what to write. Every
+ * Wording rule from the design brief: never tell a clinician what to write. Every
  * label below states what the RECORD does not show, not what the doctor should
  * have done. */
 export const DEFECT_ID: Record<string, string> = {

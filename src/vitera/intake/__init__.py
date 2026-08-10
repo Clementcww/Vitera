@@ -1,6 +1,6 @@
 """Paper intake: FPK in, corrected draft FPK out.
 
-The workflow in CLAUDE.md starts at step 5 with a berkas klaim that is partly
+The workflow in the design brief starts at step 5 with a berkas klaim that is partly
 paper. The FPK (Formulir Pengajuan Klaim) is the cover form a hospital submits
 with a batch of claims, and in most of the hospitals we are designing for it
 exists as a printed, signed, scanned sheet rather than as a row in a database.

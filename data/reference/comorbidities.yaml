@@ -13,7 +13,7 @@
 #
 # ⚠ DOMAIN REVIEW REQUIRED — Jason owns correctness here. Every ICD-10 code,
 # every threshold and every severity_weight below is a plausible placeholder
-# written by Claude, NOT a verified clinical mapping. `verified` must be
+# unverified, NOT a checked clinical mapping. `verified` must be
 # flipped to true, per entry, before any result from this corpus goes in the
 # paper. The generator prints a loud warning while any entry is unverified.
 

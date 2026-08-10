@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { EpisodeView, Remedy } from '../types'
-import { NONE, REMEDY, VERDICT, rp, tariff } from '../format'
+import { NONE, REMEDY, TARIFF_CAVEAT, VERDICT, rp, tariff } from '../format'
 import { FlagCard } from './FlagCard'
 import { DocPane } from './DocPane'
 
@@ -103,7 +103,47 @@ export function CaseView({
             </div>
           </div>
         </div>
+        {/* The strip above is the only place a koder reads a rupiah figure per
+            episode. Rule 7 keeps the grouper authoritative for it; nothing so
+            far said the grouper's TABLE is unverified. */}
+        <p className="tariffnote">{TARIFF_CAVEAT}</p>
       </div>
+
+      {/* An audit trail nobody opens audits nothing, and this one used to sit
+          below the whole two-column split: past every finding and every
+          document, on a screen that scrolls. It belongs against the verdict it
+          explains, so the claim and its basis are read together. Collapsed, it
+          costs one line. The summary says what it is for, because "Jejak
+          pemeriksaan" alone tells a koder what is inside and a visitor nothing
+          at all. The values are untouched; only the labels are now words
+          rather than our internal vocabulary. */}
+      <details className="help trace">
+        <summary>
+          Jejak pemeriksaan
+          <span className="hint">
+            klik untuk melihat persis apa yang dikerjakan sistem pada kasus ini
+          </span>
+        </summary>
+        <div className="detail">
+          <div className="tracegrid mono">
+            <span>panggilan model bahasa</span>
+            <b>{ep.trace.llm_calls}</b>
+            <span>melebihi batas</span>
+            <b>{ep.trace.budget_breach ?? 'tidak'}</b>
+            <span>lama pemeriksaan</span>
+            <b>{ep.trace.elapsed_seconds.toFixed(4)} s</b>
+            <span>pemeriksaan yang dijalankan</span>
+            <b>
+              {ep.trace.tool_calls.map((t) => `${t.tool} (${t.result_digest})`).join(', ') ||
+                NONE}
+            </b>
+            <span>jenis masalah yang dicek</span>
+            <b>{ep.classes_checked.join(', ')}</b>
+            <span>dasar keputusan</span>
+            <b>{ep.verdict_reason}</b>
+          </div>
+        </div>
+      </details>
 
       <div className="split">
         <div className="panel">
@@ -162,28 +202,6 @@ export function CaseView({
         />
       </div>
 
-      <details className="help">
-        <summary>Jejak pemeriksaan</summary>
-        <div className="detail">
-          <div className="tracegrid mono">
-            <span>panggilan LLM</span>
-            <b>{ep.trace.llm_calls}</b>
-            <span>batas terlampaui</span>
-            <b>{ep.trace.budget_breach ?? 'tidak'}</b>
-            <span>durasi</span>
-            <b>{ep.trace.elapsed_seconds.toFixed(4)} s</b>
-            <span>alat dijalankan</span>
-            <b>
-              {ep.trace.tool_calls.map((t) => `${t.tool} (${t.result_digest})`).join(', ') ||
-                NONE}
-            </b>
-            <span>kelas diperiksa</span>
-            <b>{ep.classes_checked.join(', ')}</b>
-            <span>keputusan router</span>
-            <b>{ep.verdict_reason}</b>
-          </div>
-        </div>
-      </details>
     </section>
   )
 }

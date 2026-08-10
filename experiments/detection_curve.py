@@ -1,6 +1,6 @@
 """Detection lead time — the headline metric of the concurrent thesis.
 
-CLAUDE.md defines it: ``detection_lead_time = discharge_day - detection_day``,
+The design brief defines it: ``detection_lead_time = discharge_day - detection_day``,
 reported alongside a detection-rate-versus-day-of-stay curve. This script
 measures both, on the full held-out split, by doing exactly what the design
 demands: **invoking the discharge pipeline once per day of stay** (rules + the

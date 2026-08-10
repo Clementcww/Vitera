@@ -312,7 +312,7 @@ def replay(
 
 
 # ---------------------------------------------------------------------------
-# Metrics — the four CLAUDE.md names, plus the two ceilings they are read against
+# Metrics — the four the design brief names, plus the two ceilings they are read against
 # ---------------------------------------------------------------------------
 
 
@@ -322,7 +322,7 @@ def metrics(runs: Sequence[SweepRun]) -> dict[str, Any]:
 
     `alerts_per_episode_per_day` and `flag_churn_rate` both carry a ceiling from
     `thresholds.yaml`, and a breach of either is reported as a **defect**, not
-    as something to tune away — that is CLAUDE.md's wording and it is load
+    as something to tune away — that is the design brief's wording and it is load
     bearing. Reporting the breach is the point; suppressing it by moving the
     ceiling would be the one change this file must never make.
     """
@@ -627,7 +627,7 @@ def main() -> None:
     print(f"wrote {a.workspace}/ and {a.ui_out}")
 
     if m["ceiling_breaches"]:
-        # A breach is a defect, not a tuning opportunity — CLAUDE.md. It is
+        # A breach is a defect, not a tuning opportunity — the design brief. It is
         # printed here, written into the payload, and rendered in the workbench,
         # so the one thing it cannot do is go unnoticed.
         #

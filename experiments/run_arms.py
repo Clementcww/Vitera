@@ -42,7 +42,7 @@ fine-tuning is not measured here and no interval below should be read as if it
 were. `--seeds` varies the resampling stream only, and the output labels it
 that way. Retraining across seeds is the honest version and is a bucket-10
 stretch item; claiming these intervals cover it would be the exact
-literature-figure-as-measured-result error CLAUDE.md forbids.
+literature-figure-as-measured-result error the design brief forbids.
 """
 
 from __future__ import annotations
@@ -191,7 +191,7 @@ def _metrics(records: list[dict[str, Any]]) -> dict[str, Any]:
         "macro_recall": round(float(np.mean(macro)), 4) if macro else None,
         "classes_reached": reached,
         "n_classes_reached": len(reached),
-        # Never reported without the line above it. CLAUDE.md: recall without
+        # Never reported without the line above it. The design brief: recall without
         # the clean-claim false positive rate is meaningless for adoption.
         "clean_claim_false_positive_rate": (
             round(clean_flagged / clean, 4) if clean else None

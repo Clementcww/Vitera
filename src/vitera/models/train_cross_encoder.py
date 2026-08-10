@@ -69,7 +69,7 @@ def device() -> Any:
 def split_by_site(
     pairs: Sequence[CodePair], *, dev_share: float, seed: int
 ) -> tuple[list[CodePair], list[CodePair]]:
-    """Hold out whole hospitals. CLAUDE.md data rule 3, applied again inside
+    """Hold out whole hospitals. The design brief data rule 3, applied again inside
     the training split — the corpus already holds sites out for test, and dev
     must not borrow them back."""
     sites = sorted({p.site_id for p in pairs})

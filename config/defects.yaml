@@ -183,5 +183,5 @@ temporal:
     derivation: assumed
     citation: >-
       NO SOURCE. Keep the temporal model simple — the two-timestamp structure
-      carries the meaning, not the realism of the schedule (CLAUDE.md).
+      carries the meaning, not the realism of the schedule (the design brief).
       Reported as an assumption in docs/DATA_CARD.md.

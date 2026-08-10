@@ -61,7 +61,7 @@ class GroundTruth:
     procedures: tuple[str, ...]
     severity: int
     site_class: str
-    # Separate label, per CLAUDE.md: this is a property of the site, not a defect.
+    # Separate label, per the design brief: this is a property of the site, not a defect.
     undocumented_dx: tuple[str, ...]
 
     @property

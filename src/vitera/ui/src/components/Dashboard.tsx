@@ -1,6 +1,5 @@
 import type { Payload, EpisodeView, Remedy, SweepPayload } from '../types'
 import { NONE, jt, REMEDY } from '../format'
-import { Term } from './Term'
 import { AreaTrend, BarRows, DayBars, StackedBar } from './charts'
 
 /* L2: the unit view.
@@ -37,7 +36,7 @@ import { AreaTrend, BarRows, DayBars, StackedBar } from './charts'
  * for the FIRST time on each day, which is what "concurrent" is about.
  *
  * "Klaim bersih yang ikut tertandai" is new, and it is the number this screen
- * was most exposed on. CLAUDE.md forbids reporting recall without the
+ * was most exposed on. The design brief forbids reporting recall without the
  * clean-claim false positive rate, and the rate is worst early in the stay,
  * exactly where a nightly sweep operates. Putting it on the same screen as the
  * detection rate, with the high-precision alternative next to it, is the only
@@ -103,8 +102,9 @@ export function Dashboard({
     .filter((f) => f.remedy === 'QUERY').length
 
   const m = payload.measured
+  // Still reported, as a row in "Lihat angkanya". The prose footer that used
+  // to restate it is gone; the number is the claim.
   const llmCalls = eps.reduce((n, e) => n + e.trace.llm_calls, 0)
-  const zeroLlm = eps.filter((e) => e.trace.llm_calls === 0).length
 
   // Findings seen for the first time on each day of stay, straight off the
   // surface the card is drawing. Same cells, a different question: the bars
@@ -126,12 +126,19 @@ export function Dashboard({
   // Clean-claim false positive rate on the SAME axis as the detection curve.
   // Not per day: the cohort admitted on day 13 is only the episodes that
   // stayed 13 days, so a per-day slope is partly a change of population.
-  const fprPoints = (m?.clean_fp.by_share_of_stay ?? []).map((p) => ({
+  /* Every access below the `measured` root is optional, and that is not
+   * belt-and-braces: these files are written by a different program, and an
+   * export from an older `results/` run legitimately lacks a block a newer one
+   * has. `m?.clean_fp.by_share_of_stay` guarded the root and not the block, so
+   * one such payload took the whole app down with a white screen instead of
+   * hiding one panel. A missing block hides its panel. Nothing else. */
+  const cleanFp = m?.clean_fp
+  const fprPoints = (cleanFp?.by_share_of_stay ?? []).map((p) => ({
     x: Math.round(p.share_of_stay * 100),
     y: Math.round(p.clean_fp_rate * 1000) / 10,
   }))
-  const hp = m?.operating_point?.profiles.high_precision
-  const dflt = m?.operating_point?.profiles.default
+  const hp = m?.operating_point?.profiles?.high_precision
+  const dflt = m?.operating_point?.profiles?.default
 
   const remedyBars = (['QUERY', 'OBTAIN', 'RECODE'] as Remedy[]).map((r) => ({
     key: r,
@@ -163,7 +170,7 @@ export function Dashboard({
   ]
 
   const sm = sweep?.metrics
-  const breached = (sm?.ceiling_breaches.length ?? 0) > 0
+  const breached = (sm?.ceiling_breaches?.length ?? 0) > 0
 
   return (
     <section className={'view dash' + (variant === 'surface' ? ' on-surface' : '')}>
@@ -221,7 +228,7 @@ export function Dashboard({
           <figure className="cpanel">
             <figcaption>
               Klaim bersih yang ikut tertandai
-              <span>{pct1(m.clean_fp.at_discharge ?? 0)} saat pulang</span>
+              <span>{pct1(cleanFp?.at_discharge ?? 0)} saat pulang</span>
             </figcaption>
             <AreaTrend
               points={fprPoints}
@@ -233,7 +240,7 @@ export function Dashboard({
             <div className="cticks">
               <span>masuk</span>
               <span className="mid">
-                {pct1(m.clean_fp.worst_rate ?? 0)} → {pct1(m.clean_fp.best_rate ?? 0)}
+                {pct1(cleanFp?.worst_rate ?? 0)} → {pct1(cleanFp?.best_rate ?? 0)}
               </span>
               <span>pulang</span>
             </div>
@@ -392,24 +399,28 @@ export function Dashboard({
                       : NONE}
                   </td>
                 </tr>
-                <tr>
-                  <td>Klaim bersih tertandai, masuk → pulang</td>
-                  <td className="num">
-                    {pct1(m.clean_fp.worst_rate ?? 0)} →{' '}
-                    {pct1(m.clean_fp.best_rate ?? 0)}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Klaim bersih tertandai saat pulang</td>
-                  <td className="num">{pct1(m.clean_fp.at_discharge ?? 0)}</td>
-                </tr>
-                {Object.entries(m.clean_fp.at_discharge_by_hospital_class).map(
-                  ([k, v]) => (
-                    <tr key={k}>
-                      <td>Positif palsu saat pulang, RS kelas {k}</td>
-                      <td className="num">{pct1(v)}</td>
+                {cleanFp && (
+                  <>
+                    <tr>
+                      <td>Klaim bersih tertandai, masuk → pulang</td>
+                      <td className="num">
+                        {pct1(cleanFp.worst_rate ?? 0)} →{' '}
+                        {pct1(cleanFp.best_rate ?? 0)}
+                      </td>
                     </tr>
-                  ),
+                    <tr>
+                      <td>Klaim bersih tertandai saat pulang</td>
+                      <td className="num">{pct1(cleanFp.at_discharge ?? 0)}</td>
+                    </tr>
+                    {Object.entries(
+                      cleanFp.at_discharge_by_hospital_class ?? {},
+                    ).map(([k, v]) => (
+                      <tr key={k}>
+                        <td>Positif palsu saat pulang, RS kelas {k}</td>
+                        <td className="num">{pct1(v)}</td>
+                      </tr>
+                    ))}
+                  </>
                 )}
               </>
             )}
@@ -421,15 +432,6 @@ export function Dashboard({
         </table>
       </details>
 
-      <p className="dash-foot">
-        {llmCalls === 0 ? 'Tanpa' : llmCalls} panggilan model bahasa
-        {llmCalls === 0 ? '' : ` (${pct(zeroLlm / Math.max(1, eps.length))} episode nihil)`}
-        . Deteksi dikerjakan aturan dan{' '}
-        <Term k="cross-encoder">cross-encoder</Term> di rumah sakit. Model
-        bahasa hanya menulis kalimat penjelas, dan mematikannya tidak mengubah
-        satu pun temuan, skor, kutipan atau tarif di layar ini. Tidak ada angka
-        per koder di sini, dan tidak akan pernah ada.
-      </p>
     </section>
   )
 }

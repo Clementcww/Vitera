@@ -1,6 +1,6 @@
 """Harness tests — bucket 7.
 
-Every one of these maps to a hard architectural rule in CLAUDE.md. If a test
+Every one of these maps to a hard architectural rule in the design brief. If a test
 here fails, a claim in the paper is no longer true.
 """
 

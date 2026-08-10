@@ -1,15 +1,207 @@
 # Vitera
 
-Concurrent BPJS claim verification for Indonesian hospital inpatient episodes.
+**Concurrent BPJS claim verification for Indonesian hospital inpatient episodes.**
 
 > We red-team the claim before BPJS does, while there is still time to fix it.
 
-An agent runs BPJS claim verification against an inpatient episode — continuously,
-while the patient is still admitted — finds what would cause the claim to be
-pended, and hands the medical coder (*petugas casemix / koder klinis*) a ranked
-fix list with evidence cited from the patient record.
+An agent verifies a BPJS claim against the inpatient episode **continuously, while
+the patient is still admitted**. It finds what would cause the claim to be pended,
+and hands the medical coder (*petugas casemix / koder klinis*) a ranked fix list
+with evidence quoted from the patient record.
 
-All data in this repository is **synthetic**. See [`docs/DATA_CARD.md`](docs/DATA_CARD.md) — note `domain_verified: false`.
+Every claim in this README is either measured and reproducible from this repository,
+or cited to a published study. All data here is **synthetic** — see
+[Data and honesty](#data-and-honesty).
+
+---
+
+## The problem: two gaps, not one
+
+Closing either one alone closes nothing.
+
+| Gap | What it is | Source |
+|---|---|---|
+| **Coverage** | Inpatient claims pend at **12–17%** — and pending is only the visible tip. Observed defect prevalence runs far higher, so most defects never pend at all: they are absorbed silently as underpayment. | Maulida & Djunawan 2022 (12.2%, n=720); Dewi & Wirajaya 2024 (16.7%, n=779) |
+| **Timing** | In **68.6%** of inpatient episodes, a secondary diagnosis present in the medical record never carried into the discharge summary. Whatever review exists happens *after* discharge, when a supporting test can no longer be ordered and the DPJP is reconstructing from memory. | Opitasari & Nurwahyuni 2018, HSJI 9(1):14–18, Table 2 (n=105) |
+
+Undercoding outnumbers overcoding roughly **2:1** (13.3% vs 6.7%), and the net
+revenue difference at that site was **~4%** of submitted claim value.
+Every rate used by the generator traces to a graded row in
+[`docs/LITERATURE.md`](docs/LITERATURE.md); an uncited rate fails `make data`.
+
+---
+
+## How it works
+
+The same `run_pipeline` runs once per episode per night. Nothing else changes
+between a mid-stay check and a discharge check — concurrent monitoring *is* the
+discharge pipeline invoked N times.
+
+```mermaid
+flowchart LR
+    A[Episode<br/>records to date] --> B{Gate<br/>rule 4}
+    B -- fails --> Z[Handed back<br/>no score, labelled honestly]
+    B -- passes --> C[Rules engine<br/>always runs]
+    B -- passes --> D[Cross-encoder<br/>when model layer is up]
+    C --> E[Span filter<br/>rule 6]
+    D --> E
+    E -- quote not verbatim --> X[Finding dropped]
+    E -- quote verified --> F[Grouper<br/>rule 7: tariff]
+    F --> G{Router<br/>rule 5: decides}
+    G --> H[Ranked fix list<br/>for the koder]
+    G --> I[Abstain<br/>coder judgement]
+
+    style D fill:#b4611c,color:#fff
+    style E fill:#3d4b4e,color:#fff
+    style X fill:#fbeee2
+```
+
+Four properties of that diagram are load-bearing:
+
+- **The gate runs before anything else.** An illegible sheet or a failed total is
+  handed back, not guessed at.
+- **Detection is rules + cross-encoder only.** The language model writes the
+  explanatory sentence and nothing else. Turning it off changes no finding, score,
+  quotation or tariff — measured at **0 LLM calls** across the demo cohort.
+- **A finding without a verbatim quote is dropped**, not softened. The browser
+  re-verifies every span against the document text a second time before rendering.
+- **Only the grouper produces rupiah.** No model ever emits a monetary figure.
+
+### Why concurrent beats at-discharge
+
+```
+                day 0        day 3        day 6   discharge      +weeks
+                  |            |            |         |             |
+signal visible    ●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━●
+in labs/meds/CPPT      the diagnosis is inferable from here on
+
+documented in                                        ◐  ← or never: 68.6%
+resume medis                                            of episodes
+
+Vitera            ●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━●
+                  nightly check, DPJP still on the ward,
+                  supporting test still orderable
+
+conventional                                          ╳━━━━━━━━━━━━●
+review                                                 nothing fixable:
+                                                       patient is home
+```
+
+The window between *signal* and *documentation* is where Vitera operates. After
+discharge, a QUERY to the DPJP is no longer answerable from the ward.
+
+---
+
+## The agent harness
+
+The agent is not a free-running loop. It is a **bounded runner** with an audited
+trace and a hard boundary in front of the model. Three failure modes are designed
+out rather than monitored for: an agent that runs away, an agent that dies on one
+bad tool, and an agent that leaks a patient record to a vendor.
+
+```mermaid
+flowchart TB
+    START([run_pipeline]) --> BUD{"LoopBudget.exceeded()<br/>checked BEFORE each call"}
+    BUD -- breached --> HAND["Stop. Hand to a human<br/>with what was gathered.<br/>Never a silent truncation"]
+    BUD -- within budget --> TOOL[Run next tool]
+    TOOL -- raises --> ERR["Record 'error: Type'<br/>run continues"]
+    TOOL -- returns --> REC["Record ToolCall:<br/>name · args · digest · seconds"]
+    ERR --> BUD
+    REC --> BUD
+    BUD -- tools exhausted --> OUT([Flags to span filter])
+
+    style HAND fill:#b4611c,color:#fff
+    style ERR fill:#fbeee2
+```
+
+| Bound | Default | On breach |
+|---|---|---|
+| `max_tool_calls` | 8 | named in the trace, run stops, findings so far are kept |
+| `max_reflections` | 1 | same |
+| `wall_clock_seconds` | 20.0 | same |
+
+The budget is checked *before* each call, so a breach never leaves a half-finished
+tool result in the trace. A tool that throws is caught, recorded as an error, and
+the run continues — one broken check cannot take down the episode.
+
+### The model boundary
+
+`agent/boundary.py` holds the only component in the package that talks to a model.
+
+```mermaid
+flowchart LR
+    F[Verified findings] --> P["pseudonymise()<br/>rule 3"]
+    P --> CHK{Re-identified<br/>text detected?}
+    CHK -- yes --> RAISE["ReidentifiedTextError<br/>refuse to send"]
+    CHK -- no --> H["sha256 prompt hash"]
+    H --> M{VITERA_LLM_MODE}
+    M -- cache, hit --> C[(replay)]
+    M -- cache, miss --> CM["CacheMiss<br/>never falls back to live"]
+    M -- record --> C2[live call, write cache]
+    M -- live --> L[live call]
+    C --> PROSE
+    C2 --> PROSE
+    L --> PROSE["One explanatory sentence.<br/>No finding, no score,<br/>no quotation, no rupiah"]
+
+    style RAISE fill:#b4611c,color:#fff
+    style CM fill:#b4611c,color:#fff
+    style PROSE fill:#3d4b4e,color:#fff
+```
+
+- **Pseudonymisation is enforced, not documented.** Sending re-identified text
+  raises rather than warns.
+- **`cache` mode never falls back to a live call.** A demo cannot silently become
+  a network call on stage; a missing entry is a loud `CacheMiss`.
+- **`NullLLMClient` is a first-class mode.** With no model at all the pipeline
+  still runs, the result is marked `advisory`, and the unchecked classes are named.
+
+Every field in the diagram above is visible per episode in the workbench under
+**Jejak pemeriksaan**, and per run in `results/`.
+
+---
+
+## What is measured
+
+Held-out split: **1,332 episodes, 10,626 pipeline runs**, hospital-level holdout
+(class D hospitals appear only in test). Source: `results/detection_curve.json`.
+
+| Metric | Value |
+|---|---|
+| Defects detected before discharge | **86.65%** |
+| Median lead time | **5 days** |
+| Findings with a ≥2-day repair window | **86.08%** |
+| Clean claims flagged, at discharge | **3.71%** |
+| Clean claims flagged, early in stay | **36.88%** |
+| Latency | **18.3 ms/run** (Apple silicon, local) |
+| LLM calls | **0** |
+
+Detection rises across the stay rather than falling — the count of *new* findings
+per day is what "concurrent" means:
+
+```
+share of stay   detection rate
+0%    ██████████████████████████░░░░░░░░░░░░░  63.9%
+20%   ████████████████████████████░░░░░░░░░░░  70.5%
+40%   ████████████████████████████████░░░░░░░  79.3%
+60%   ██████████████████████████████████░░░░░  84.2%
+100%  ███████████████████████████████████░░░░  86.7%
+```
+
+**Both false-positive numbers are always reported together.** 3.71% at discharge
+alone would misrepresent a product that runs nightly, where the rate is 36.88%.
+The `high_precision` threshold set trades to 2.0% per-code false positives at
+98.5% recall — one value in `thresholds.yaml`, not new work.
+
+### Reported defects
+
+Honesty is a feature here, so failures ship on the screen:
+
+- **`flag_churn_rate` breaches its own ceiling: 0.214 against 0.15.** Shown in the
+  UI, in `results/`, and here. It is an upper bound — a D3/D5 that resolves because
+  a narrative or lab result arrived is not matched by code, so it counts as
+  unexplained. `make sweep` exits non-zero on a breach.
+- **Rules alone reach 3 of 8 defect classes** (D1, D6, D8). That gap is the
+  argument for the cross-encoder, and it is measured, not asserted.
 
 ---
 
@@ -18,245 +210,153 @@ All data in this repository is **synthetic**. See [`docs/DATA_CARD.md`](docs/DAT
 ```bash
 make setup          # editable install + dev deps
 make test           # contract tests
-make data           # generate the frozen dataset  (fails until bucket 3 cites every rate)
-make demo-offline   # end-to-end run, replayed from the LLM cache
+make demo-offline   # end-to-end run, replayed from cache
+make ui             # workbench on :5188, static and offline
 ```
 
 Python 3.11+. Training runs on Apple silicon via MPS.
 
-## Commands
+```mermaid
+flowchart TD
+    subgraph gen [Generate]
+        A1[make data<br/>4000 synthetic episodes]
+    end
+    subgraph train [Model]
+        B1[make train<br/>cross-encoder] --> B2[make eval<br/>three arms]
+    end
+    subgraph run [Run]
+        C1[make demo-offline<br/>one episode, end to end]
+        C2[make sweep-demo<br/>7 nights, ~5s]
+    end
+    subgraph see [See]
+        D1[make ui-data] --> D2[make ui<br/>workbench :5188]
+    end
+    A1 --> B1
+    B2 --> C1
+    C1 --> C2
+    C2 --> D1
+```
+
+### Commands
 
 | Target | Does |
 |---|---|
 | `make data` | Generate the frozen synthetic dataset |
-| `make leakage` | Text-only leakage check; prints the number |
+| `make leakage` | Text-only leakage check |
 | `make train` | Fine-tune the cross-encoder |
 | `make baselines` | Cross-encoder vs. BM25 vs. zero-shot LLM, per class |
-| `make detection` | Detection lead time, rate-by-day curve, fairness strata |
-| `make arm-a` | Rules-only baseline (arm A) |
-| `make eval` | Three-arm experiment across 3 seeds |
-| `make demo` | End-to-end discharge path, live LLM |
-| `make demo-offline` | Same path, replayed from cache |
-| `make sweep` | One night against the configured cohort |
-| `make sweep-demo` | Replay 7 seeded days in under a minute |
-| `make fpk` | Render FPK forms (BPJS claim submission form) from the cohort |
-| `make intake` | Read a scanned FPK back in and write the corrected DRAF |
-| `make intake-eval` | Measured OCR accuracy per scan profile |
-| `make ui-data` | Export real pipeline output for the workbench |
-| `make ui-seeds` | Three alternate cohorts for the workbench's seed control |
-| `make ui-intake` | Export the scanned-FPK view for the workbench |
-| `make ui-install` | Install the workbench toolchain (network, once) |
-| `make ui-build` | Build the workbench bundle |
-| `make ui` | Serve the workbench on :5188 — static, offline |
+| `make detection` | Detection lead time, rate-by-day, fairness strata |
+| `make arm-a` | Rules-only baseline |
+| `make eval` | Three-arm experiment across seeds |
+| `make demo` / `make demo-offline` | End-to-end discharge path, live / replayed |
+| `make sweep` / `make sweep-demo` | One night / 7 replayed nights |
+| `make fpk` / `make intake` / `make intake-eval` | Render FPK forms, read a scan back, measure OCR |
+| `make ui-data` / `make ui-build` / `make ui` | Export payload, build, serve the workbench |
+| `make ui-check` | Render the dashboard against degraded payloads |
 | `make figures` | Regenerate every paper figure |
 | `make freeze-check` | Verify the sealed adversarial set is untouched |
 
-`VITERA_LLM_MODE` = `live` | `record` | `cache`. Rehearse in `record` to
-populate the cache that `demo-offline` replays. Never demo by waiting for a clock.
+`VITERA_LLM_MODE` = `live` | `record` | `cache`. Rehearse in `record` to populate
+the cache `demo-offline` replays. Never demo by waiting for a clock.
+`VITERA_OCR_MODE` = `auto` | `cache`; `make intake` defaults to `cache` and reads
+the committed sample scan, so it runs with no OCR engine installed.
 
-`VITERA_OCR_MODE` = `auto` | `cache`. Same idea for paper intake. `make intake`
-defaults to `cache` and reads the committed sample scan in
-`data/intake/scan_rs009_maret2026/`, so it runs with no OCR engine installed.
-`make intake-live` renders a fresh form, simulates a scan of it and reads that,
-which needs Apple Vision (`pip install -e ".[intake-macos]"`) or tesseract.
+---
 
-The provider needs `VITERA_LLM_API_KEY` (or `OPENAI_API_KEY`) in the
-environment; `VITERA_LLM_BASE_URL` and `VITERA_LLM_MODEL` override endpoint and
-model, which is the seam the SEA-LION / Sahabat-AI production path uses. No key
-is ever read from a file, and none is committed. The LLM writes rationale prose
-only: with it switched off, detection, scores, citations and tariffs are
-unchanged and the run is marked `advisory`.
+## Architecture
 
-Judges can supply their own key in the workbench itself, from the header panel.
-It is held in `sessionStorage`, dies with the tab, is never written to disk, and
-the request goes from their browser straight to the provider. Text is
-pseudonymised client-side first, by a port of the same patterns the Python
-boundary uses.
-
-## Reproduction table
-
-Every figure and headline number in the paper maps to a command. **Keep this
-current as you go** — a number that cannot be reproduced does not go in the paper.
-
-| # | Artifact | Command | Bucket | Status |
-|---|---|---|---|---|
-| F1 | Defect prevalence, literature-weighted | `docs/LITERATURE.md` | 3 | **done** |
-| T1 | Dataset summary + hospital holdout | `make data` | 4 | **done** |
-| N1 | Leakage check (text-only classifier) | `make leakage` | 4 | **done** |
-| T2 | Arm A: rules reach 3 of 8 | `make arm-a` | 5 | **done** |
-| T3 | Cross-encoder vs. BM25, per class | `make train && make baselines` | 8 | **done** |
-| N4 | Shortcut controls + code-conditional AUC | `make baselines` | 8 | **done** |
-| T3b | Zero-shot LLM arm | `make baselines` | 8, 9 | provider wired; arm not yet run |
-| F2 | Calibration curve (bins in `results/cross_encoder.json`) | `make figures` | 8 | **done** — `results/figures/f2_calibration.png` |
-| T4 | Three arms, paired bootstrap CIs at a matched FP budget | `make eval` | 10 | **done** — macro recall A 0.399 → B 0.700 → C 0.875, every step separated |
-| F6 | Three arms, per defect class | `make eval && make figures` | 10 | **done** |
-| N2 | Clean-claim false positive rate | `make eval` · `make detection` | 10 | **done** — 3.7% at discharge (arm C), 0.0% arm A, 6.2% arm B |
-| F3 | Detection rate by share of stay | `make detection` | 10 | **done** — rises 63.9% → 86.7% |
-| F4 | Detection lead time distribution | `make detection` | 10 | **done** — median 5 days, 86.7% detected |
-| F7 | Clean-claim FPR by share of stay | `make detection && make figures` | 10 | **done** — 36.6% on admission → 3.7% at discharge |
-| T5 | Fairness by hospital class | `make detection` | 10 | **done** (rules+CE; region pending) |
-| N3 | Latency, cost/claim, % zero-LLM episodes | `make demo` | 9 | **done** — 30 ms/episode offline, ~Rp 0.68/claim prose-only |
-| E1 | End-to-end run, 20 cases, no crash | `make demo-offline` | 9 | **done** — `results/demo_run.json`, asserted in `tests/test_demo.py` |
-| T6 | Adversarial set results | `make eval` | 11 | not started |
-| F5 | Sweep: alerts/episode/day and churn | `make sweep-demo && make figures` | 13 | **done** — 0.34 alerts/episode/day (ceiling 3.0); **churn 0.214 BREACHES its 0.15 ceiling**, reported as a defect |
-| P1 | FPK OCR intake: cell accuracy per scan profile | `make intake-eval` | 14 | **done** — office 0.994, photocopy 0.990, phone 0.863 (`results/intake_ocr.json`) |
-| P2 | Paper round trip: scan in, corrected DRAF out | `make intake` | 14 | **done** — 47 episodes, gate passes, `results/intake/fpk_draf_perbaikan.pdf` |
-| U1 | Coder workbench: queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |
-| U2 | Detection surface (episode × day × recoverable value) | `make ui-data && make ui` | 12 | **done** (landing card) |
-| U3 | Scanned-FPK view: OCR boxes, confidences, gate verdict | `make ui-intake && make ui` | 14 | **done** |
-| U4 | Generated report: draft, citations, print to PDF | `make ui-intake && make ui` | 14 | **done** |
-| U5 | Unit dashboard over the detection surface | `make ui-data && make ui` | 14 | **done** |
-
-## Layout
-
-```
-config/      defects.yaml (a citation per rate) · sites.yaml · thresholds.yaml · sweep.yaml
-data/        reference/ · generated/ (+ seeds + LLM/OCR cache) · intake/ (sample scan) · adversarial/ (SEALED)
-src/vitera/  contracts.py · config.py · generator · rules · grouper · models · agent · sweep · intake · api · ui
-experiments/ arm_a · arm_b · arm_c · ablations · leakage_check
-results/     committed figures + metrics JSON
-docs/        ARCHITECTURE · DATA_CARD · MODEL_CARD · CLAIMS
+```mermaid
+flowchart TB
+    subgraph data [Data]
+        R[reference tables<br/>CBG, comorbidity, ICD-10]
+        G[generator<br/>cited defect rates]
+    end
+    subgraph core [Pipeline]
+        RU[rules]
+        CE[cross-encoder]
+        GR[grouper<br/>only source of rupiah]
+        RO[router]
+    end
+    subgraph auto [Automation]
+        SW[sweep<br/>cohort, diff, order, retry]
+        IN[intake<br/>FPK render, OCR, correct]
+    end
+    subgraph out [Surfaces]
+        API[api/export.py]
+        UI[workbench<br/>React + three.js]
+        RES[results/ + figures]
+    end
+    R --> G --> RU & CE
+    RU & CE --> GR --> RO
+    RO --> SW & API
+    IN --> API
+    API --> UI
+    RO --> RES
 ```
 
-### The sweep
+The **sweep** is deliberately the dumbest component: select a cohort, call the
+existing `run_pipeline` per episode, diff against that episode's last successful
+run, order, retry. No inference lives there and nothing leaves the system — there
+is no transport imported anywhere in the package, and a test asserts it by parsing
+imports rather than trusting prose. The queue is a **diff, not a standing list**:
+re-presenting yesterday's findings every morning is how a monitoring product gets
+switched off in week two.
 
-`src/vitera/sweep/` is the automation layer, and it is deliberately the dumbest
-component in the system: it selects a cohort, calls the existing `run_pipeline`
-once per episode, diffs each result against that episode's last successful run,
-orders the diffs and writes them to a draft workspace. Cohort, diff, order,
-retry — that is the whole surface. No inference lives here, and nothing leaves
-the system: there is no transport imported anywhere in the package, and a test
-asserts it by parsing the imports rather than by trusting the prose.
+The **workbench** renders pipeline output and computes nothing. Its one exception
+is a re-check, not a computation: spans are verified against document text in the
+browser before a flag renders. There is no per-coder cut anywhere on the unit
+dashboard, and there will not be one — a queue that doubles as a productivity
+monitor is a queue whose findings get closed rather than fixed.
 
-```bash
-make sweep-demo   # 7 nights over a seeded cohort, ~5s, no clock involved
+### Layout
+
+```
+config/       defects.yaml (a citation per rate) · sites.yaml · thresholds.yaml · sweep.yaml
+data/         reference/ · generated/ (+ seeds, LLM/OCR cache) · intake/ · adversarial/ (SEALED)
+src/vitera/   contracts · config · generator · rules · grouper · models · agent · sweep · intake · api · ui
+experiments/  arm_a · arm_b · arm_c · ablations · leakage_check
+results/      committed figures + metrics JSON
+docs/         DATA_CARD · MODEL_CARD · CLAIMS · LITERATURE
+tests/        contract tests, import-boundary test, generator invariants
 ```
 
-Three things it measures that a discharge-time product cannot:
+---
 
-- **The queue is a diff, not a standing list.** Night one carries the whole
-  backlog; after that the koder gets what changed. Re-presenting yesterday's
-  findings every morning is how a monitoring product gets switched off in
-  week two.
-- **A finding that goes away is split in two.** `documented` — a note arrived
-  that names what the finding was about, which is the outcome the product
-  exists to produce — and `resolved`, which is the model saying something
-  different about unchanged evidence. Reported as one number, the successes
-  were indistinguishable from the defects.
-- **`flag_churn_rate` currently BREACHES its ceiling: 0.214 against 0.15.** It
-  is on the screen, in `results/`, and in F5. Most of the remainder is an
-  attribution blind spot — a D3 or D5 that resolves because the narrative or a
-  lab result arrived is not matched by code, so it counts as unexplained and
-  the figure is an upper bound. Closing that needs code-to-signal reference
-  lookup, which belongs in the pipeline and not in a scheduler. `make sweep`
-  passes `--strict` and exits non-zero on a breach; `make sweep-demo` does not,
-  so a judge can watch the replay finish with the breach on screen.
+## Data and honesty
 
-### Workbench
+**Everything in this repository is synthetic.** No real patient data was used,
+seen, or approximated from a real record. 4,000 episodes generated from published
+aggregate statistics — see [`docs/DATA_CARD.md`](docs/DATA_CARD.md).
 
-`src/vitera/ui/` is a React + three.js single-page app. It **renders pipeline
-output and computes nothing** — `src/vitera/api/export.py` runs the real
-pipeline over a demo cohort and writes the JSON the app reads. Rupiah figures
-are grouper output; spans are re-verified against the document text in the
-browser before a flag is allowed to render, which is architectural rule 6
-enforced a second time on the surface that a poisoned note would have to reach.
+Two things a reader should check before quoting anything:
 
-It is a single page. The landing and the workbench are the same DOM: the dark
-bento card is the hinge, and entering the queue morphs that card into the
-workbench rather than routing to another screen.
+1. **`domain_verified: false`.** Every INA-CBG code, ICD-10 code, severity weight,
+   LOS range and **every rupiah tariff** in `data/reference/*.yaml` is a plausible
+   placeholder written without access to a real INA-CBG tariff table. The generator
+   warns on every run and stamps the flag into the manifest. **No rupiah figure from
+   this corpus may be quoted as a magnitude.** The UI says so beside every one.
+2. **`docs/CLAIMS.md` is the register.** If a sentence is not in that file, it does
+   not go on a slide. It lists what we may state, what we may not, and the exact
+   phrasings that are forbidden — including claims we found we could *not* support
+   and removed.
 
-The **unit summary** is not a pane of the workbench. It opens from the accent
-card, over the day-of-stay surface that card already draws — the bars are the
-runs, the numbers are what the runs found, and separating them made the reader
-hold one in their head while looking at the other. Aggregates only, and the
-screen says so: there is no per-coder cut and there will not be one.
+Timing is sampled by our own generator, so `detection_lead_time` is always
+reported *under stated generator assumptions*. Holdout is hospital-level, but the
+hospitals are synthetic too, so external validity is untested.
 
-The 3D layer is fenced three ways: lazy chunk, WebGL capability probe, error
-boundary. The canvas only mounts once its card is open, so a closed landing
-never touches WebGL, and losing the 3D layer costs an animation rather than a
-screen.
+---
 
-Two panes sit behind the header switch. **Antrean** is the koder's day, and
-**Berkas pindaian** is the paper the batch arrived on: the scanned FPK with
-every recognised line drawn back onto it as a box, coloured by the engine's own
-confidence, next to the extracted values and the validation gate's verdict.
-Showing every observation — not only the ones a field used — is the point; a
-view that drew only the successful reads would hide the half a koder needs.
+## Limitations
 
-**Buat laporan** renders the corrected draft in the browser from the same
-export `make intake` prints as a PDF, and prints through the page rather than a
-popup. It is stamped DRAF, its signature block is empty, and the amount that
-would only become claimable if a DPJP documents care the record suggests is
-printed apart from the total and never added into it.
-
-### Language
-
-**The whole product speaks Bahasa Indonesia** — workbench, CLI and printed FPK
-alike. The user is a *petugas casemix / koder klinis*, usually D-3 Perekam
-Medis, and CLAUDE.md's plain-language layer is written for them.
-
-Only two kinds of string are exempt, and both for the same reason: they are
-quotations, not copy. **Quoted record text stays verbatim** — rule 6 is void the
-moment a citation is paraphrased — and the field labels beside the scanned form
-keep the wording printed on the sheet, since that panel exists so a reader can
-find the same words on the paper.
-
-Code comments and the docs are in English. That is a repository convention for
-the people who maintain it, and it never reaches a screen.
-
-`docs/ui/workbench-mockup.html` is the no-build-step fallback and the design
-spec the app implements.
-
-### Paper intake
-
-`src/vitera/intake/` closes the loop at the two ends the hospital actually
-touches: paper in, paper out. The FPK — *Formulir Pengajuan Klaim*, the cover
-form submitted with a batch of claims — is rendered in the layout of the real
-form, read back off a scan with OCR, checked at the validation gate, and
-returned as a corrected **draft**.
-
-It is not a second pipeline. `intake/correct.py` calls the same `run_pipeline`
-as `demo.py`, `export.py` and the sweep, and takes its rupiah figures from the
-same `export.money_view` the workbench renders, so the printout and the screen
-cannot disagree.
-
-Four properties are load-bearing:
-
-- **OCR is perception, extraction is deterministic.** `scan.py` returns text
-  with a box and a confidence. `extract.py` decides what it means with anchored
-  geometry and regular expressions — no model. A wrong value is therefore
-  attributable to either a bad read or a bad rule, and you can tell which.
-- **The gate runs before anything else** (rule 4). An illegible sheet, a total
-  that disagrees with its own rows, or an out-of-scope form (FKTP RITP) is
-  stopped rather than reasoned over.
-- **A misread is never dressed up as a claim defect.** Every reconciliation
-  checks the read quality of the fields it depends on and downgrades itself to
-  `needs_human_read` when they are weak.
-- **The output is a draft** (rule 1). Stamped DRAF on every page, signature
-  block empty, nothing written back to the claim of record and nothing sent to
-  BPJS. The corrected form also prints, separately and untotalled, the amount
-  that would only become claimable if a DPJP documents care the record merely
-  suggests.
-
-`src/vitera/contracts.py` is the interface every module codes against. The hard
-architectural rules from `CLAUDE.md` are encoded there as types, so they fail at
-the type checker rather than at review.
-
-Notebooks explore. `src/` produces. A number that came from a notebook is not
-reproducible.
-
-## Working documents
-
-- `CLAUDE.md` — domain, locked decisions, architectural rules. Read fully first.
-- `intent-anchor.md` — locked goal, core decision, claims ledger, cut list.
-- `CRITERIA_PROGRESS.md` — scoring against the judged criteria.
-
-## Claims discipline
-
-A literature figure about problem size is never a measured product result.
-Permitted phrasing lives in `docs/CLAIMS.md`. Anything projected from
-assumptions is labelled *projected under stated assumptions*.
+- No validation by a practising coder, and no real BPJS pend-reason taxonomy; the
+  eight defect classes are constructed from study categories, not the payer's codes.
+- No published Indonesian data exists on the gap between clinical signal and
+  documentation, so that interval is an explicit modelling assumption.
+- The cross-encoder is one checkpoint, so training-seed variance is not measured.
+- Writing a committed correction back to the hospital's claim of record is not
+  built. The workbench records commits as a durable, exportable **draft** and says
+  plainly that it is not a submission — the agent drafts and stages, a human commits.
 
 ## License
 
-TBD before publication.
+To be released with the paper.

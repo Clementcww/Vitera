@@ -1,7 +1,7 @@
 """Interface contracts for Vitera.
 
 Every module under ``src/vitera`` codes against these types. They exist to make
-the hard architectural rules in CLAUDE.md structural rather than conventional —
+the hard architectural rules in the design brief structural rather than conventional —
 a rule enforced by a type cannot be forgotten at 2am on day 6.
 
     rule 3   LLM never sees re-identified data

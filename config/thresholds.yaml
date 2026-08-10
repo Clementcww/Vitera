@@ -55,7 +55,7 @@ severity:
   escalate_at: 0.75
 
 alert_fatigue:
-  # A breach is a defect, not a tuning opportunity. See CLAUDE.md, sweep metrics.
+  # A breach is a defect, not a tuning opportunity. See the design brief, sweep metrics.
   max_alerts_per_episode_per_day: 3
   max_flag_churn_rate: 0.15
 
@@ -79,7 +79,7 @@ intake:
   # over. Zero: the two are the same number by construction.
   max_total_mismatch_idr: 0
   # Service types this build is scoped to. RITP (FKTP) and outpatient are out
-  # of scope by design, not by omission — see CLAUDE.md, locked decisions.
+  # of scope by design, not by omission — see the design brief, locked decisions.
   accepted_jenis_pelayanan: ["RITL"]
 
 budget:

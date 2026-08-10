@@ -83,7 +83,7 @@ and procedure coding (**43.4%**).
 | RS Dharma Kerti Tabanan — Dewi & Wirajaya, *Jurnal Ekonomi Kesehatan Indonesia* 11(1) | Aug–Oct 2024 | 779 | **16.7%** (130/779) | B |
 | Government hospital, South Jakarta — Opitasari & Nurwahyuni (2018), preliminary | Jan–Mar 2017 | — | **24.5%** returned | A |
 
-**Working range: 12–17%**, with one site at 24.5%. CLAUDE.md's "~15%" sits
+**Working range: 12–17%**, with one site at 24.5%. The design brief's "~15%" sits
 inside this range and is defensible as *reported at 12–17% across single-site
 Indonesian inpatient studies* — not as a national figure, which nobody has
 published.
@@ -125,7 +125,7 @@ This section exists so nobody puts these on a slide.
 | "Only 5–15% of claims receive pre-submission review at hospitals above 1,000 claims/month" | Traces to **medminutes.io**, a vendor blog (grade D). No peer-reviewed source located. | **Do not state as a finding.** Reframe as: casemix units of 2–5 staff cannot review 30–50 claims/day at volume — an arithmetic argument from staffing, presented as our estimate. |
 | "Casemix unit of 2–5 people" | Same vendor source, grade D | Same treatment — present as typical, not as measured |
 | ">60–70% of claims sit at severity level I, indicating systematic under-documentation" | Same vendor source, grade D | **Drop**, or replace with Opitasari's 68.6% secondary-diagnosis non-conformity, which is grade A and makes the same point better |
-| "Undercoding costs ~4.2% of claim revenue" | Opitasari measures **4%**, single site, n=105 | Restate as **"~4% at one hospital (Opitasari & Nurwahyuni 2018)"**. Where 4.2% came from is unknown — if there is another source, add it here; otherwise correct the number in CLAUDE.md |
+| "Undercoding costs ~4.2% of claim revenue" | Opitasari measures **4%**, single site, n=105 | Restate as **"~4% at one hospital (Opitasari & Nurwahyuni 2018)"**. Where 4.2% came from is unknown — if there is another source, add it here; otherwise correct the number in the design brief |
 | "8–12% bad debt from pended claims" | Not located | Unsupported. Flagged in `CRITERIA_PROGRESS.md` as needing verification; still unverified |
 
 ---

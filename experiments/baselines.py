@@ -14,7 +14,7 @@ about: a comorbidity whose labs are in the record and whose diagnosis nobody
 wrote down. Lexical retrieval cannot separate "the notes describe managing
 this" from "the labs suggest this", because both mention the same words.
 
-Reporting rules from CLAUDE.md, applied without exception:
+Reporting rules from the design brief, applied without exception:
 
 - PR-AUC and calibration, never aggregate accuracy — the classes are imbalanced
   and accuracy would flatter every arm equally.

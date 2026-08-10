@@ -1,6 +1,6 @@
 """Sweep tests — bucket 13.
 
-These test the sweep rules from CLAUDE.md, not the runner's plumbing. Each one
+These test the sweep rules from the design brief, not the runner's plumbing. Each one
 names the rule it protects, because every one of them was a real failure at
 some point in this session:
 

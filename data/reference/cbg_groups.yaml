@@ -3,11 +3,11 @@
 # deterministic and must reproduce these exactly.
 #
 # `base_tariff_idr` is severity level I. Levels II and III apply the multipliers
-# below. CLAUDE.md notes the I→III spread runs 2–3×, which these reproduce.
+# below. The design brief notes the I→III spread runs 2–3×, which these reproduce.
 #
 # ⚠ DOMAIN REVIEW REQUIRED — Jason owns correctness. Every CBG code, ICD-10
 # code, ICD-9-CM code, LOS distribution and tariff below is a PLAUSIBLE
-# PLACEHOLDER written by Claude against no tariff table. They are not real
+# PLACEHOLDER written without access to a tariff table. They are not real
 # INA-CBG values. `verified` must be true before any rupiah figure from this
 # corpus appears in the paper or the deck.
 

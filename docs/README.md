@@ -11,6 +11,6 @@
 
 Design and rules live one level up, not here:
 
-- `CLAUDE.md` — domain glossary, locked decisions, hard architectural rules
+- the design brief — domain glossary, locked decisions, hard architectural rules
 - `intent-anchor.md` — locked goal, core decision, claims ledger, cut list
 - `CRITERIA_PROGRESS.md` — scoring against the judged criteria

@@ -13,6 +13,9 @@ import { QueueView } from './components/QueueView'
 import { Logo } from './components/Logo'
 import { CaseView } from './components/CaseView'
 import { StagingTray } from './components/StagingTray'
+import { CommitLog } from './components/CommitLog'
+import type { CommitEntry } from './commits'
+import { newCommit, readCommits, writeCommits } from './commits'
 import { HeroCards } from './components/Hero'
 import { About } from './components/About'
 import { HeroKey, KeyPanel } from './components/KeyPanel'
@@ -79,6 +82,16 @@ export default function App() {
   const [seed, setSeed] = useState<number | null>(null)
   const [swept, setSwept] = useState(false)
   const [busy, setBusy] = useState(false)
+  /* Rule 1's record: read once at mount so a reload does not lose what a human
+     accepted, written on every commit. See commits.ts for why this is a draft
+     log and not a claim write.
+
+     It belongs UP HERE with the other hooks, not down beside the `commit`
+     handler where it reads better. Two early returns sit between the two
+     places (`error`, and `!state` while loading), so a hook declared below
+     them runs on some renders and not others, which is React error #310 and a
+     white screen. Handlers may live anywhere; hooks may not. */
+  const [commits, setCommits] = useState<CommitEntry[]>(readCommits)
 
   useEffect(() => {
     load().then(setState).catch((e) => setError(String(e)))
@@ -114,6 +127,18 @@ export default function App() {
      that DID run, in the past tense, and says which night it was. */
   const queueSweep = swept ? sweep : null
   const activeSeed = seed ?? seeds?.default ?? payload.generated.seed
+
+  const commit = (by: string) => {
+    const entry = newCommit([...staged], activeSeed, by)
+    const next = [entry, ...commits]
+    setCommits(next)
+    writeCommits(next)
+    setStaged(new Set())
+  }
+  const resetCommits = () => {
+    setCommits([])
+    writeCommits([])
+  }
 
   const stage = (key: string) => setStaged((s) => new Set(s).add(key))
   const dismiss = (key: string) =>
@@ -284,12 +309,29 @@ export default function App() {
                 />
               )}
             </main>
-            <footer className="prose">{payload.generated.note}</footer>
+            {/* `generated.note` says this in English, for the paper and for
+                `results/`. It is not what a koder should be made to read, for
+                the same reason the churn caveat is restated in Dashboard.tsx:
+                a raw English string on this screen is a leak, not a citation.
+                Same three guarantees, in the reader's language, no rule
+                numbers. The note itself stays in the payload. */}
+            <CommitLog entries={commits} onReset={resetCommits} />
+            {/* Three separate guarantees read as one grey paragraph and got
+                skipped. They are three, so they are set as three. */}
+            <footer className="guarantees">
+              <span>Semua angka di layar ini keluaran pipeline.</span>
+              <span>Rupiah dihitung grouper, tidak pernah oleh model AI.</span>
+              <span>Kutipan dicocokkan ulang ke dokumen aslinya; yang tidak cocok dibuang.</span>
+            </footer>
           </div>
         </section>
       </div>
 
-      <StagingTray items={[...staged]} onClear={() => setStaged(new Set())} />
+      <StagingTray
+        items={[...staged]}
+        onClear={() => setStaged(new Set())}
+        onCommit={commit}
+      />
 
       {report && intake && (
         <ReportSheet data={intake} onClose={() => setReport(false)} />

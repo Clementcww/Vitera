@@ -16,7 +16,7 @@ screen shows.
     rule 8   `advisory` and the list of unchecked defect classes are exported,
              so a degraded run cannot render as a full one.
 
-Two products of the same pipeline, per CLAUDE.md's rule that concurrent
+Two products of the same pipeline, per the design brief's rule that concurrent
 monitoring is the discharge pipeline invoked N times:
 
     episodes   one run per episode at its latest available day — the workbench
@@ -24,7 +24,7 @@ monitoring is the discharge pipeline invoked N times:
 
 `surface` is deliberately NOT a diff. Diffing, ordering and suppression are the
 sweep's job in bucket 13, and putting them here would build the second system
-CLAUDE.md forbids.
+The design brief forbids.
 """
 
 from __future__ import annotations
@@ -288,7 +288,7 @@ def _measured() -> dict[str, Any] | None:
     nothing rather than a placeholder number.
 
     Three of these exist because the workbench was quoting recall without
-    them, which CLAUDE.md forbids and a judge asks about within two minutes:
+    them, which the design brief forbids and a judge asks about within two minutes:
 
     `detection_by_share_of_stay` is the curve that actually supports the
     product. The dashboard used to plot the raw count of findings per day of
@@ -437,7 +437,7 @@ def build(
         #
         # Identity comes from `sweep.diff.by_key` — the same function the sweep
         # diffs with. Reused deliberately: two definitions of "the same finding"
-        # is exactly the second system CLAUDE.md forbids.
+        # is exactly the second system the design brief forbids.
         from vitera.sweep.diff import by_key
 
         seen: set[str] = set()

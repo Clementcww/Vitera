@@ -114,7 +114,7 @@ export interface Measured {
   detection_by_share_of_stay: { share_of_stay: number; detection_rate: number }[]
   lead_time_by_class: Record<string, number | null>
   /** The adoption-critical counterweight to the detection rate. Quoting recall
-   *  without it is forbidden by CLAUDE.md and is the first thing a judge asks. */
+   *  without it is forbidden by the design brief and is the first thing a judge asks. */
   clean_fp: {
     /** Binned by SHARE of stay, not by day. A per-day series changes cohort as
      *  it advances (day 13 holds only the episodes that stayed 13 days) so

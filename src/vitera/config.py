@@ -1,6 +1,6 @@
 """Configuration loading, and the guards that make config a contract.
 
-Two rules from CLAUDE.md are enforced here rather than trusted:
+Two rules from the design brief are enforced here rather than trusted:
 
   - Thresholds live in ``config/thresholds.yaml``, never in code and never in
     a prompt. ``thresholds()`` is the only way to read one.
@@ -27,7 +27,7 @@ DEFAULT_SEED = 20260731
 
 
 class UncitedRateError(ValueError):
-    """Raised when a defect rate has no citation. See CLAUDE.md, claims discipline."""
+    """Raised when a defect rate has no citation. See the design brief, claims discipline."""
 
 
 @dataclass(frozen=True, slots=True)

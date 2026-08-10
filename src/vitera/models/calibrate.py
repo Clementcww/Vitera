@@ -2,7 +2,7 @@
 
 `config/thresholds.yaml` has carried placeholder values since bucket 2 with a
 note saying they are set here. This module is what sets them, and it exists
-because of one line in CLAUDE.md's data rules:
+because of one line in the design brief's data rules:
 
     Correct for the deployment prior. Training on balanced classes and
     deploying where ~90% of codes are correct produces over-flagging.
@@ -13,7 +13,7 @@ as it should, the koder stops reading the queue in week two, and the adoption
 argument for criterion 5 dies. `prior_shift` is the correction, applied in
 log-odds space where it is exact for a shift in class prior alone.
 
-Two further commitments from CLAUDE.md are discharged here:
+Two further commitments from the design brief are discharged here:
 
 - aggregate accuracy is meaningless on imbalanced data, so `report` returns
   PR-AUC and calibration and never returns accuracy;
@@ -223,7 +223,7 @@ def recommend_thresholds(
 
 def report(probs: Floats, labels: Ints) -> dict[str, Any]:
     """PR-AUC, ROC-AUC, Brier, ECE. Deliberately no accuracy field — see the
-    module docstring and CLAUDE.md's reporting rules."""
+    module docstring and the design brief's reporting rules."""
     from sklearn.metrics import average_precision_score, roc_auc_score
 
     p = np.asarray(probs, dtype=float)

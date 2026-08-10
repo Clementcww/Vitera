@@ -14,7 +14,7 @@
 # their siblings — that closeness is the difficulty of the task.
 #
 # ⚠ DOMAIN REVIEW REQUIRED — Jason owns correctness. Every label below is a
-# plausible Indonesian rendering written by Claude against no ICD-10 volume.
+# plausible Indonesian rendering written without an ICD-10 volume at hand.
 # `verified` must be flipped before any per-class D2 figure enters the paper.
 
 schema_version: 1

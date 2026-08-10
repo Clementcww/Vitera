@@ -98,6 +98,10 @@ ui-install:  ## Install the workbench toolchain (network, once)
 ui-build:  ## Build the workbench bundle into src/vitera/ui/dist
 	npm run build --prefix src/vitera/ui
 
+ui-check:  ## Render the dashboard against degraded payloads; catches white-screens
+	cd src/vitera/ui && npx vite build --ssr ssr-check.tsx --outDir .ssr-out \
+	  --logLevel error && node .ssr-out/ssr-check.js
+
 ui:  ## Serve the built workbench on :5188 — static, no toolchain, no network
 	@echo "http://localhost:5188  (ctrl-c to stop)"
 	@cd src/vitera/ui/dist && $(PY) -m http.server 5188

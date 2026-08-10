@@ -290,7 +290,7 @@ def test_bm25_scores_zero_when_nothing_matches() -> None:
 
 
 def test_prior_shift_lowers_scores_when_deployment_is_cleaner() -> None:
-    """CLAUDE.md data rule 4. Training at 41% positives and deploying at 10%
+    """the design brief data rule 4. Training at 41% positives and deploying at 10%
     without this correction is how a monitoring product over-flags itself into
     being switched off."""
     shifted = calibrate.prior_shift([0.5, 0.9], train_prior=0.41, deployment_prior=0.10)
@@ -327,7 +327,7 @@ def test_operating_point_respects_the_false_positive_budget() -> None:
 
 
 def test_report_never_returns_accuracy() -> None:
-    """Aggregate accuracy on imbalanced data is meaningless and CLAUDE.md
+    """Aggregate accuracy on imbalanced data is meaningless and the design brief
     forbids reporting it. Keep it unreachable rather than merely unused."""
     keys = calibrate.report([0.1, 0.9], [0, 1]).keys()
     assert "accuracy" not in keys

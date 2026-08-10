@@ -47,7 +47,7 @@ import { Term } from './Term'
  * decide remedy: `_classify` in the cross-encoder does, deterministically, and
  * the value is sitting in the payload the whole time. What the sweep does is
  * *stage a queue* out of that, which is ordering, grouping and the diff, and
- * per CLAUDE.md's build order that is exactly its scope. So the colour appears
+ * per the design brief's build order that is exactly its scope. So the colour appears
  * with the sweep because the triage does, not because the remedy did. The
  * caption below says that in as many words, and it needs to keep saying it. */
 

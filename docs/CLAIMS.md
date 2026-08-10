@@ -73,3 +73,15 @@ rather than assertion. Lead with them, not with L1.
    `docs/DATA_CARD.md` for the sampling parameters and their citations.
 3. Hospital-level holdout, not row-level — but the hospitals are synthetic too,
    so external validity is untested.
+4. **Every rupiah figure carries its tariff provenance, on the same screen.**
+   The grouper is authoritative for tariff (rule 7), but the table it reads —
+   `data/reference/cbg_groups.yaml` — is `verified: false`, and the manifest
+   records `domain_verified: false`. A correctly-computed figure off an
+   unverified table still reads as real money. In the UI this is
+   `TARIFF_CAVEAT` in `src/format.ts`, rendered under the landing total and
+   under the per-episode money strip. Delete it the day `verified` is flipped
+   per entry, not before.
+5. **A `source` line names the study or admits it is our estimate.** Never a
+   bare "dari literatur" over a figure that traces to grey literature. See the
+   *Claims we currently CANNOT support* table in `docs/LITERATURE.md` before
+   putting any figure on a screen or a slide.

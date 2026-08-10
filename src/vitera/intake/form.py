@@ -12,7 +12,7 @@ from a `GroupResult`; nothing in this module multiplies, estimates or
 apportions. An episode the grouper could not group carries `biaya_idr = None`,
 is excluded from the total, and is *counted on the form* as ungroupable. A
 printed total that quietly absorbed an estimate would be the exact failure
-CLAUDE.md names.
+The design brief names.
 
 **Identity is synthesised here, not in the episode.** The corpus has no patient
 names because nothing upstream of this file needs one; an FPK does. Names, card

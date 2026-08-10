@@ -62,3 +62,4 @@ CLAUDE.md
 CRITERIA_PROGRESS.md
 intent-anchor.md
 .claude/
+src/vitera/ui/.ssr-out/

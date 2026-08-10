@@ -4,7 +4,7 @@ import type { SeedManifest, SweepPayload } from '../types'
  *
  * ── Read this before moving either of them into the product chrome.
  *
- * CLAUDE.md locks a decision that this strip could easily be mistaken for
+ * The design brief locks a decision that this strip could easily be mistaken for
  * breaking: **the sweep is scheduled and unattended, and nobody presses a
  * button to make it happen.** A koder-triggered sweep is a discharge product
  * with extra steps, and saying otherwise on stage would cost us the concurrent
