@@ -1,9 +1,9 @@
 import type { Payload, EpisodeView, Remedy, SweepPayload } from '../types'
-import { jt, REMEDY } from '../format'
+import { NONE, jt, REMEDY } from '../format'
 import { Term } from './Term'
 import { AreaTrend, BarRows, DayBars, StackedBar } from './charts'
 
-/* L2 — the unit view.
+/* L2: the unit view.
  *
  * Read by the kepala unit casemix, not by the koder. The question it answers
  * is not "which claim do I open next" but "is the unit on top of this month,
@@ -28,7 +28,7 @@ import { AreaTrend, BarRows, DayBars, StackedBar } from './charts'
  * recording what they replaced.
  *
  * "Temuan menurut hari rawat" used to plot the raw flag count per day of stay.
- * That line falls monotonically — 71 findings on day 0 down to 1 on day 13 —
+ * That line falls monotonically, 71 findings on day 0 down to 1 on day 13,
  * and it falls because the cohort empties as patients discharge, not because
  * detection falls. Drawn on the screen that sells concurrent monitoring, it
  * argued the opposite of the thesis: *most of this is visible on admission
@@ -38,7 +38,7 @@ import { AreaTrend, BarRows, DayBars, StackedBar } from './charts'
  *
  * "Klaim bersih yang ikut tertandai" is new, and it is the number this screen
  * was most exposed on. CLAUDE.md forbids reporting recall without the
- * clean-claim false positive rate, and the rate is worst early in the stay —
+ * clean-claim false positive rate, and the rate is worst early in the stay,
  * exactly where a nightly sweep operates. Putting it on the same screen as the
  * detection rate, with the high-precision alternative next to it, is the only
  * honest way to show either.
@@ -117,7 +117,7 @@ export function Dashboard({
   const newAfterAdmission = newByDay.slice(1).reduce((a, b) => a + b, 0)
   const newTotal = newByDay.reduce((a, b) => a + b, 0)
 
-  // The rising curve, from the full held-out split — not from this cohort.
+  // The rising curve, from the full held-out split, not from this cohort.
   const curve = (m?.detection_by_share_of_stay ?? []).map((p) => ({
     x: Math.round(p.share_of_stay * 100),
     y: Math.round(p.detection_rate * 100),
@@ -238,7 +238,7 @@ export function Dashboard({
               <span>pulang</span>
             </div>
             <p className="cnote">
-              Paling tinggi di awal rawat, saat catatan masih tipis — dan itu
+              Paling tinggi di awal rawat, saat catatan masih tipis, dan itu
               bagian masa rawat yang sama tempat sweep bekerja. Sumbunya sama
               dengan kurva deteksi, karena kohort per hari menyusut dan berubah
               isinya.{' '}
@@ -285,7 +285,7 @@ export function Dashboard({
                 Kumulatif, dari {m?.n_episodes} episode uji dan{' '}
                 {m?.pipeline_runs} kali pipeline. {pct(curve[0]!.y / 100)} sudah
                 terlihat pada hari masuk; sisanya baru muncul selama dirawat.
-                Pembandingnya bukan nol — pembandingnya tinjauan setelah pasien
+                Pembandingnya bukan nol, melainkan tinjauan setelah pasien
                 pulang, saat tidak satu pun dari keduanya masih bisa diperbaiki.
               </p>
             </>
@@ -294,7 +294,7 @@ export function Dashboard({
           {newByDay.length > 1 && (
             <div className="subchart">
               <span className="sublabel">
-                Temuan yang <b>baru terlihat</b> pada hari itu — kohort demo
+                Temuan yang <b>baru terlihat</b> pada hari itu (kohort demo)
               </span>
               <DayBars values={newByDay} color="var(--query)" />
               <div className="cticks">
@@ -308,7 +308,7 @@ export function Dashboard({
           )}
         </figure>
 
-        {/* The sweep. Absent file, absent panel — never a fabricated timestamp. */}
+        {/* The sweep. Absent file, absent panel. Never a fabricated timestamp. */}
         {sm && (
           <figure className={'cpanel wide sweep' + (breached ? ' breach' : '')}>
             <figcaption>
@@ -327,7 +327,7 @@ export function Dashboard({
               <Stat
                 label="Ditutup oleh dokumentasi"
                 value={String(sm.closed_by_documentation)}
-                sub="catatan menyusul — hasil yang dituju"
+                sub="catatan menyusul, hasil yang dituju"
               />
               <Stat
                 label="Churn"
@@ -345,7 +345,7 @@ export function Dashboard({
             </div>
             {/* The English `churn_caveat` in the payload is for the paper and
                 for `results/`. The screen speaks Bahasa Indonesia, so it says
-                the same thing in its own words off the same numbers — a raw
+                the same thing in its own words off the same numbers. A raw
                 English string rendered to a koder is a leak, not a citation. */}
             {breached && (
               <p className="cnote breachnote">
@@ -355,7 +355,7 @@ export function Dashboard({
                 catatan yang datang sejak sweep sebelumnya, sehingga D3/D5 yang
                 selesai karena narasi atau hasil lab ikut terhitung di sini.
                 Menutup celah itu perlu pemetaan kode ke sinyal klinis, dan itu
-                milik pipeline, bukan penjadwal. Ditampilkan apa adanya —
+                milik pipeline, bukan penjadwal. Ditampilkan apa adanya:
                 pelampauan batas diperlakukan sebagai cacat, bukan bahan
                 penyetelan.
               </p>
@@ -389,7 +389,7 @@ export function Dashboard({
                   <td className="num">
                     {m.lead_time_share_ge_2_days !== null
                       ? pct(m.lead_time_share_ge_2_days)
-                      : '—'}
+                      : NONE}
                   </td>
                 </tr>
                 <tr>
@@ -425,7 +425,7 @@ export function Dashboard({
         {llmCalls === 0 ? 'Tanpa' : llmCalls} panggilan model bahasa
         {llmCalls === 0 ? '' : ` (${pct(zeroLlm / Math.max(1, eps.length))} episode nihil)`}
         . Deteksi dikerjakan aturan dan{' '}
-        <Term k="cross-encoder">cross-encoder</Term> di rumah sakit — model
+        <Term k="cross-encoder">cross-encoder</Term> di rumah sakit. Model
         bahasa hanya menulis kalimat penjelas, dan mematikannya tidak mengubah
         satu pun temuan, skor, kutipan atau tarif di layar ini. Tidak ada angka
         per koder di sini, dan tidak akan pernah ada.

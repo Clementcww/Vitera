@@ -16,7 +16,7 @@ export const BRAND = {
 } as const
 
 export const REMEDY_HEX = {
-  QUERY: '#b4611c',  // DPJP — window shuts at discharge
+  QUERY: '#b4611c',  // DPJP, window shuts at discharge
   OBTAIN: '#2f6b9a', // petugas berkas
   RECODE: '#4a7343', // koder
 } as const

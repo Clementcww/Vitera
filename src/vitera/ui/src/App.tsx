@@ -47,7 +47,7 @@ type Mode = 'hero' | 'work'
  * would throw it away.
  *
  * The unit summary is deliberately NOT a third pane. It answers a different
- * question, for a different person — is the unit on top of this month — and it
+ * question, for a different person (is the unit on top of this month) and it
  * reads against the day-of-stay surface rather than against the queue. It
  * lives in the accent card on the landing, where that surface already is. */
 type Pane = 'queue' | 'scan'

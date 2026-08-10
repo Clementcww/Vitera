@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vitera — workbench koder</title>
+<title>Vitera · workbench koder</title>
 <!--
   ============================================================================
-  VITERA — UI MOCKUP  ·  v2, collapsible
+  VITERA · UI MOCKUP  ·  v2, collapsible
   ============================================================================
   NOT bucket-12 code. Static, single-file, fabricated data. No build step, no
-  CDN, no network — it opens offline, which is the constraint `make
+  CDN, no network, so it opens offline, which is the constraint `make
   demo-offline` runs under.
 
   v2 changes, in one sentence: nothing is shown until it is asked for.
@@ -18,7 +18,7 @@
   to prove how much the system knows.
 
   Progressive disclosure, by level:
-    L0  queue row      one line — who acts, how long left, how much
+    L0  queue row      one line: who acts, how long left, how much
     L1  row expanded   the findings, one line each
     L2  flag expanded  rationale, verbatim evidence, actions
     L3  document       the span highlighted in place
@@ -50,7 +50,7 @@
     --surface:#fff;
     --line-2:#d9d6c9;
 
-    --query:var(--orange);  --query-bg:#fbeee9;   /* DPJP — window shuts at discharge */
+    --query:var(--orange);  --query-bg:#fbeee9;   /* DPJP, window shuts at discharge */
     --obtain:#4f7ba8;       --obtain-bg:#eaf1f8;  /* petugas berkas */
     --recode:#5e7047;       --recode-bg:#eef1e9;  /* koder */
 
@@ -212,7 +212,7 @@
   .phd h3{margin:0;font-size:12px;font-weight:600;letter-spacing:.02em}
   .phd .c{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint)}
 
-  /* group by WHO ACTS — role-tailoring is the alert-fatigue lever */
+  /* group by WHO ACTS: role-tailoring is the alert-fatigue lever */
   .grp{border-bottom:1px solid var(--line)}
   .grp:last-child{border-bottom:0}
   .ghd{display:flex;align-items:center;gap:9px;padding:9px 16px;background:var(--light)}
@@ -258,7 +258,7 @@
   .act.staged{background:var(--recode-bg);border-color:var(--green);color:var(--recode)}
   .meta{margin-left:auto;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
 
-  /* abstain — a first-class output */
+  /* abstain: a first-class output */
   .flag.abstain .ftitle{color:var(--muted)}
   .abst{font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
     color:var(--faint);border:1px dashed var(--line-2);border-radius:4px;padding:1px 6px}
@@ -297,7 +297,7 @@
     font-family:var(--serif);font-size:12.5px;color:var(--ink-2)}
   .lead b{font-family:var(--mono);font-weight:600}
 
-  /* ---- staging tray — rule 1, made visible ----------------------------- */
+  /* ---- staging tray: rule 1, made visible ----------------------------- */
   .tray{
     position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:center;gap:12px;
     padding:13px 24px;background:var(--dark);color:var(--light);font-size:12.5px;
@@ -332,7 +332,7 @@
 
 <!-- sweep rule 5. Collapsed to one line; the reason is one click away. -->
 <details class="banner b-stale" id="staleBanner">
-  <summary><span class="mark">!</span>Antrean berumur 26 jam — sweep semalam tidak selesai
+  <summary><span class="mark">!</span>Antrean berumur 26 jam, sweep semalam tidak selesai
     <span class="more">rincian ▾</span></summary>
   <div class="detail">412 dari 660 episode terproses sebelum batas panggilan LLM tercapai, jadi sweep
     ditandai <b>partial</b>. Yang tampil di bawah adalah hasil sweep <b>31 Juli 02:11</b>. Episode yang
@@ -340,10 +340,10 @@
 </details>
 
 <details class="banner b-adv" id="advisoryBanner">
-  <summary><span class="mark">~</span>Mode advisory — hanya aturan deterministik
+  <summary><span class="mark">~</span>Mode advisory: hanya aturan deterministik
     <span class="more">rincian ▾</span></summary>
   <div class="detail">Lapisan model tidak tersedia; sweep tetap berjalan. Yang diperiksa hanya D1, D6, D8
-    dan sebagian D5. Kelas <b>D2, D3, D4, D7 tidak diperiksa malam ini</b> — antrean bersih tidak berarti
+    dan sebagian D5. Kelas <b>D2, D3, D4, D7 tidak diperiksa malam ini</b>. Antrean bersih tidak berarti
     klaim bersih.</div>
 </details>
 
@@ -369,7 +369,7 @@
       Urutan <code>remedy_decay_rank → expected_value → day_of_stay</code>, dibaca dari
       <code>config/sweep.yaml</code>. Query naik lebih dulu karena jendelanya tutup saat pasien pulang;
       Obtain masih bisa dikejar setelah pulang; Recode masih bisa sampai berkas disubmit.
-      Kolom rupiah seluruhnya keluaran grouper — model tidak pernah menghasilkan angka uang, dan
+      Kolom rupiah seluruhnya keluaran grouper; model tidak pernah menghasilkan angka uang, dan
       episode <code>UNGROUPABLE</code> ditampilkan sebagai tanda hubung, bukan estimasi.
     </div>
   </details>
@@ -434,7 +434,7 @@
             <span><i style="background:var(--mid)"></i>tercatat</span>
           </div>
           <div class="lead">E11.9 terbaca dari terapi pada <b>hari ke-2</b>, ditandai sweep <b>hari ke-2</b>,
-            belum tercatat sampai hari ke-4. <b>detection_lead_time = 4 hari</b> sebelum perkiraan pulang —
+            belum tercatat sampai hari ke-4. <b>detection_lead_time = 4 hari</b> sebelum perkiraan pulang,
             di bawah asumsi generator yang dinyatakan.</div>
         </div>
       </details>
@@ -446,7 +446,7 @@
     <div class="detail">
       Data fiktif. Angka rupiah berasal dari grouper deterministik; bila grouper mengembalikan
       <code>UNGROUPABLE</code> kolom tarif menampilkan tanda hubung dan tidak pernah diisi estimasi.
-      Tidak ada tombol yang mengirim apa pun keluar sistem — draf pertanyaan DPJP dicetak dan diserahkan.
+      Tidak ada tombol yang mengirim apa pun keluar sistem. Draf pertanyaan DPJP dicetak dan diserahkan.
       Resume medis sengaja belum ada: DPJP menulisnya saat pasien pulang, jadi pada hari ke-4
       <code>Episode.at_day</code> menyaringnya keluar dan tidak ada temuan yang boleh mengutipnya.
       Metrik selalu agregat unit; tidak ada tampilan per-koder.
@@ -471,9 +471,9 @@
 const QUEUE=[
  {id:"0731-0142",pt:"P-4471",room:"Melati 3B",los:4,diff:"esc",remedy:"query",delta:2344600,
   top:"Severity II tidak didukung dokumentasi komorbid",
-  finds:[["D4","Severity tidak didukung — DM tipe 2 terbaca dari terapi"],
+  finds:[["D4","Severity tidak didukung: DM tipe 2 terbaca dari terapi"],
          ["D5","Kultur sputum diminta, hasil belum di berkas"],
-         ["D2","J18.9 mungkin kurang spesifik"],["D7","Pola urutan diagnosis — abstain"]]},
+         ["D2","J18.9 mungkin kurang spesifik"],["D7","Pola urutan diagnosis, abstain"]]},
  {id:"0729-0088",pt:"P-4390",room:"Anggrek 2A",los:6,diff:"new",remedy:"query",delta:1980000,
   top:"CKD st.3 terbaca dari eGFR, tidak ada di catatan",
   finds:[["D4","eGFR 42 dua kali, N18.3 tidak tercatat"]]},
@@ -490,31 +490,31 @@ const QUEUE=[
   top:"Hasil PA belum dilampirkan pada berkas",finds:[["D1","Hasil PA tidak ditemukan"]]},
  {id:"0726-0031",pt:"P-4288",room:"pulang 30 Jul",los:9,diff:"new",remedy:"obtain",delta:null,
   top:"Laporan operasi tidak ditemukan di berkas",
-  finds:[["D1","Laporan operasi hilang"],["D6","Prosedur tanpa laporan — grouping gagal"]]},
+  finds:[["D1","Laporan operasi hilang"],["D6","Prosedur tanpa laporan, grouping gagal"]]},
  {id:"0730-0102",pt:"P-4415",room:"Bougenville 4B",los:5,diff:"new",remedy:"obtain",delta:0,
   top:"Tanggal SEP tidak cocok dengan tanggal masuk",finds:[["D8","SEP 29/07 vs masuk 28/07"]]},
  {id:"0729-0095",pt:"P-4401",room:"Anggrek 3C",los:6,diff:"esc",remedy:"obtain",delta:742000,
   top:"Ekokardiografi dirujuk di CPPT, belum di berkas",finds:[["D5","Hasil eko belum dilampirkan"]]},
  {id:"0728-0072",pt:"P-4371",room:"Dahlia 2B",los:7,diff:"new",remedy:"recode",delta:1655300,
-  top:"J18.9 terlalu umum — kultur menunjuk K. pneumoniae",finds:[["D2","Kode saudara tersedia"]]},
+  top:"J18.9 terlalu umum, kultur menunjuk K. pneumoniae",finds:[["D2","Kode saudara tersedia"]]},
  {id:"0731-0139",pt:"P-4466",room:"Melati 1A",los:3,diff:"new",remedy:"recode",delta:0,
   top:"Prosedur 39.95 tanpa diagnosis pendukung",finds:[["D6","Hemodialisis tanpa dx ginjal"]]},
  {id:"0725-0019",pt:"P-4255",room:"pulang 29 Jul",los:10,diff:"res",remedy:"recode",delta:0,
-  top:"Kultur sputum sudah dilampirkan — temuan selesai",finds:[["D5","Selesai — berkas lengkap"]]},
+  top:"Kultur sputum sudah dilampirkan, temuan selesai",finds:[["D5","Selesai, berkas lengkap"]]},
  {id:"0730-0108",pt:"P-4421",room:"Bougenville 2C",los:5,diff:"new",remedy:"recode",delta:0,
-  top:"Kode sekunder tidak menaikkan CBG — periksa urutan",finds:[["D7","Urutan dx perlu ditinjau"]]},
+  top:"Kode sekunder tidak menaikkan CBG, periksa urutan",finds:[["D7","Urutan dx perlu ditinjau"]]},
  {id:"0729-0090",pt:"P-4396",room:"ICU 2",los:6,diff:"esc",remedy:"recode",delta:1112000,
-  top:"I50.0 vs I50.9 — spesifisitas kurang",finds:[["D2","Kode saudara lebih tepat"]]}
+  top:"I50.0 vs I50.9, spesifisitas kurang",finds:[["D2","Kode saudara lebih tepat"]]}
 ];
 
 const REMEDY={
- query:{label:"Query",who:"DPJP — perlu pasien masih di ruangan",c:"var(--query)"},
- obtain:{label:"Obtain",who:"Petugas berkas — masih bisa setelah pulang",c:"var(--obtain)"},
- recode:{label:"Recode",who:"Koder — masih bisa sampai submit",c:"var(--recode)"}};
+ query:{label:"Query",who:"DPJP, perlu pasien masih di ruangan",c:"var(--query)"},
+ obtain:{label:"Obtain",who:"Petugas berkas, masih bisa setelah pulang",c:"var(--obtain)"},
+ recode:{label:"Recode",who:"Koder, masih bisa sampai submit",c:"var(--recode)"}};
 
 const DIFF={new:"Baru",esc:"Eskalasi",res:"Selesai"};
 
-/* Day 4. No resume medis — the DPJP writes it at discharge, at_day filters it
+/* Day 4. No resume medis; the DPJP writes it at discharge, at_day filters it
    out, and a flag citing it would be citing the future. */
 const DOCS=[
  {id:"CPPT-D1",name:"CPPT hari ke-1",meta:"28 Jul · dr. S.W.",
@@ -564,7 +564,7 @@ const FLAGS=[
   why:"Kultur sputum diminta pada hari ke-1, hasilnya belum terlampir. Untuk grup pneumonia, verifikator BPJS rutin menanyakan penunjang ini.",
   doc:"CPPT-D1",quote:"kultur sputum",also:[]},
  {id:"f3",d:"D2",remedy:"recode",score:.64,source:"cross_encoder",esc:false,
-  label:"Spesifisitas kode kurang — kandidat kode saudara",
+  label:"Spesifisitas kode kurang, kandidat kode saudara",
   why:"J18.9 dipilih hari ke-1 saat organisme belum diketahui. Bila kultur kembali dengan organisme, kode lebih spesifik tersedia. Tunggu hasil sebelum mengubah.",
   doc:"CPPT-D1",quote:"A: Community acquired pneumonia.",also:[]},
  {id:"f4",d:"D7",remedy:"recode",score:.48,source:"cross_encoder",esc:false,abstain:true,
@@ -584,9 +584,9 @@ const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 function renderQueue(){
   document.getElementById("qlist").innerHTML=QUEUE.map((r,i)=>{
     const rm=REMEDY[r.remedy];
-    const money=r.delta===null?`<span class="rmoney none">—</span>`
+    const money=r.delta===null?`<span class="rmoney none">\u2013</span>`
       :r.delta===0?`<span class="rmoney none">·</span>`
-      :`<span class="rmoney" title="${rp(r.delta)} — grouper">${jt(r.delta)}</span>`;
+      :`<span class="rmoney" title="${rp(r.delta)}, grouper">${jt(r.delta)}</span>`;
     return `<details class="row" data-i="${i}">
       <summary>
         <span class="rdot" style="background:${rm.c}" title="${rm.label}"></span>
@@ -633,7 +633,7 @@ function card(f){
       <p class="why">${f.why}</p>
       ${quotes}
       ${f.ask?`<div class="draft"><b>Draf pertanyaan untuk DPJP</b>“${f.ask}”
-        <span class="no">— dicetak dan diserahkan, tidak dikirim sistem.</span></div>`:''}
+        <span class="no">Dicetak dan diserahkan, tidak dikirim sistem.</span></div>`:''}
       <div class="acts">${acts}<span class="meta">${f.source==='rules'?'aturan':'cross-encoder'}</span></div>
     </div></details>`;
 }
@@ -654,7 +654,7 @@ function renderDocs(){
 function mark(docId,quote,flagId){
   const el=document.getElementById("body-"+docId); if(!el) return;
   const q=esc(quote);
-  if(!el.innerHTML.includes(q)){console.warn("span tidak ditemukan — pipeline men-drop flag ini:",quote);return;}
+  if(!el.innerHTML.includes(q)){console.warn("span tidak ditemukan, pipeline men-drop flag ini:",quote);return;}
   el.innerHTML=el.innerHTML.replace(q,`<mark data-flag="${flagId}">${q}</mark>`);
 }
 
@@ -695,7 +695,7 @@ function stage(id){
 function dismiss(id){
   const el=document.getElementById("fl-"+id);
   el.querySelector(".acts").innerHTML=
-    `<span style="font-size:12px;color:var(--muted);font-family:var(--serif)">Ditolak. Tidak muncul lagi selama kutipan buktinya tidak berubah — <span class="mono" style="font-size:11px">evidence_hash</span> tetap.</span>`;
+    `<span style="font-size:12px;color:var(--muted);font-family:var(--serif)">Ditolak. Tidak muncul lagi selama kutipan buktinya tidak berubah; <span class="mono" style="font-size:11px">evidence_hash</span> tetap.</span>`;
   el.style.opacity=.5; staged.delete(id); syncTray();
 }
 function syncTray(){
@@ -704,7 +704,7 @@ function syncTray(){
 }
 function clearTray(){staged.clear();renderFlags();syncTray();}
 function commitTray(){
-  alert("Mockup — di produk ini menulis ke draft workspace dan mencatat siapa yang commit.\n\n"+
+  alert("Mockup: di produk ini menulis ke draft workspace dan mencatat siapa yang commit.\n\n"+
         "Yang tidak terjadi: tidak ada tulisan ke berkas klaim, tidak ada submit ke BPJS,\n"+
         "tidak ada pesan keluar sistem. Draf pertanyaan DPJP dicetak dan diserahkan.");
   clearTray();

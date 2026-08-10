@@ -1,12 +1,12 @@
 import type { Doc, Flag } from '../types'
 
-/* L3 — the cited span highlighted in place, inside the document it came from.
+/* L3: the cited span highlighted in place, inside the document it came from.
  *
  * A detached citation list does not survive scrutiny: a koder cannot tell
  * whether a quote was lifted out of context without seeing the context. So the
  * highlight is applied to the real document text, by offset, never by string
  * search. Searching would silently highlight the wrong occurrence when a
- * phrase repeats — and CPPT text repeats constantly.
+ * phrase repeats, and CPPT text repeats constantly.
  *
  * A document dropped from the claim file by D1/D5 renders as absent with no
  * body. That absence is itself a finding elsewhere in the queue; hiding the

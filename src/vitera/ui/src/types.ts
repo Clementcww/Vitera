@@ -1,4 +1,4 @@
-/* Mirrors src/vitera/api/export.py. Nothing here is optional for convenience —
+/* Mirrors src/vitera/api/export.py. Nothing here is optional for convenience:
  * a field the exporter always writes is required here, so a schema drift is a
  * type error rather than a blank cell on the demo screen. */
 
@@ -117,7 +117,7 @@ export interface Measured {
    *  without it is forbidden by CLAUDE.md and is the first thing a judge asks. */
   clean_fp: {
     /** Binned by SHARE of stay, not by day. A per-day series changes cohort as
-     *  it advances — day 13 holds only the episodes that stayed 13 days — so
+     *  it advances (day 13 holds only the episodes that stayed 13 days) so
      *  its slope is partly a change of population. Same reason the detection
      *  curve uses this axis. */
     by_share_of_stay: {
@@ -197,7 +197,7 @@ export interface SweepPayload {
     llm_mode: string
     note: string
   }
-  /** Sweep rule 5. The queue reports THIS, never the last attempted run — a
+  /** Sweep rule 5. The queue reports THIS, never the last attempted run. A
    *  stale queue rendering as a fresh one is the failure that gets a patient
    *  discharged with an unrepaired record while the screen looks green. */
   last_successful_sweep: string | null

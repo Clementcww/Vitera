@@ -7,8 +7,8 @@
  * Colour follows the ENTITY, never its rank or its size. A remedy keeps the hue
  * it has in the queue, so a koder who learned that orange means the doctor does
  * not have to learn it twice. The three hues are validated against the panel
- * surface — lightness band, chroma floor, CVD separation, normal-vision
- * separation and contrast all pass — which is why `--obtain` and `--recode` are
+ * surface (lightness band, chroma floor, CVD separation, normal-vision
+ * separation and contrast all pass) which is why `--obtain` and `--recode` are
  * a step more saturated than they were.
  *
  * Every chart carries its numbers where a pointer can reach them, and the
@@ -16,7 +16,7 @@
  *
  * Note the two different mechanisms, which is not an inconsistency: inside an
  * `<svg>` a tooltip is a child `<title>` ELEMENT, and in HTML it is a `title`
- * ATTRIBUTE. Writing `<title>` inside an HTML `<span>` produces neither — the
+ * ATTRIBUTE. Writing `<title>` inside an HTML `<span>` produces neither. The
  * parser treats it as the document's title element, so the tooltip silently
  * does not exist and the browser tab gets renamed to the last bar's label.
  */
@@ -31,7 +31,7 @@ export interface Slice {
   note?: string
 }
 
-/* Horizontal bars — magnitude across a few named categories.
+/* Horizontal bars: magnitude across a few named categories.
  *
  * Horizontal because the category names are phrases ("Petugas berkas, masih
  * bisa setelah pulang"), and a column chart would either clip them or turn them
@@ -61,7 +61,7 @@ export function BarRows({ data, max }: { data: Slice[]; max?: number }) {
   )
 }
 
-/* One stacked bar — part of a whole, when the parts have long names.
+/* One stacked bar: part of a whole, when the parts have long names.
  *
  * Not a pie: the segments here are close in size and a reader would have to
  * compare angles. Segments are separated by a 2px gap in the surface colour
@@ -102,10 +102,10 @@ export interface Point {
  *
  * One series, so no legend: the caption says what is plotted. The area is the
  * hue at a wash rather than a block, the line is 2px, and only the marked
- * point is labelled — a number on every point would be unreadable and unread.
+ * point is labelled, because a number on every point would be unreadable and unread.
  *
  * `yMax` pins the scale. Pass it whenever the reader is meant to judge the
- * height against something outside the data — a rate against 100%, a false
+ * height against something outside the data: a rate against 100%, a false
  * positive rate against its ceiling. Auto-scaling a rate makes 27% and 3% draw
  * the same shape, which is exactly the misreading `refLine` exists to prevent. */
 export function AreaTrend({
@@ -207,7 +207,7 @@ export function AreaTrend({
   )
 }
 
-/* Vertical bars for a short ordered series — one per day of stay.
+/* Vertical bars for a short ordered series, one per day of stay.
  *
  * Used where the reader compares adjacent values rather than reading a shape,
  * which is what a count per day is. Bars carry a 2px surface gap rather than a

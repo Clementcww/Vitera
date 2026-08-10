@@ -287,11 +287,11 @@
   },
   "clean_fp_by_day_caveat": "Not a trend. The cohort at day d is only the episodes that stayed at least d days, so its composition changes along the axis. Read `clean_fp_rate_by_share_of_stay` for the trend and `clean_fp_rate_at_discharge` for the comparable point estimate.",
   "latency": {
-    "seconds_per_run_mean": 0.018,
+    "seconds_per_run_mean": 0.0183,
     "hardware": "Apple silicon (MPS), local",
     "llm_calls": 0,
     "zero_llm_share": 1.0,
-    "note": "rules + cross-encoder only, by construction \u2014 the LLM layer writes prose and does not detect. Not a discovery; a design property, measured to substantiate the scalability argument."
+    "note": "rules + cross-encoder only, by construction: the LLM layer writes prose and does not detect. Not a discovery; a design property, measured to substantiate the scalability argument."
   },
   "seed": 20260731,
   "model": "models/cross_encoder"

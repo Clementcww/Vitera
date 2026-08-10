@@ -273,7 +273,7 @@ def _select(
 
     return (
         list(chosen.values())[:cohort],
-        f"stratified for demo coverage — up to {per_class} episodes per defect "
+        f"stratified for demo coverage: up to {per_class} episodes per defect "
         "class, remainder clean claims. NOT a random sample; no measured "
         "result is computed from this cohort.",
     )
@@ -353,7 +353,7 @@ def _measured() -> dict[str, Any] | None:
             ),
         },
         "latency": d.get("latency", {}),
-        "source": "results/detection_curve.json — full held-out split",
+        "source": "results/detection_curve.json, full held-out split",
     }
 
     if MODEL_RESULTS.exists():
@@ -370,7 +370,7 @@ def _measured() -> dict[str, Any] | None:
                 }
                 for name, p in ops.items()
             },
-            "source": "results/cross_encoder.json — per coded diagnosis",
+            "source": "results/cross_encoder.json, per coded diagnosis",
         }
     return out
 
@@ -480,7 +480,7 @@ def build(
             "on_ward": on_ward_count,
             "ward_note": (
                 f"{on_ward_count} of {len(chosen)} episodes are evaluated "
-                "mid-stay, at day < discharge — the same pipeline the sweep "
+                "mid-stay, at day < discharge, which is the same pipeline the sweep "
                 "runs nightly. The rest are evaluated at discharge. No episode "
                 "appears twice."
             ),
@@ -493,7 +493,7 @@ def build(
             # measured result, which it is not and never was.
             "cohort_caveat": (
                 "kohort demo, dipilih berimbang agar semua kelas defect muncul "
-                "— bukan sampel acak, bukan hasil terukur"
+                "(bukan sampel acak, bukan hasil terukur)"
             ),
             "note": (
                 "Every figure is pipeline output. Rupiah come from the grouper "

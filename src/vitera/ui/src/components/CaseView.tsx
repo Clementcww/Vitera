@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { EpisodeView, Remedy } from '../types'
-import { REMEDY, VERDICT, rp, tariff } from '../format'
+import { NONE, REMEDY, VERDICT, rp, tariff } from '../format'
 import { FlagCard } from './FlagCard'
 import { DocPane } from './DocPane'
 
@@ -10,7 +10,7 @@ import { DocPane } from './DocPane'
  * The money strip is two grouper calls and a subtraction the exporter did:
  * what the claim groups to with the unsupported codes removed, and what it
  * would group to if the DPJP confirms what the record already suggests. Both
- * are badged `grouper`. An ungroupable episode shows a dash and the reason —
+ * are badged `grouper`. An ungroupable episode shows a dash and the reason;
  * estimating a tariff there is explicitly forbidden. */
 
 const ORDER: Remedy[] = ['QUERY', 'OBTAIN', 'RECODE']
@@ -82,7 +82,7 @@ export function CaseView({
           <div className="kv">
             <div className="k">Grup</div>
             <div className="v mono">
-              {ep.money.now.cbg_code ?? '—'}
+              {ep.money.now.cbg_code ?? NONE}
               {ep.money.now.ungroupable_reason && (
                 <small className="warn">{ep.money.now.ungroupable_reason}</small>
               )}
@@ -92,7 +92,7 @@ export function CaseView({
             <div className="k">Temuan</div>
             <div className="v mono">
               {ep.flags.length}
-              {/* NOT `verdict_reason` — that string names the raw router
+              {/* NOT `verdict_reason`, which names the raw router
                   threshold, which is an internal number and reads as noise to
                   a koder. It stays, verbatim, in the audit trace below. */}
               <small>
@@ -131,7 +131,7 @@ export function CaseView({
                   /* The index is load-bearing, not React ceremony.
                      `Flag.suppression_key` is defect_class + evidence_hash, and
                      two findings about DIFFERENT codes collide on it whenever
-                     they cite the same anchor line — which D5 and D7 do all the
+                     they cite the same anchor line, which D5 and D7 do all the
                      time, because an absence-based finding cites the berkas
                      cover sheet. Without the index, staging or dismissing one
                      silently applies to the other. See the note in
@@ -175,7 +175,7 @@ export function CaseView({
             <span>alat dijalankan</span>
             <b>
               {ep.trace.tool_calls.map((t) => `${t.tool} (${t.result_digest})`).join(', ') ||
-                '—'}
+                NONE}
             </b>
             <span>kelas diperiksa</span>
             <b>{ep.classes_checked.join(', ')}</b>

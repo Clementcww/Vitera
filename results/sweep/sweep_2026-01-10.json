@@ -1432,7 +1432,7 @@
      "decay_rank": 2,
      "score": 0.8638,
      "source": "cross_encoder",
-     "rationale": "kode I11.9 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+     "rationale": "kode I11.9 kemungkinan salah spesifisitas; rekam medis mendukung kode lain pada kelompok yang sama",
      "span": {
       "doc_id": "berkas_klaim",
       "start": 86,
@@ -1466,7 +1466,7 @@
      "decay_rank": 2,
      "score": 0.8485,
      "source": "cross_encoder",
-     "rationale": "kode E87.0 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+     "rationale": "kode E87.0 kemungkinan salah spesifisitas; rekam medis mendukung kode lain pada kelompok yang sama",
      "span": {
       "doc_id": "berkas_klaim",
       "start": 86,

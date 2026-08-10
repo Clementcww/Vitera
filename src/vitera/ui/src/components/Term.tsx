@@ -3,7 +3,7 @@
  * The koder knows every one of these words; a judge, an investor or a member
  * of the public does not, and the UI has to hold both audiences without
  * splitting into two apps. So domain terms render with a dotted underline and
- * a one-sentence definition on hover/focus — written in plain Bahasa, defining
+ * a one-sentence definition on hover/focus, written in plain Bahasa, defining
  * the thing, never marketing it.
  *
  * Native `title` plus a visible affordance, no tooltip library: it works on

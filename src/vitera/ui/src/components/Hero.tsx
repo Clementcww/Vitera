@@ -96,7 +96,7 @@ export function HeroCards({
         </div>
         {/* These three figures describe the demo cohort, which is stratified
             so every defect class appears. Unlabelled, the rupiah figure reads
-            as a measured result — which it is not, and `results/` never
+            as a measured result, which it is not, and `results/` never
             computes one from here. */}
         <p className="mainnote">{payload.generated.cohort_caveat}</p>
       </section>

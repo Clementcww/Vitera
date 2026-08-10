@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { IntakePayload, ReadField } from '../intake'
 import { FIELD_ID, SEVERITY_ID, band } from '../intake'
-import { rp } from '../format'
+import { NONE, rp } from '../format'
 import { Term } from './Term'
 
 /* The scanned FPK, with the machine's reading drawn on top of it.
@@ -243,7 +243,7 @@ function FieldList({
           <li key={m} className="gone">
             <span className="fn">{FIELD_ID[m] ?? m}</span>
             <span className="fv">tidak terbaca</span>
-            <span className="cf b-weak">—</span>
+            <span className="cf b-weak">{NONE}</span>
           </li>
         ))}
       </ul>
@@ -262,7 +262,7 @@ function Rincian({ data }: { data: IntakePayload }) {
         <b>Rincian yang terbaca</b>
         <span className="c">
           {data.lines.length} baris · jumlah pada formulir{' '}
-          {t.biaya_idr === null ? '—' : rp(t.biaya_idr)}
+          {t.biaya_idr === null ? NONE : rp(t.biaya_idr)}
         </span>
       </div>
       <div className="tablewrap">
@@ -284,7 +284,7 @@ function Rincian({ data }: { data: IntakePayload }) {
               <tr key={ln.index} className={ln.unread.length ? 'partial' : ''}>
                 <td className="mono">{ln.index}</td>
                 <td className="mono">{ln.sep ?? <i>tidak terbaca</i>}</td>
-                <td className="mono dim">{ln.episode_id ?? '—'}</td>
+                <td className="mono dim">{ln.episode_id ?? NONE}</td>
                 <td className="mono">{ln.tanggal ?? <i>tidak terbaca</i>}</td>
                 <td className="mono">{ln.hari ?? <i>tidak terbaca</i>}</td>
                 <td className="mono">{ln.cbg ?? <i>tidak terbaca</i>}</td>

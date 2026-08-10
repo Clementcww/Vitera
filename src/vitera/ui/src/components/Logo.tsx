@@ -17,7 +17,7 @@
  */
 
 const DESCENT = [
-  // x1, y1, x2, y2 — one segment per day of the stay.
+  // x1, y1, x2, y2: one segment per day of the stay.
   // Butt caps, not round: a round cap adds half the stroke width at each
   // end and closes the gap, which is how the days stopped being countable.
   [3.6, 3.6, 4.83, 5.66],

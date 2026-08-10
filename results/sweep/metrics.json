@@ -14,8 +14,8 @@
       "flag_churn_rate 0.2143 > ceiling 0.15"
     ],
     "churn_caveat": "Upper bound. Attribution matches the finding's code against text arriving since the last sweep, so a D3/D5 resolved by narrative or by a lab result counts as unexplained. Closing the gap needs code-to-signal reference lookup, which belongs in the pipeline.",
-    "sweep_wall_clock_seconds": 5.334,
-    "seconds_per_episode_day": 0.0259,
+    "sweep_wall_clock_seconds": 5.54,
+    "seconds_per_episode_day": 0.0269,
     "llm_calls_per_sweep": 0.0,
     "zero_llm_episode_share": 1.0,
     "cost_per_sweep_idr": 0.0,

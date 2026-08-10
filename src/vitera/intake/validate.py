@@ -343,8 +343,8 @@ def reconcile(
                     f"{ln.sep_number}: nomor kartu pada FPK {ln.no_kartu}, "
                     f"pada rekam {expected_kartu}"
                     + (
-                        " — beda satu digit, periksa hasil pindaian sebelum "
-                        "menyimpulkan"
+                        " (beda satu digit, periksa hasil pindaian sebelum "
+                        "menyimpulkan)"
                         if near
                         else " (kandidat D8)"
                     ),

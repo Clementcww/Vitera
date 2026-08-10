@@ -3,11 +3,11 @@ import type { Flag } from '../types'
 import { explain, keyStore } from '../llm'
 import { DEFECT_ID, REMEDY, SOURCE } from '../format'
 
-/* L2 — rationale, the verbatim quote, and the two actions.
+/* L2: rationale, the verbatim quote, and the two actions.
  *
  * Rule 1 is the whole design of this card: the agent drafts and stages, a
  * human commits. "Siapkan" puts a draft in the tray. Nothing is applied, and
- * nothing is sent — a drafted DPJP query is printed and handed over, because
+ * nothing is sent. A drafted DPJP query is printed and handed over, because
  * the sweep may never message outward, however useful that would be.
  *
  * Rule 10 gives abstain its own treatment rather than an empty state. Saying

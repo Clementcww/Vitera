@@ -38,7 +38,7 @@ BODY = 7.4
 HEAD = 8.2
 
 SYNTHETIC_NOTE = (
-    "DOKUMEN SINTETIS — dihasilkan dari data uji Vitera. Bukan klaim sebenarnya."
+    "DOKUMEN SINTETIS. Dihasilkan dari data uji Vitera, bukan klaim sebenarnya."
 )
 
 

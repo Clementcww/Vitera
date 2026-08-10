@@ -1,6 +1,6 @@
 import type { IntakePayload } from '../intake'
 import { SEVERITY_ID } from '../intake'
-import { rp } from '../format'
+import { NONE, rp } from '../format'
 
 /* The generated report: what the check found, on one sheet a human signs.
  *
@@ -15,8 +15,8 @@ import { rp } from '../format'
  *
  * Rule 7 governs the numbers. `Diajukan`, `Draf perbaikan` and the conditional
  * line are three grouper figures carried through the export untouched. The
- * conditional amount — what would become claimable only if a DPJP documents
- * care the record merely suggests — is printed apart from the total and is
+ * conditional amount, what would become claimable only if a DPJP documents
+ * care the record merely suggests, is printed apart from the total and is
  * never added into it. Nothing on this sheet is arithmetic performed here.
  *
  * Printing works by hiding the app rather than by opening a second window:
@@ -176,16 +176,16 @@ export function ReportSheet({
                   <tr key={x.sep}>
                     <td className="mono">{x.sep}</td>
                     <td className="mono">{x.episode_id}</td>
-                    <td className="mono">{x.cbg_before ?? '—'}</td>
-                    <td className="mono">{x.cbg_after ?? '—'}</td>
+                    <td className="mono">{x.cbg_before ?? NONE}</td>
+                    <td className="mono">{x.cbg_after ?? NONE}</td>
                     <td className="num mono">
-                      {x.biaya_before === null ? '—' : rp(x.biaya_before)}
+                      {x.biaya_before === null ? NONE : rp(x.biaya_before)}
                     </td>
                     <td className="num mono">
-                      {x.biaya_after === null ? '—' : rp(x.biaya_after)}
+                      {x.biaya_after === null ? NONE : rp(x.biaya_after)}
                     </td>
                     <td className="num mono">
-                      {x.delta_idr === null ? '—' : rp(x.delta_idr)}
+                      {x.delta_idr === null ? NONE : rp(x.delta_idr)}
                     </td>
                   </tr>
                 ))}
@@ -207,7 +207,7 @@ export function ReportSheet({
                 <div className="fh">
                   <b>{x.label}</b>
                   <span className={'rtag r-' + x.remedy_code.toLowerCase()}>
-                    {x.remedy} — {x.actor}
+                    {x.remedy} · {x.actor}
                   </span>
                   <span className="fid mono">{x.episode_id}</span>
                 </div>

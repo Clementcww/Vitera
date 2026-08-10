@@ -6,7 +6,7 @@ import { BRAND, CLEAN_HEX, REMEDY_HEX } from './palette'
 
 /* The hero animation.
  *
- * It animates the REAL detection surface — the same `surface.cells` the
+ * It animates the REAL detection surface, the same `surface.cells` the
  * detection surface renders, which are real `run_pipeline` calls at each day of
  * each episode's stay. Nothing here is decorative geometry standing in for
  * data. That matters more than it sounds: a hero built from invented shapes
@@ -16,7 +16,7 @@ import { BRAND, CLEAN_HEX, REMEDY_HEX } from './palette'
  * What it shows is the product's whole argument in one loop. A sweep line
  * advances along the day axis; a bar rises on the day its finding first became
  * detectable, and stays up. The forest that is standing well before the right
- * edge is the repair window — evidence sitting in the record for days before
+ * edge is the repair window: evidence sitting in the record for days before
  * anyone would have looked at it.
  *
  * Constraints inherited from Surface.tsx, for the same reasons: no 3D text
@@ -24,7 +24,7 @@ import { BRAND, CLEAN_HEX, REMEDY_HEX } from './palette'
  * network down), no shadows or post-processing (where an unfamiliar GPU dies).
  *
  * `prefers-reduced-motion` is honoured by rendering the finished state and not
- * animating at all — a looping sweep is exactly the kind of motion that makes
+ * animating at all, because a looping sweep is exactly the kind of motion that makes
  * some people ill, and this is the first thing the app shows.
  */
 
@@ -90,7 +90,7 @@ function Bars({
       const b = bars[i]
       if (!m || !b) continue
       // Ease in over roughly one day either side of the sweep line, so bars
-      // grow rather than pop. Clamped, so a bar that has risen stays risen —
+      // grow rather than pop. Clamped, so a bar that has risen stays risen,
       // the finding does not go away when the day advances.
       const k = Math.min(1, Math.max(0, sweep - b.day + 1))
       const s = k * k * (3 - 2 * k) // smoothstep
@@ -159,7 +159,7 @@ export default function HeroScene({
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [spanX * 2.1, spanZ * 0.40, spanZ * 0.98], fov: 32 }}
-      /* `pointerEvents: none` — the canvas sits behind the headline and the
+      /* `pointerEvents: none`, so the canvas sits behind the headline and the
          call to action, and must never swallow a click meant for either. */
       style={{ background: 'transparent', pointerEvents: 'none' }}
     >

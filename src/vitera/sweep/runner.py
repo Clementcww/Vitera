@@ -473,7 +473,7 @@ def write_outputs(
             "llm_mode": config.llm_mode(),
             "note": (
                 "The sweep stages into this workspace and stops. No message of "
-                "any kind leaves the system — architectural rule 1, tightened "
+                "any kind leaves the system. Architectural rule 1, tightened "
                 "for unattended execution."
             ),
         },

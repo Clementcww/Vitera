@@ -11,7 +11,7 @@ import type { EpisodeView, Flag, Loaded, Payload, SweepPayload } from './types'
  * Doing it twice is deliberate. The Python filter protects the pipeline; this
  * one protects the *screen*, which is the surface a poisoned note would have
  * to reach to do damage. If a span does not survive, the flag is dropped and
- * counted — never rendered with a softened citation, never rendered without
+ * counted, never rendered with a softened citation, never rendered without
  * one. A finding that cannot point at the record is not a finding.
  *
  * `droppedFlags` is surfaced in the UI. A silent drop would make this checkbox
@@ -41,7 +41,7 @@ export function verifySpans(ep: EpisodeView): { flags: Flag[]; dropped: number }
 /** Queue order: remedy decay first, then recoverable value, then day of stay.
  *
  * Matches `config/sweep.yaml`'s ordering, and the reason is clinical rather
- * than cosmetic — a Query needs the DPJP while the patient is still on the
+ * than cosmetic: a Query needs the DPJP while the patient is still on the
  * ward, so it decays fastest and must surface first however small its rupiah
  * figure. Sorting by value alone would bury the only findings that expire. */
 export function queueOrder(a: EpisodeView, b: EpisodeView): number {
@@ -53,7 +53,7 @@ export function queueOrder(a: EpisodeView, b: EpisodeView): number {
 
 export async function load(url = './data/demo.json'): Promise<Loaded> {
   const res = await fetch(url)
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText} — run \`make ui-data\``)
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}. Run \`make ui-data\``)
   const payload: Payload = await res.json()
 
   let droppedFlags = 0
@@ -70,7 +70,7 @@ export async function load(url = './data/demo.json'): Promise<Loaded> {
  *
  * Optional on purpose and deliberately not awaited with the main payload: the
  * workbench must still open when no sweep has run. What it must NOT do is
- * invent a timestamp — a missing file means the header says the queue has no
+ * invent a timestamp. A missing file means the header says the queue has no
  * sweep behind it, which is honest, rather than rendering as fresh. */
 export async function loadSweep(
   url = './data/sweep.json',
@@ -84,7 +84,7 @@ export async function loadSweep(
   }
 }
 
-/** Hours since the last SUCCESSFUL sweep — sweep rule 5's `queue_staleness`.
+/** Hours since the last SUCCESSFUL sweep. Sweep rule 5's `queue_staleness`.
  *
  * Measured against `last_successful_sweep`, never `last_attempted_sweep`. A
  * night that ran and failed leaves the queue exactly as stale as a night that

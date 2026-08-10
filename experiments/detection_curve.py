@@ -235,7 +235,7 @@ def evaluate(
             "llm_calls": 0,
             "zero_llm_share": 1.0,
             "note": (
-                "rules + cross-encoder only, by construction — the LLM layer "
+                "rules + cross-encoder only, by construction: the LLM layer "
                 "writes prose and does not detect. Not a discovery; a design "
                 "property, measured to substantiate the scalability argument."
             ),

@@ -7,7 +7,7 @@
     "fields_missing": [
       "telpon"
     ],
-    "mean_field_confidence": 0.527,
+    "mean_field_confidence": 0.573,
     "rows": 47,
     "rows_complete_share": 0.979,
     "matched_episodes": 47,

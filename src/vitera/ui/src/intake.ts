@@ -8,7 +8,7 @@
  * Nothing here derives a value. The boxes drawn on the page image are the OCR's
  * own coordinates, the confidences are the engine's, and every rupiah figure
  * came from the grouper before it was written to this file. The view's whole
- * claim is "the machine read this, from here" — recomputing any part of it in
+ * claim is "the machine read this, from here". Recomputing any part of it in
  * the browser would make that claim decorative.
  */
 
@@ -146,8 +146,8 @@ export interface IntakePayload {
 
 /** Confidence bands for the overlay.
  *
- * Three bands, not a gradient. The engine reports confidence coarsely — in
- * practice a handful of distinct values — so a continuous scale would imply a
+ * Three bands, not a gradient. The engine reports confidence coarsely, in
+ * practice a handful of distinct values, so a continuous scale would imply a
  * precision the number does not have. The bands say what a koder needs: read
  * cleanly, read with doubt, or barely read at all. */
 export function band(c: number): 'ok' | 'soft' | 'weak' {
@@ -158,7 +158,7 @@ export function band(c: number): 'ok' | 'soft' | 'weak' {
 
 /* The labels as printed on the form. The panel sits beside a photograph of
  * that form with a box drawn on each one, so these must stay word for word
- * what the sheet says — that pairing is the only thing the panel is for. */
+ * what the sheet says, and that pairing is the only thing the panel is for. */
 export const FIELD_ID: Record<string, string> = {
   cabang: 'Cabang BPJS',
   jenis_penagihan: 'Jenis penagihan',

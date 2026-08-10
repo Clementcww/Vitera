@@ -2,9 +2,9 @@
  "generated": {
   "seed": 20260731,
   "mode": "replay",
-  "finished_at": "2026-08-10T01:52:09+00:00",
+  "finished_at": "2026-08-10T02:09:27+00:00",
   "llm_mode": "cache",
-  "note": "The sweep stages into this workspace and stops. No message of any kind leaves the system — architectural rule 1, tightened for unattended execution."
+  "note": "The sweep stages into this workspace and stops. No message of any kind leaves the system. Architectural rule 1, tightened for unattended execution."
  },
  "last_successful_sweep": "2026-01-16",
  "last_attempted_sweep": "2026-01-16",
@@ -24,8 +24,8 @@
    "flag_churn_rate 0.2143 > ceiling 0.15"
   ],
   "churn_caveat": "Upper bound. Attribution matches the finding's code against text arriving since the last sweep, so a D3/D5 resolved by narrative or by a lab result counts as unexplained. Closing the gap needs code-to-signal reference lookup, which belongs in the pipeline.",
-  "sweep_wall_clock_seconds": 5.334,
-  "seconds_per_episode_day": 0.0259,
+  "sweep_wall_clock_seconds": 5.54,
+  "seconds_per_episode_day": 0.0269,
   "llm_calls_per_sweep": 0.0,
   "zero_llm_episode_share": 1.0,
   "cost_per_sweep_idr": 0.0,
@@ -1475,7 +1475,7 @@
        "decay_rank": 2,
        "score": 0.8638,
        "source": "cross_encoder",
-       "rationale": "kode I11.9 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+       "rationale": "kode I11.9 kemungkinan salah spesifisitas; rekam medis mendukung kode lain pada kelompok yang sama",
        "span": {
         "doc_id": "berkas_klaim",
         "start": 86,
@@ -1509,7 +1509,7 @@
        "decay_rank": 2,
        "score": 0.8485,
        "source": "cross_encoder",
-       "rationale": "kode E87.0 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+       "rationale": "kode E87.0 kemungkinan salah spesifisitas; rekam medis mendukung kode lain pada kelompok yang sama",
        "span": {
         "doc_id": "berkas_klaim",
         "start": 86,
@@ -1807,7 +1807,7 @@
        "decay_rank": 2,
        "score": 0.8829,
        "source": "cross_encoder",
-       "rationale": "kode E14.9 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+       "rationale": "kode E14.9 kemungkinan salah spesifisitas; rekam medis mendukung kode lain pada kelompok yang sama",
        "span": {
         "doc_id": "berkas_klaim",
         "start": 86,

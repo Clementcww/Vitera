@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { EpisodeView, Remedy, SweepPayload } from '../types'
-import { DEFECT_ID, REMEDY, jt } from '../format'
+import { DEFECT_ID, NONE, REMEDY, jt } from '../format'
 import { Term } from './Term'
 
 /* L0 and L1.
@@ -11,7 +11,7 @@ import { Term } from './Term'
  * second click.
  *
  * Rupiah come from the grouper and are badged as such. An episode the grouper
- * could not group shows a dash — never an estimate (rule 7).
+ * could not group shows a dash, never an estimate (rule 7).
  *
  * ── Two things here were fixed after watching the screen rather than reading
  * it, and both were the same mistake: a row whose distinguishing information
@@ -19,7 +19,7 @@ import { Term } from './Term'
  *
  * The row title used to open with the rationale, on the theory that naming the
  * actual code beat repeating the defect class. But the rationale is a template
- * — thirteen of forty-seven findings share one — so eleven consecutive rows
+ * (thirteen of forty-seven findings share one) so eleven consecutive rows
  * read "bukti klinis untuk … ada pada catatan, namun diagnosis tidak tertulis"
  * with the only varying token, the ICD code, buried mid-sentence. The subject
  * now leads and the sentence follows it.
@@ -41,12 +41,12 @@ function topRemedy(e: EpisodeView): Remedy | null {
 /** What each episode's MOST RECENT sweep reported as new or escalated.
  *
  * Per episode, not per calendar night. The workbench shows each episode on its
- * own current day — some mid-stay, some at discharge — so "what changed" has
+ * own current day, some mid-stay and some at discharge, so "what changed" has
  * to mean *at that episode's last sweep*. Reading one shared night instead
  * marks nothing for every episode that discharged earlier in the week, and
  * marks nothing at all on a night where the whole ward happened to be quiet.
  *
- * Keyed on `suppression_key` — class, subject and evidence hash — because that
+ * Keyed on `suppression_key` (class, subject and evidence hash) because that
  * is exactly what the sweep wrote. Recomputing a lookalike key in the browser
  * is how a screen and a queue quietly stop agreeing. */
 function diffMarks(sweep: SweepPayload | null): Map<string, DiffMark> {
@@ -229,7 +229,7 @@ export function QueueView({
                 <span className="rmoney">
                   {e.money.now.ungroupable_reason ? (
                     <span className="none" title={e.money.now.ungroupable_reason}>
-                      —
+                      {NONE}
                     </span>
                   ) : delta ? (
                     jt(delta)

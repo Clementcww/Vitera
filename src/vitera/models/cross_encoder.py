@@ -123,7 +123,7 @@ def _signals(code: str) -> tuple[Any, ...]:
 
 _RATIONALE = {
     DefectClass.D2: (
-        "kode {code} kemungkinan salah spesifisitas — rekam medis mendukung "
+        "kode {code} kemungkinan salah spesifisitas; rekam medis mendukung "
         "kode lain pada kelompok yang sama"
     ),
     DefectClass.D3: (

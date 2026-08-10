@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// `base: './'` so the built bundle runs from any path — including
+// `base: './'` so the built bundle runs from any path, including
 // `python -m http.server` in the repo root, which is what `make demo-offline`
 // uses. No CDN, no absolute origin: a demo that needs the network is a demo
 // that can fail on stage.

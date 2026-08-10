@@ -83,7 +83,7 @@ class Router:
             verdict = Verdict.ABSTAIN
             reason = (
                 f"{len(borderline)} temuan di zona abu-abu "
-                f"[{self.abstain_below}, {self.flag_at}) — perlu penilaian koder"
+                f"[{self.abstain_below}, {self.flag_at}), perlu penilaian koder"
             )
         elif not grouping.is_groupable:
             verdict = Verdict.ABSTAIN

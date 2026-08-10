@@ -246,7 +246,7 @@
      "decay_rank": 2,
      "score": 0.8829,
      "source": "cross_encoder",
-     "rationale": "kode E14.9 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+     "rationale": "kode E14.9 kemungkinan salah spesifisitas; rekam medis mendukung kode lain pada kelompok yang sama",
      "span": {
       "doc_id": "berkas_klaim",
       "start": 86,

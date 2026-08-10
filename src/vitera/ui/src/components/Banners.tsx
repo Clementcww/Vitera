@@ -1,11 +1,12 @@
 import type { Payload, SweepPayload } from '../types'
 import { staleHours } from '../data'
+import { NONE } from '../format'
 
 /* Four pieces of chrome, each of which exists because of a rule that is easy
  * to satisfy badly.
  *
  * Advisory (rule 8): the system must remain useful with the model layer off.
- * The failure mode is not that it stops working — it is that a rules-only run
+ * The failure mode is not that it stops working. It is that a rules-only run
  * renders identically to a full one and the koder trusts a check that never
  * happened. So the banner names the classes that were NOT examined. "Degraded
  * mode" tells a koder nothing; "D2, D3, D4 and D7 were not checked tonight"
@@ -78,13 +79,13 @@ export function SweepStatus({
       className={'hpill statpill' + tone}
       title={
         sweep.generated.mode === 'replay'
-          ? 'replay 7 malam dari korpus — tanggal sintetis, tidak membaca jam'
+          ? 'replay 7 malam dari korpus: tanggal sintetis, tidak membaca jam'
           : `selesai ${sweep.generated.finished_at}`
       }
     >
       <span className={'led' + (partial || old ? ' off' : '')} />
       {n} episode · sweep{' '}
-      <b className="mono">{sweep.last_successful_sweep ?? '—'}</b>
+      <b className="mono">{sweep.last_successful_sweep ?? NONE}</b>
       {partial && <span className="tag">sebagian</span>}
       {sweep.generated.mode === 'replay' && <span className="tag">replay</span>}
     </div>
@@ -106,7 +107,7 @@ export function StaleBanner({ sweep }: { sweep: SweepPayload | null }) {
       <summary>
         <span className="mark">!</span>
         {partial
-          ? 'Sweep terakhir tidak selesai — antrean ini belum lengkap'
+          ? 'Sweep terakhir tidak selesai, antrean ini belum lengkap'
           : `Antrean berumur ${Math.round(stale!)} jam`}
         <span className="more">rincian</span>
       </summary>
@@ -120,7 +121,7 @@ export function StaleBanner({ sweep }: { sweep: SweepPayload | null }) {
         )}
         . Episode yang dilewati tidak muncul di daftar ini, jadi antrean yang
         pendek belum tentu berarti pekerjaan sedikit. Yang ditampilkan adalah
-        proses <b>sukses</b> terakhir, bukan percobaan terakhir — antrean basi
+        proses <b>sukses</b> terakhir, bukan percobaan terakhir; antrean basi
         tidak boleh tampak segar.
         {sweep.nights.at(-1)?.skipped.length ? (
           <div className="why-mono">

@@ -1,7 +1,7 @@
 /* Layout only. Every colour and typeface comes from tokens.css.
  *
  * Minimalist here means: no shadows, no gradients, one border weight, one
- * radius. The screen has exactly two jobs — let a koder skip a claim in one
+ * radius. The screen has exactly two jobs: let a koder skip a claim in one
  * second, and make a finding's evidence impossible to miss when they stop. */
 
 * { box-sizing: border-box; }
@@ -244,7 +244,7 @@ text.axis { font-family: var(--sans); font-size: 9.5px; fill: var(--muted); }
 text.axis.mono { font-family: var(--mono); font-size: 9px; }
 
 /* ==========================================================================
-   HERO — bento of three cards on a warm grey page
+   HERO: bento of three cards on a warm grey page
    ==========================================================================
 
    A card here is a door, not a link: clicking one expands it to fill the frame
@@ -430,7 +430,7 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 /* ---- the accent card, open: the dashboard over its own surface --------- */
 
 /* Scrolls inside the card rather than growing it. The 3D layer is `.cardbg`,
-   pinned at inset 0, so the surface holds still while the totals move over it —
+   pinned at inset 0, so the surface holds still while the totals move over it,
    which is the whole point of putting them together. */
 .dashwrap {
   position: absolute; inset: 0; z-index: 1;
@@ -460,7 +460,7 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
 
-/* The card header sits above the scrolling layer, not in it — and it needs a
+/* The card header sits above the scrolling layer, not in it, and it needs a
    scrim of its own, or the numbers slide underneath the title and both become
    unreadable at once. Fades out downward so the surface is still uncovered
    where the title is not. */
@@ -535,8 +535,8 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 /* ---- charts ------------------------------------------------------------ */
 
 /* The panels are LIGHT even inside the orange card, and that is the colour
-   decision the rest follows from. The remedy hues are the product's identity —
-   a koder learned them in the queue — and they are validated against a light
+   decision the rest follows from. The remedy hues are the product's identity
+   (a koder learned them in the queue) and they are validated against a light
    chart surface, not against brand orange. Repainting them to sit on orange
    would have meant the same entity wearing two colours on two screens. */
 .panels {
@@ -590,7 +590,7 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 
 .chart-area { width: 100%; height: 116px; display: block; }
 /* Ticks are HTML, not SVG text. The plot is stretched to the panel width with
-   `preserveAspectRatio="none"`, which scales glyphs horizontally with it — the
+   `preserveAspectRatio="none"`, which scales glyphs horizontally with it, so the
    labels came out wide and wrong. Outside the viewBox they are just text. */
 .cticks {
   display: flex; justify-content: space-between; gap: 10px;
@@ -609,7 +609,7 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
   .bento { height: auto; min-height: 0; display: grid; gap: 12px; }
   /* `relative`, not `static`. The cards stop being absolutely placed here, but
      `.cardbg` is `position: absolute; inset: 0` and would otherwise resolve
-     against `.bento` — painting the 3D surface across the card above it. */
+     against `.bento`, painting the 3D surface across the card above it. */
   .card { position: relative; width: auto !important; height: auto !important; padding: 26px; }
   .card-accent, .card-work { min-height: 230px; }
   .card-accent.open { min-height: 420px; }
@@ -622,7 +622,7 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
      start below it, on flat colour, so nothing overlaps to soften. */
   .dashsheet { margin-top: 168px; padding: 0; background: none; }
   /* The card grows to its content on narrow, and `inset: 0` would give the
-     scene a drawing buffer the height of the whole dashboard — around three
+     scene a drawing buffer the height of the whole dashboard, around three
      thousand pixels of WebGL for a backdrop. Band it to the top instead. */
   .card-accent.open .cardbg { height: 300px; bottom: auto; }
   .card-accent.open { min-height: 0; height: auto !important; }
@@ -699,7 +699,7 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 .scanbar .spacer { flex: 1; }
 
 /* The page. Boxes are positioned in percentages of this element, which is why
- * it carries the source image's aspect ratio — the OCR's coordinates are
+ * it carries the source image's aspect ratio, because the OCR's coordinates are
  * normalised to the page, so the container must be too or every box drifts. */
 .sheet { position: relative; width: 100%; background: #fff; }
 .sheet img { display: block; width: 100%; height: 100%; object-fit: contain; }
@@ -763,7 +763,7 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
   border-radius: var(--r); padding: 44px 52px 40px;
   box-shadow: 0 24px 60px rgba(16, 28, 31, .28);
 }
-/* Diagonal, centred, behind the text — the same mark the printed PDF carries.
+/* Diagonal, centred, behind the text: the same mark the printed PDF carries.
  * Corner placement collided with the print date, and a stamp a reader can miss
  * is not doing the job rule 1 gives it. */
 .paper .stamp {
@@ -962,7 +962,7 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 .refl { font-size: 9px; fill: var(--muted); }
 
 /* Vertical bars, one per day of stay. A 2px surface gap rather than a stroke,
-   and only the peak labelled — a number on every bar is noise at this size. */
+   and only the peak labelled, because a number on every bar is noise at this size. */
 /* `padding-top` reserves room for the peak label, which is positioned above
    its bar and would otherwise collide with the caption above the chart. */
 .daybars { display: flex; align-items: flex-end; gap: 2px; padding-top: 14px; }

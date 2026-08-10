@@ -2,7 +2,7 @@
  *
  * The agent drafts, stages and prepares. A human commits. Everything the koder
  * clicks lands here first; nothing is applied to the claim of record, nothing
- * is submitted to BPJS, and nothing is sent to a DPJP — a drafted query is
+ * is submitted to BPJS, and nothing is sent to a DPJP. A drafted query is
  * printed and handed over in person.
  *
  * The commit button is deliberately a dead end in this build. Wiring it to a

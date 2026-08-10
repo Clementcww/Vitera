@@ -1,1 +1,1 @@
-"""vitera.ui — see docs/ARCHITECTURE.md. Implemented in a later bucket."""
+"""vitera.ui. See docs/ARCHITECTURE.md; implemented in a later bucket."""

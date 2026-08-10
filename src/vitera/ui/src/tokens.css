@@ -3,11 +3,11 @@
  * The palette is the product's own, not a vendor's. It is built from the two
  * materials the koder actually works between: the printed BPJS form, which is
  * cool white with a navy rule, and the clinical record, which is warm paper.
- * Petrol is the resolving colour — it is what a checked claim looks like.
+ * Petrol is the resolving colour: it is what a checked claim looks like.
  *
- *   Poppins  chrome, headings, labels — the product's voice
- *   Lora     clinical prose, rationale, quoted record — the hospital's voice
- *   mono     ICD codes, CBG codes, rupiah — anything a koder reads digit by
+ *   Poppins  chrome, headings, labels. The product's voice
+ *   Lora     clinical prose, rationale, quoted record. The hospital's voice
+ *   mono     ICD codes, CBG codes, rupiah. Anything a koder reads digit by
  *            digit, with tabular figures so columns line up
  *
  * The remedy colours are the one place brand meets domain. They are not
@@ -18,7 +18,7 @@
 
 /* latin subsets only. The default @fontsource entrypoint ships devanagari and
  * cyrillic too, which is ~270 kB of fonts this Indonesian-language UI will
- * never render. Vendored locally either way — no CDN, so `make demo-offline`
+ * never render. Vendored locally either way, with no CDN, so `make demo-offline`
  * works with the network down. */
 @import '@fontsource/poppins/latin-400.css';
 @import '@fontsource/poppins/latin-500.css';
@@ -50,7 +50,7 @@
   --surface: #ffffff;
   --line-2: #c9d5d7;
 
-  /* remedy — who acts, and how fast the window shuts.
+  /* remedy: who acts, and how fast the window shuts.
      amber  DPJP, while the patient is still on the ward. Shuts fastest.
      steel  petugas berkas, survives discharge.
      moss   koder, survives until submission. */
