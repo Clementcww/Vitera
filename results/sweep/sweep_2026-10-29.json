@@ -1,0 +1,63 @@
+{
+ "sweep_date": "2026-10-29",
+ "status": "complete",
+ "episodes_run": 1,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP003501",
+   "sweep_date": "2026-10-29",
+   "day_of_stay": 8,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-10-28",
+   "recoverable_idr": 8580000,
+   "queue_weight": 8580000.0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:0add35f2d4416170",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8286,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_8",
+      "start": 62,
+      "end": 98,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "0add35f2d4416170"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:cbbdacc6bf6a3ea4",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8293,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_7",
+      "start": 62,
+      "end": 98,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "cbbdacc6bf6a3ea4"
+     }
+    }
+   ]
+  }
+ ]
+}

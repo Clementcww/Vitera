@@ -1,0 +1,409 @@
+{
+  "n_episodes": 1332,
+  "seeds": 3,
+  "bootstrap_resamples": 1000,
+  "ci_scope": "percentile bootstrap over EPISODES. Not over training runs \u2014 one cross-encoder checkpoint is used, so fine-tuning seed variance is not measured and these intervals must not be read as covering it.",
+  "budget_match": {
+    "target_clean_fpr": 0.0467,
+    "chosen_emit_floor": 0.5,
+    "achieved_clean_fpr_on_train": 0.0467,
+    "matched": true,
+    "n_clean_train_episodes": 150,
+    "sweep": [
+      {
+        "emit_floor": 0.0015,
+        "clean_fpr": 0.44
+      },
+      {
+        "emit_floor": 0.01,
+        "clean_fpr": 0.4333
+      },
+      {
+        "emit_floor": 0.05,
+        "clean_fpr": 0.4267
+      },
+      {
+        "emit_floor": 0.1,
+        "clean_fpr": 0.3933
+      },
+      {
+        "emit_floor": 0.2,
+        "clean_fpr": 0.3933
+      },
+      {
+        "emit_floor": 0.3,
+        "clean_fpr": 0.1867
+      },
+      {
+        "emit_floor": 0.4,
+        "clean_fpr": 0.1
+      },
+      {
+        "emit_floor": 0.5,
+        "clean_fpr": 0.0467
+      }
+    ],
+    "note": "Swept on the TRAINING split only. Comparing arms at their own default thresholds would compare two different tolerances for interrupting a koder, which is not a comparison of detection.",
+    "arm_c_clean_fpr_on_train": 0.0467
+  },
+  "arms": {
+    "A": {
+      "n": 1332,
+      "per_class": {
+        "D1": {
+          "tp": 53,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "D2": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 53,
+          "recall": 0.0,
+          "precision": null
+        },
+        "D3": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 124,
+          "recall": 0.0,
+          "precision": null
+        },
+        "D4": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 101,
+          "recall": 0.0,
+          "precision": null
+        },
+        "D5": {
+          "tp": 13,
+          "fp": 158,
+          "fn": 55,
+          "recall": 0.1912,
+          "precision": 0.076
+        },
+        "D6": {
+          "tp": 7,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "D7": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 93,
+          "recall": 0.0,
+          "precision": null
+        },
+        "D8": {
+          "tp": 48,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        }
+      },
+      "macro_recall": 0.3989,
+      "classes_reached": [
+        "D1",
+        "D6",
+        "D8"
+      ],
+      "n_classes_reached": 3,
+      "clean_claim_false_positive_rate": 0.0,
+      "clean_claims": 890,
+      "span_verification_rate": 1.0,
+      "recoverable_idr_total": 3213365000,
+      "recovered_idr_total": 374885000,
+      "recovered_share": 0.1167,
+      "label": "rules only",
+      "ci95": {
+        "macro_recall": [
+          0.3873,
+          0.4127
+        ],
+        "clean_claim_false_positive_rate": [
+          0.0,
+          0.0
+        ],
+        "recovered_share": [
+          0.085,
+          0.1498
+        ]
+      }
+    },
+    "B": {
+      "n": 1332,
+      "per_class": {
+        "D1": {
+          "tp": 53,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "D2": {
+          "tp": 21,
+          "fp": 0,
+          "fn": 32,
+          "recall": 0.3962,
+          "precision": 1.0
+        },
+        "D3": {
+          "tp": 110,
+          "fp": 45,
+          "fn": 14,
+          "recall": 0.8871,
+          "precision": 0.7097
+        },
+        "D4": {
+          "tp": 80,
+          "fp": 103,
+          "fn": 21,
+          "recall": 0.7921,
+          "precision": 0.4372
+        },
+        "D5": {
+          "tp": 13,
+          "fp": 158,
+          "fn": 55,
+          "recall": 0.1912,
+          "precision": 0.076
+        },
+        "D6": {
+          "tp": 7,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "D7": {
+          "tp": 31,
+          "fp": 0,
+          "fn": 62,
+          "recall": 0.3333,
+          "precision": 1.0
+        },
+        "D8": {
+          "tp": 48,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        }
+      },
+      "macro_recall": 0.7,
+      "classes_reached": [
+        "D1",
+        "D3",
+        "D4",
+        "D6",
+        "D8"
+      ],
+      "n_classes_reached": 5,
+      "clean_claim_false_positive_rate": 0.0618,
+      "clean_claims": 890,
+      "span_verification_rate": 1.0,
+      "recoverable_idr_total": 3213365000,
+      "recovered_idr_total": 863800000,
+      "recovered_share": 0.2688,
+      "label": "rules + BM25 (lexical retrieval)",
+      "ci95": {
+        "macro_recall": [
+          0.6702,
+          0.7272
+        ],
+        "clean_claim_false_positive_rate": [
+          0.0469,
+          0.0783
+        ],
+        "recovered_share": [
+          0.2223,
+          0.3201
+        ]
+      }
+    },
+    "C": {
+      "n": 1332,
+      "per_class": {
+        "D1": {
+          "tp": 53,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "D2": {
+          "tp": 52,
+          "fp": 0,
+          "fn": 1,
+          "recall": 0.9811,
+          "precision": 1.0
+        },
+        "D3": {
+          "tp": 121,
+          "fp": 14,
+          "fn": 3,
+          "recall": 0.9758,
+          "precision": 0.8963
+        },
+        "D4": {
+          "tp": 101,
+          "fp": 71,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 0.5872
+        },
+        "D5": {
+          "tp": 13,
+          "fp": 158,
+          "fn": 55,
+          "recall": 0.1912,
+          "precision": 0.076
+        },
+        "D6": {
+          "tp": 7,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "D7": {
+          "tp": 79,
+          "fp": 0,
+          "fn": 14,
+          "recall": 0.8495,
+          "precision": 1.0
+        },
+        "D8": {
+          "tp": 48,
+          "fp": 0,
+          "fn": 0,
+          "recall": 1.0,
+          "precision": 1.0
+        }
+      },
+      "macro_recall": 0.8747,
+      "classes_reached": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D6",
+        "D7",
+        "D8"
+      ],
+      "n_classes_reached": 7,
+      "clean_claim_false_positive_rate": 0.0371,
+      "clean_claims": 890,
+      "span_verification_rate": 1.0,
+      "recoverable_idr_total": 3213365000,
+      "recovered_idr_total": 894570000,
+      "recovered_share": 0.2784,
+      "label": "rules + cross-encoder (evidence judged)",
+      "ci95": {
+        "macro_recall": [
+          0.8581,
+          0.8921
+        ],
+        "clean_claim_false_positive_rate": [
+          0.0249,
+          0.0513
+        ],
+        "recovered_share": [
+          0.2228,
+          0.3248
+        ]
+      }
+    }
+  },
+  "comparisons": {
+    "A->B": {
+      "macro_recall": {
+        "delta": 0.3015,
+        "ci95": [
+          0.277,
+          0.3228
+        ],
+        "separated": true
+      },
+      "clean_claim_false_positive_rate": {
+        "delta": 0.0622,
+        "ci95": [
+          0.0472,
+          0.0786
+        ],
+        "separated": true
+      },
+      "recovered_share": {
+        "delta": 0.1535,
+        "ci95": [
+          0.1141,
+          0.1927
+        ],
+        "separated": true
+      }
+    },
+    "B->C": {
+      "macro_recall": {
+        "delta": 0.1747,
+        "ci95": [
+          0.1514,
+          0.199
+        ],
+        "separated": true
+      },
+      "clean_claim_false_positive_rate": {
+        "delta": -0.0248,
+        "ci95": [
+          -0.0404,
+          -0.0093
+        ],
+        "separated": true
+      },
+      "recovered_share": {
+        "delta": 0.0084,
+        "ci95": [
+          -0.0248,
+          0.0412
+        ],
+        "separated": false
+      }
+    },
+    "A->C": {
+      "macro_recall": {
+        "delta": 0.4761,
+        "ci95": [
+          0.4645,
+          0.4861
+        ],
+        "separated": true
+      },
+      "clean_claim_false_positive_rate": {
+        "delta": 0.0374,
+        "ci95": [
+          0.0255,
+          0.0506
+        ],
+        "separated": true
+      },
+      "recovered_share": {
+        "delta": 0.1619,
+        "ci95": [
+          0.1206,
+          0.2016
+        ],
+        "separated": true
+      }
+    }
+  },
+  "timing_seconds": {
+    "A": 0.04,
+    "B": 0.1,
+    "C": 23.25
+  }
+}

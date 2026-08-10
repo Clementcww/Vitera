@@ -47,17 +47,21 @@ from vitera.agent.loop import run_pipeline
 from vitera.generator.corpus import claim_from_dict, episode_from_dict, load_jsonl
 from vitera.rules.engine import RuleContext
 
-_CODE = re.compile(r"\b([A-Z]\d{2}(?:\.\d+)?)\b")
+_CODE = re.compile(r"^[A-Z]\d{2}(?:\.\d+)?$")
 
 
 def _flagged(result: Any) -> tuple[set[str], dict[str, str]]:
-    """Classes flagged, and code -> remedy read off each rationale."""
+    """Classes flagged, and code -> remedy, both off structured fields.
+
+    `Flag.subject`, not the rationale: prose is LLM-writable under rule 2, and
+    a measurement that parses prose measures the prose.
+    """
     classes = {f.defect_class.name for f in result.decision.flags}
-    codes: dict[str, str] = {}
-    for f in result.decision.flags:
-        m = _CODE.search(f.rationale)
-        if m:
-            codes[m.group(1)] = f.remedy.name
+    codes = {
+        f.subject: f.remedy.name
+        for f in result.decision.flags
+        if _CODE.match(f.subject)
+    }
     return classes, codes
 
 
@@ -71,6 +75,8 @@ def evaluate(
     by_site_fp: defaultdict[str, list[int]] = defaultdict(list)
     undercode_lead: list[int] = []
     clean_fp_by_day: defaultdict[int, list[int]] = defaultdict(list)
+    clean_fp_by_share: defaultdict[int, list[int]] = defaultdict(list)
+    clean_fp_at_discharge: list[int] = []
     detected_pairs = 0
     truth_pairs = 0
     runs = 0
@@ -109,9 +115,22 @@ def evaluate(
                 final_classes = classes
             if is_clean:
                 clean_fp_by_day[day].append(1 if classes else 0)
+                if last > 0:
+                    # Binned by SHARE of stay, so every clean episode
+                    # contributes across the whole axis. The by-day series
+                    # cannot be read as a trend on its own: its cohort changes
+                    # composition as the axis advances — day 13 contains only
+                    # episodes that stayed 13 days — so a decline there is
+                    # partly a change of population rather than of behaviour.
+                    # This is the same denominator artefact that made the raw
+                    # per-day flag count look like falling detection.
+                    clean_fp_by_share[round(10 * day / last)].append(
+                        1 if classes else 0
+                    )
 
         if is_clean and last > 0:
             by_site_fp[sc].append(1 if final_classes else 0)
+            clean_fp_at_discharge.append(1 if final_classes else 0)
 
         # A detection counts only if the class is still flagged at discharge.
         for c in truth:
@@ -175,11 +194,41 @@ def evaluate(
             }
             for k in sorted(set(by_site_lead) | set(by_site_fp))
         },
+        # THE adoption-critical number. Reported three ways because one way is
+        # not enough to read it honestly:
+        #
+        #   at_discharge   what a discharge-time review would produce. The
+        #                  figure comparable to arm A/B/C in run_arms.py.
+        #   by_share       the trend. Every clean episode contributes across
+        #                  the whole axis, so a change here is behaviour.
+        #   by_day         raw, WITH its denominator, because the cohort
+        #                  shrinks and changes composition along it. Kept for
+        #                  completeness and explicitly not a trend.
+        "clean_fp_rate_at_discharge": (
+            round(float(np.mean(clean_fp_at_discharge)), 4)
+            if clean_fp_at_discharge
+            else None
+        ),
+        "clean_fp_rate_by_share_of_stay": [
+            {
+                "share_of_stay": round(k / 10, 2),
+                "clean_fp_rate": round(float(np.mean(v)), 4),
+                "n": len(v),
+            }
+            for k, v in sorted(clean_fp_by_share.items())
+            if len(v) >= 30
+        ],
         "clean_fp_rate_by_day": {
-            str(d): round(float(np.mean(v)), 4)
+            str(d): {"rate": round(float(np.mean(v)), 4), "n": len(v)}
             for d, v in sorted(clean_fp_by_day.items())
             if len(v) >= 30  # below that the rate is noise, not a rate
         },
+        "clean_fp_by_day_caveat": (
+            "Not a trend. The cohort at day d is only the episodes that stayed "
+            "at least d days, so its composition changes along the axis. Read "
+            "`clean_fp_rate_by_share_of_stay` for the trend and "
+            "`clean_fp_rate_at_discharge` for the comparable point estimate."
+        ),
         "latency": {
             "seconds_per_run_mean": round(t_total / max(1, runs), 4),
             "hardware": "Apple silicon (MPS), local",
@@ -236,6 +285,13 @@ def main() -> None:
         f"latency per run             : {res['latency']['seconds_per_run_mean']} s, "
         f"zero-LLM share {res['latency']['zero_llm_share']}"
     )
+    print(f"clean-claim FPR at discharge: {res['clean_fp_rate_at_discharge']}")
+    share = res["clean_fp_rate_by_share_of_stay"]
+    if share:
+        print(
+            f"clean-claim FPR by share    : {share[0]['clean_fp_rate']} at admission "
+            f"-> {share[-1]['clean_fp_rate']} at discharge"
+        )
     print("\nfairness by hospital class:")
     for k, v in res["fairness_by_hospital_class"].items():
         print(

@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
-import type { Loaded } from './types'
-import { load } from './data'
-import { AdvisoryBanner, DroppedSpanBanner } from './components/Banners'
+import type { Loaded, SweepPayload } from './types'
+import { load, loadSweep } from './data'
+import {
+  AdvisoryBanner,
+  DroppedSpanBanner,
+  SweepStatus,
+  StaleBanner,
+} from './components/Banners'
 import { QueueView } from './components/QueueView'
 import { Logo } from './components/Logo'
 import { CaseView } from './components/CaseView'
@@ -56,6 +61,7 @@ export default function App() {
   const [staged, setStaged] = useState<Set<string>>(new Set())
   const [keyTick, setKeyTick] = useState(0)
   const [intake, setIntake] = useState<IntakePayload | null>(null)
+  const [sweep, setSweep] = useState<SweepPayload | null>(null)
   const [report, setReport] = useState(false)
 
   useEffect(() => {
@@ -63,6 +69,9 @@ export default function App() {
     // Optional, and deliberately not awaited with the main payload: a missing
     // intake export costs one tab, never the workbench.
     loadIntake().then(setIntake)
+    // Same, and with one extra rule: absent sweep output means the header says
+    // no sweep has run. It must never fall back to a timestamp of its own.
+    loadSweep().then(setSweep)
   }, [])
 
   if (error) {
@@ -132,13 +141,11 @@ export default function App() {
           </div>
         )}
 
-        {mode === 'work' && (
-          <div className="hpill statpill">
-            <span className="led" />
-            {payload.episodes.length} episode · seed{' '}
-            <b className="mono">{payload.generated.seed}</b>
-          </div>
-        )}
+        {/* The header's job here is to say WHEN, not what seed. A queue with
+            no clock on it renders as fresh no matter how old it is, which is
+            the sweep-rule-5 failure that gets a patient discharged with an
+            unrepaired record while the screen looks green. */}
+        {mode === 'work' && <SweepStatus sweep={sweep} payload={payload} />}
 
         <button
           className="hpill ctapill"
@@ -157,7 +164,11 @@ export default function App() {
       </header>
 
       <div className="bento">
-        <HeroCards payload={payload} onEnter={() => setMode('work')} />
+        <HeroCards
+          payload={payload}
+          sweep={sweep}
+          onEnter={() => setMode('work')}
+        />
 
         {/* The hinge. Card in `hero`, whole workbench in `work`. */}
         <section
@@ -186,6 +197,7 @@ export default function App() {
           </div>
 
           <div className="workpane">
+            <StaleBanner sweep={sweep} />
             <AdvisoryBanner payload={payload} />
             <DroppedSpanBanner dropped={droppedFlags} />
             <main>
@@ -200,7 +212,11 @@ export default function App() {
                   onBack={() => setOpenCase(null)}
                 />
               ) : (
-                <QueueView episodes={payload.episodes} onOpen={setOpenCase} />
+                <QueueView
+                  episodes={payload.episodes}
+                  sweep={sweep}
+                  onOpen={setOpenCase}
+                />
               )}
             </main>
             <footer className="prose">{payload.generated.note}</footer>

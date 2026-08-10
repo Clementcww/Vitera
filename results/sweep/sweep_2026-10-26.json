@@ -1,0 +1,114 @@
+{
+ "sweep_date": "2026-10-26",
+ "status": "complete",
+ "episodes_run": 2,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP003501",
+   "sweep_date": "2026-10-26",
+   "day_of_stay": 5,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-10-25",
+   "recoverable_idr": 8580000,
+   "queue_weight": 8580000.0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:cf824905009771c5",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8297,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_5",
+      "start": 62,
+      "end": 98,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "cf824905009771c5"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:9a5974790a986559",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8291,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_4",
+      "start": 62,
+      "end": 98,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "9a5974790a986559"
+     }
+    }
+   ]
+  },
+  {
+   "episode_id": "EP002733",
+   "sweep_date": "2026-10-26",
+   "day_of_stay": 8,
+   "still_admitted": false,
+   "previous_successful_sweep": "2026-10-25",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "new": [],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "K30",
+     "suppression_key": "D4:K30:14a3849d1d31fbc4",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8855,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk K30 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_7",
+      "start": 210,
+      "end": 229,
+      "text": "  - Omeprazol 40 mg",
+      "evidence_hash": "14a3849d1d31fbc4"
+     }
+    },
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "I10",
+     "suppression_key": "D4:I10:a866d0ff133fe260",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0016,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk I10 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_7",
+      "start": 67,
+      "end": 100,
+      "text": "  - Tekanan darah ↑ (140/90 mmHg)",
+      "evidence_hash": "a866d0ff133fe260"
+     }
+    }
+   ]
+  }
+ ]
+}

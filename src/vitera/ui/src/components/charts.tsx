@@ -11,9 +11,14 @@
  * separation and contrast all pass — which is why `--obtain` and `--recode` are
  * a step more saturated than they were.
  *
- * Every chart carries its numbers in a `<title>` (native tooltip, works with no
- * JavaScript and with a screen reader) and the caller keeps a collapsed table,
- * so nothing is gated behind colour or behind a hover.
+ * Every chart carries its numbers where a pointer can reach them, and the
+ * caller keeps a collapsed table, so nothing is gated behind colour or hover.
+ *
+ * Note the two different mechanisms, which is not an inconsistency: inside an
+ * `<svg>` a tooltip is a child `<title>` ELEMENT, and in HTML it is a `title`
+ * ATTRIBUTE. Writing `<title>` inside an HTML `<span>` produces neither — the
+ * parser treats it as the document's title element, so the tooltip silently
+ * does not exist and the browser tab gets renamed to the last bar's label.
  */
 
 const AXIS = 'rgba(20, 20, 19, .16)'
@@ -37,7 +42,7 @@ export function BarRows({ data, max }: { data: Slice[]; max?: number }) {
   return (
     <div className="chart-rows">
       {data.map((d) => (
-        <div className="crow" key={d.key}>
+        <div className="crow" key={d.key} title={`${d.label}: ${d.value}`}>
           <span className="clabel">
             <i className="cdot" style={{ background: d.color }} />
             {d.label}
@@ -46,9 +51,7 @@ export function BarRows({ data, max }: { data: Slice[]; max?: number }) {
             <span
               className="cbar"
               style={{ width: `${(d.value / top) * 100}%`, background: d.color }}
-            >
-              <title>{`${d.label}: ${d.value}`}</title>
-            </span>
+            />
             <b className="cval">{d.value}</b>
           </span>
           {d.note && <span className="cnote">{d.note}</span>}
@@ -73,10 +76,9 @@ export function StackedBar({ data }: { data: Slice[] }) {
           <span
             key={d.key}
             className="sseg"
+            title={`${d.label}: ${d.value} dari ${total}`}
             style={{ width: `${(d.value / total) * 100}%`, background: d.color }}
-          >
-            <title>{`${d.label}: ${d.value} dari ${total}`}</title>
-          </span>
+          />
         ))}
       </div>
       <div className="slegend">
@@ -96,26 +98,39 @@ export interface Point {
   y: number
 }
 
-/* An area over day of stay — the shape the whole product argues for.
+/* An area over a single axis.
  *
  * One series, so no legend: the caption says what is plotted. The area is the
- * hue at a wash rather than a block, the line is 2px, and only the marked day
- * is labelled — a number on every point would be unreadable and unread. */
+ * hue at a wash rather than a block, the line is 2px, and only the marked
+ * point is labelled — a number on every point would be unreadable and unread.
+ *
+ * `yMax` pins the scale. Pass it whenever the reader is meant to judge the
+ * height against something outside the data — a rate against 100%, a false
+ * positive rate against its ceiling. Auto-scaling a rate makes 27% and 3% draw
+ * the same shape, which is exactly the misreading `refLine` exists to prevent. */
 export function AreaTrend({
   points,
   markX,
   color,
   height = 116,
+  yMax,
+  refLine,
+  refLabel,
+  unit = '',
 }: {
   points: Point[]
   markX?: number | null
   color: string
   height?: number
+  yMax?: number
+  refLine?: number
+  refLabel?: string
+  unit?: string
 }) {
   const W = 320
   const H = height
   const PAD_B = 6
-  const maxY = Math.max(1, ...points.map((p) => p.y))
+  const maxY = yMax ?? Math.max(1, ...points.map((p) => p.y))
   const maxX = Math.max(1, ...points.map((p) => p.x))
   const sx = (x: number) => (x / maxX) * (W - 8) + 4
   const sy = (y: number) => H - PAD_B - (y / maxY) * (H - PAD_B - 8)
@@ -134,6 +149,24 @@ export function AreaTrend({
       aria-label="Temuan menurut hari rawat"
     >
       <line x1="4" y1={H - PAD_B} x2={W - 4} y2={H - PAD_B} stroke={AXIS} strokeWidth="1" />
+      {refLine != null && refLine <= maxY && (
+        <g>
+          <line
+            x1="4"
+            y1={sy(refLine)}
+            x2={W - 4}
+            y2={sy(refLine)}
+            stroke={AXIS}
+            strokeWidth="1"
+            strokeDasharray="4 3"
+          />
+          {refLabel && (
+            <text x={W - 6} y={sy(refLine) - 4} className="refl" textAnchor="end">
+              {refLabel}
+            </text>
+          )}
+        </g>
+      )}
       <polygon points={area} fill={color} opacity="0.14" />
       <polyline
         points={line}
@@ -167,10 +200,43 @@ export function AreaTrend({
           height={H - PAD_B}
           fill="transparent"
         >
-          <title>{`Hari ${p.x}: ${p.y} temuan`}</title>
+          <title>{`${p.x}: ${p.y}${unit}`}</title>
         </rect>
       ))}
     </svg>
+  )
+}
+
+/* Vertical bars for a short ordered series — one per day of stay.
+ *
+ * Used where the reader compares adjacent values rather than reading a shape,
+ * which is what a count per day is. Bars carry a 2px surface gap rather than a
+ * stroke, so the separation costs no ink, and the largest bar is labelled
+ * because it is the one the caption refers to. */
+export function DayBars({
+  values,
+  color,
+  height = 74,
+}: {
+  values: number[]
+  color: string
+  height?: number
+}) {
+  const max = Math.max(1, ...values)
+  const peak = values.indexOf(max)
+  return (
+    <div className="daybars" style={{ height }}>
+      {values.map((v, i) => (
+        <span
+          key={i}
+          className={'dbar' + (i === peak ? ' peak' : '')}
+          title={`Hari ${i}: ${v} temuan baru`}
+        >
+          <i style={{ height: `${(v / max) * 100}%`, background: color }} />
+          {i === peak && <b>{v}</b>}
+        </span>
+      ))}
+    </div>
   )
 }
 

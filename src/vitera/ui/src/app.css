@@ -953,3 +953,76 @@ text.axis.mono { font-family: var(--mono); font-size: 9px; }
 .dash-cost span {
   color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums;
 }
+
+/* ---- sweep, diff marks, and the panels added with them ------------------ */
+
+/* Reference line label inside a stretched plot. Small enough that the
+   horizontal scaling from `preserveAspectRatio="none"` is not readable as
+   distortion; the tick labels below still live in HTML for that reason. */
+.refl { font-size: 9px; fill: var(--muted); }
+
+/* Vertical bars, one per day of stay. A 2px surface gap rather than a stroke,
+   and only the peak labelled — a number on every bar is noise at this size. */
+/* `padding-top` reserves room for the peak label, which is positioned above
+   its bar and would otherwise collide with the caption above the chart. */
+.daybars { display: flex; align-items: flex-end; gap: 2px; padding-top: 14px; }
+.dbar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+  align-items: stretch; height: 100%; position: relative; min-width: 4px; }
+.dbar i { display: block; border-radius: 3px 3px 0 0; min-height: 2px; opacity: .55; }
+.dbar.peak i { opacity: 1; }
+.dbar b {
+  position: absolute; top: -2px; left: 50%; transform: translate(-50%, -100%);
+  font-family: var(--mono); font-size: 10.5px; color: var(--ink-2);
+}
+.subchart { display: grid; gap: 7px; border-top: 1px solid var(--line); padding-top: 13px; }
+.sublabel { font-size: 11.5px; color: var(--muted); }
+.sublabel b { color: var(--ink); font-weight: 600; }
+
+/* The caveat that keeps a demo cohort from reading as a measured result. */
+.cnote.caveat { font-style: italic; color: var(--muted); }
+.mainnote { margin: 9px 0 0; font-size: 11px; color: var(--muted); font-style: italic; }
+
+/* The sweep panel. `breach` is deliberately visible rather than tasteful: an
+   alert-fatigue ceiling that is over budget is a defect, and a defect that
+   renders like every other number is a defect nobody reads. */
+.cpanel.sweep .sweepstats {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+.cpanel.sweep .stat { border-top: 0; padding-top: 0; }
+.cpanel.sweep.breach { border-color: var(--query); }
+.breachnote {
+  border-left: 2px solid var(--query); padding-left: 9px;
+  color: var(--ink-2) !important;
+}
+.breachnote b { color: var(--query); }
+
+/* Header freshness pill. `off` and `warn` are the only states that matter: a
+   queue whose last SUCCESSFUL sweep is old, or that never had one. */
+.statpill .led.off { background: var(--query); }
+.statpill.warn { color: var(--query); }
+.statpill.nosweep { color: var(--muted); }
+.statpill .tag {
+  margin-left: 6px; padding: 1px 6px; border-radius: 20px;
+  background: var(--query-bg); color: var(--query); font-size: 10.5px;
+}
+
+/* Queue rows. The subject leads because it is the only token that differs
+   between two rows of the same defect class. */
+.rsubj { color: var(--ink); font-weight: 600; margin-right: 6px; }
+.rsent { color: var(--ink-2); }
+.rmore {
+  margin-left: 7px; padding: 0 5px; border-radius: 20px;
+  background: var(--line); color: var(--muted); font-size: 10.5px;
+}
+.dmark {
+  margin-right: 8px; padding: 1px 6px; border-radius: 20px; font-size: 10.5px;
+  background: var(--query-bg); color: var(--query); white-space: nowrap;
+}
+.dmark.escalated { background: var(--query); color: #fff; }
+.filters .f.diff { font-weight: 600; }
+.filters .f.diff.on { background: var(--query); border-color: var(--query); color: #fff; }
+.filters .f.diff.on .n { color: rgba(255, 255, 255, .8); }
+
+/* The expanded row grew a subject column. */
+.mini { grid-template-columns: 34px auto 1fr auto; }

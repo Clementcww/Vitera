@@ -1,0 +1,1124 @@
+{
+ "sweep_date": "2026-08-10",
+ "status": "complete",
+ "episodes_run": 80,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP001619",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 5,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 4345000,
+   "queue_weight": 2172500.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:cf824905009771c5",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8486,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_5",
+      "start": 59,
+      "end": 95,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "cf824905009771c5"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP002252",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 10,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 4015000,
+   "queue_weight": 2007500.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "N18.3",
+     "suppression_key": "D4:N18.3:042593d4e919cabc",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.0021,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk N18.3 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_10",
+      "start": 54,
+      "end": 87,
+      "text": "  - Kreatinin serum ↑ (1.5 mg/dL)",
+      "evidence_hash": "042593d4e919cabc"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP000899",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 9,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 4015000,
+   "queue_weight": 2007500.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "N18.3",
+     "suppression_key": "D4:N18.3:2948966d4f10ab2a",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8644,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk N18.3 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_9",
+      "start": 127,
+      "end": 160,
+      "text": "  - Kreatinin serum ↑ (1.5 mg/dL)",
+      "evidence_hash": "2948966d4f10ab2a"
+     }
+    },
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "J96.0",
+     "suppression_key": "D5:J96.0:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis J96.0 dikode, hasil pemeriksaan penunjang (Analisa gas darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 125,
+      "end": 204,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "J96.0",
+     "suppression_key": "D3:J96.0:8f12dc52815c4dc5",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8782,
+     "source": "cross_encoder",
+     "rationale": "kode J96.0 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 95,
+      "text": "Diagnosis utama: Gagal jantung (I50.0).",
+      "evidence_hash": "8f12dc52815c4dc5"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP001139",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 9,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 2970000,
+   "queue_weight": 1485000.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:4bb836ec286aa457",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.847,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_9",
+      "start": 63,
+      "end": 99,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "4bb836ec286aa457"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003957",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 12,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D1",
+     "defect_label": "Berkas tidak lengkap",
+     "subject": "resume_medis",
+     "suppression_key": "D1:resume_medis:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "resume_medis tidak dilampirkan pada berkas klaim",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 129,
+      "end": 208,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP000130",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 10,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis A41.9 dikode, hasil pemeriksaan penunjang (Leukosit, Prokalsitonin, Kultur darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 131,
+      "end": 210,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "N18.3",
+     "suppression_key": "D5:N18.3:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis N18.3 dikode, hasil pemeriksaan penunjang (Kreatinin serum, Ureum, eGFR) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 131,
+      "end": 210,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "A41.9",
+     "suppression_key": "D7:A41.9:7d5f6ddc3201282f",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.9015,
+     "source": "cross_encoder",
+     "rationale": "kode A41.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 57,
+      "end": 102,
+      "text": "Diagnosis utama: Infark miokard akut (I21.0).",
+      "evidence_hash": "7d5f6ddc3201282f"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "N18.3",
+     "suppression_key": "D7:N18.3:7d5f6ddc3201282f",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8679,
+     "source": "cross_encoder",
+     "rationale": "kode N18.3 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 57,
+      "end": 102,
+      "text": "Diagnosis utama: Infark miokard akut (I21.0).",
+      "evidence_hash": "7d5f6ddc3201282f"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP002337",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 10,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis A41.9 dikode, hasil pemeriksaan penunjang (Leukosit, Prokalsitonin, Kultur darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 131,
+      "end": 210,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "E11.9",
+     "suppression_key": "D5:E11.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis E11.9 dikode, hasil pemeriksaan penunjang (Gula darah sewaktu, HbA1c) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 131,
+      "end": 210,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "A41.9",
+     "suppression_key": "D7:A41.9:78a20599e4132da3",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.9036,
+     "source": "cross_encoder",
+     "rationale": "kode A41.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 57,
+      "end": 102,
+      "text": "Diagnosis utama: Gagal ginjal kronik (N18.5).",
+      "evidence_hash": "78a20599e4132da3"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "E11.9",
+     "suppression_key": "D7:E11.9:78a20599e4132da3",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8636,
+     "source": "cross_encoder",
+     "rationale": "kode E11.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 57,
+      "end": 102,
+      "text": "Diagnosis utama: Gagal ginjal kronik (N18.5).",
+      "evidence_hash": "78a20599e4132da3"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP000777",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 9,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "E11.9",
+     "suppression_key": "D5:E11.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis E11.9 dikode, hasil pemeriksaan penunjang (Gula darah sewaktu, HbA1c) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 149,
+      "end": 228,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E11.9",
+     "suppression_key": "D3:E11.9:c469caafb432f555",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8547,
+     "source": "cross_encoder",
+     "rationale": "kode E11.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 119,
+      "text": "Diagnosis utama: Sirosis hati dan penyakit hati kronik (K74.6).",
+      "evidence_hash": "c469caafb432f555"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP001643",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 6,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis A41.9 dikode, hasil pemeriksaan penunjang (Leukosit, Prokalsitonin, Kultur darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 125,
+      "end": 204,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "J96.0",
+     "suppression_key": "D5:J96.0:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis J96.0 dikode, hasil pemeriksaan penunjang (Analisa gas darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 125,
+      "end": 204,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "A41.9",
+     "suppression_key": "D7:A41.9:a5a8baec192f9f98",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.9017,
+     "source": "cross_encoder",
+     "rationale": "kode A41.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 95,
+      "text": "Diagnosis utama: Stroke infark (I63.9).",
+      "evidence_hash": "a5a8baec192f9f98"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "J96.0",
+     "suppression_key": "D7:J96.0:a5a8baec192f9f98",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8924,
+     "source": "cross_encoder",
+     "rationale": "kode J96.0 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 95,
+      "text": "Diagnosis utama: Stroke infark (I63.9).",
+      "evidence_hash": "a5a8baec192f9f98"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP002433",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 6,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis A41.9 dikode, hasil pemeriksaan penunjang (Leukosit, Prokalsitonin, Kultur darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 125,
+      "end": 204,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "N18.3",
+     "suppression_key": "D5:N18.3:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis N18.3 dikode, hasil pemeriksaan penunjang (Kreatinin serum, Ureum, eGFR) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 125,
+      "end": 204,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "A41.9",
+     "suppression_key": "D7:A41.9:8f12dc52815c4dc5",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.9024,
+     "source": "cross_encoder",
+     "rationale": "kode A41.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 95,
+      "text": "Diagnosis utama: Gagal jantung (I50.0).",
+      "evidence_hash": "8f12dc52815c4dc5"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "N18.3",
+     "suppression_key": "D7:N18.3:8f12dc52815c4dc5",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8779,
+     "source": "cross_encoder",
+     "rationale": "kode N18.3 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 95,
+      "text": "Diagnosis utama: Gagal jantung (I50.0).",
+      "evidence_hash": "8f12dc52815c4dc5"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003466",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 6,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis A41.9 dikode, hasil pemeriksaan penunjang (Leukosit, Prokalsitonin, Kultur darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 134,
+      "end": 213,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "A41.9",
+     "suppression_key": "D3:A41.9:d3a44bc1a39852dc",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.9033,
+     "source": "cross_encoder",
+     "rationale": "kode A41.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 104,
+      "text": "Diagnosis utama: Prosedur fraktur femur (S72.0).",
+      "evidence_hash": "d3a44bc1a39852dc"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP001713",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 5,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D1",
+     "defect_label": "Berkas tidak lengkap",
+     "subject": "resume_medis",
+     "suppression_key": "D1:resume_medis:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "resume_medis tidak dilampirkan pada berkas klaim",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 133,
+      "end": 212,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003562",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 5,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "E44.0",
+     "suppression_key": "D5:E44.0:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis E44.0 dikode, hasil pemeriksaan penunjang (Albumin) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 142,
+      "end": 221,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E44.0",
+     "suppression_key": "D3:E44.0:b7601c45bf0d12e7",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.5874,
+     "source": "cross_encoder",
+     "rationale": "kode E44.0 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 112,
+      "text": "Diagnosis utama: Persalinan dengan seksio sesarea (O82).",
+      "evidence_hash": "b7601c45bf0d12e7"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP000380",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 4,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis A41.9 dikode, hasil pemeriksaan penunjang (Leukosit, Prokalsitonin, Kultur darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 135,
+      "end": 214,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "A41.9",
+     "suppression_key": "D3:A41.9:a4a4e20301971283",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.9021,
+     "source": "cross_encoder",
+     "rationale": "kode A41.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 105,
+      "text": "Diagnosis utama: Pneumonia dan influenza (J18.9).",
+      "evidence_hash": "a4a4e20301971283"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP001655",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 3,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "J96.0",
+     "suppression_key": "D5:J96.0:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis J96.0 dikode, hasil pemeriksaan penunjang (Analisa gas darah) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 142,
+      "end": 221,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "J96.0",
+     "suppression_key": "D3:J96.0:b7601c45bf0d12e7",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8931,
+     "source": "cross_encoder",
+     "rationale": "kode J96.0 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 112,
+      "text": "Diagnosis utama: Persalinan dengan seksio sesarea (O82).",
+      "evidence_hash": "b7601c45bf0d12e7"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP001977",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 3,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "E87.6",
+     "suppression_key": "D5:E87.6:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis E87.6 dikode, hasil pemeriksaan penunjang (Kalium serum) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 139,
+      "end": 218,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D8",
+     "defect_label": "Administrative mismatch (SEP, identity, dates)",
+     "subject": "tanggal_masuk",
+     "suppression_key": "D8:tanggal_masuk:5f143cc770561a5e",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "tanggal masuk pada klaim (2026-02-03) tidak sesuai SEP",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 60,
+      "end": 85,
+      "text": "Tanggal masuk: 2026-02-05",
+      "evidence_hash": "5f143cc770561a5e"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E87.6",
+     "suppression_key": "D3:E87.6:b405cbb000eddace",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.6299,
+     "source": "cross_encoder",
+     "rationale": "kode E87.6 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 109,
+      "text": "Diagnosis utama: Infeksi non-bakteri lain-lain (A91).",
+      "evidence_hash": "b405cbb000eddace"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003322",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 3,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D1",
+     "defect_label": "Berkas tidak lengkap",
+     "subject": "resume_medis",
+     "suppression_key": "D1:resume_medis:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "resume_medis tidak dilampirkan pada berkas klaim",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 129,
+      "end": 208,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP000896",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 14,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D2",
+     "defect_label": "Wrong code specificity (sibling code)",
+     "subject": "E14.9",
+     "suppression_key": "D2:E14.9:7aedbdf0a0ee8dda",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8863,
+     "source": "cross_encoder",
+     "rationale": "kode E14.9 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 57,
+      "end": 99,
+      "text": "Diagnosis utama: Stroke hemoragik (I61.9).",
+      "evidence_hash": "7aedbdf0a0ee8dda"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP002996",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 13,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "K30",
+     "suppression_key": "D3:K30:7aedbdf0a0ee8dda",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8967,
+     "source": "cross_encoder",
+     "rationale": "kode K30 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 57,
+      "end": 99,
+      "text": "Diagnosis utama: Stroke hemoragik (I61.9).",
+      "evidence_hash": "7aedbdf0a0ee8dda"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP001606",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 8,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D2",
+     "defect_label": "Wrong code specificity (sibling code)",
+     "subject": "N18.4",
+     "suppression_key": "D2:N18.4:7d5f6ddc3201282f",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.0018,
+     "source": "cross_encoder",
+     "rationale": "kode N18.4 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 101,
+      "text": "Diagnosis utama: Infark miokard akut (I21.0).",
+      "evidence_hash": "7d5f6ddc3201282f"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  },
+  {
+   "episode_id": "EP000692",
+   "sweep_date": "2026-08-10",
+   "day_of_stay": 4,
+   "still_admitted": false,
+   "previous_successful_sweep": null,
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "K30",
+     "suppression_key": "D3:K30:b2ec56869f335d96",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8938,
+     "source": "cross_encoder",
+     "rationale": "kode K30 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "resume_medis",
+      "start": 56,
+      "end": 109,
+      "text": "Diagnosis utama: Demam tifoid dan paratifoid (A01.0).",
+      "evidence_hash": "b2ec56869f335d96"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [],
+   "documented": []
+  }
+ ]
+}

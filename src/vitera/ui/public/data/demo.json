@@ -4,7 +4,158 @@
   "lead_time_median_days": 5.0,
   "lead_time_share_ge_2_days": 0.8608,
   "n_episodes": 1332,
-  "source": "results/detection_curve.json — full held-out split"
+  "pipeline_runs": 10626,
+  "detection_by_share_of_stay": [
+   {
+    "share_of_stay": 0.0,
+    "detection_rate": 0.6392
+   },
+   {
+    "share_of_stay": 0.1,
+    "detection_rate": 0.6477
+   },
+   {
+    "share_of_stay": 0.2,
+    "detection_rate": 0.7046
+   },
+   {
+    "share_of_stay": 0.3,
+    "detection_rate": 0.7468
+   },
+   {
+    "share_of_stay": 0.4,
+    "detection_rate": 0.7932
+   },
+   {
+    "share_of_stay": 0.5,
+    "detection_rate": 0.8291
+   },
+   {
+    "share_of_stay": 0.6,
+    "detection_rate": 0.8418
+   },
+   {
+    "share_of_stay": 0.7,
+    "detection_rate": 0.8565
+   },
+   {
+    "share_of_stay": 0.8,
+    "detection_rate": 0.8671
+   },
+   {
+    "share_of_stay": 0.9,
+    "detection_rate": 0.8734
+   },
+   {
+    "share_of_stay": 1.0,
+    "detection_rate": 1.0
+   }
+  ],
+  "lead_time_by_class": {
+   "D1": 0.0,
+   "D2": 5.0,
+   "D3": 6.0,
+   "D4": 5.0,
+   "D5": 7.0,
+   "D6": 0.0,
+   "D7": 6.0,
+   "D8": 6.5
+  },
+  "clean_fp": {
+   "by_share_of_stay": [
+    {
+     "share_of_stay": 0.0,
+     "clean_fp_rate": 0.3663,
+     "n": 890
+    },
+    {
+     "share_of_stay": 0.1,
+     "clean_fp_rate": 0.3557,
+     "n": 461
+    },
+    {
+     "share_of_stay": 0.2,
+     "clean_fp_rate": 0.3607,
+     "n": 768
+    },
+    {
+     "share_of_stay": 0.3,
+     "clean_fp_rate": 0.3459,
+     "n": 532
+    },
+    {
+     "share_of_stay": 0.4,
+     "clean_fp_rate": 0.35,
+     "n": 600
+    },
+    {
+     "share_of_stay": 0.5,
+     "clean_fp_rate": 0.3688,
+     "n": 564
+    },
+    {
+     "share_of_stay": 0.6,
+     "clean_fp_rate": 0.3417,
+     "n": 600
+    },
+    {
+     "share_of_stay": 0.7,
+     "clean_fp_rate": 0.3327,
+     "n": 532
+    },
+    {
+     "share_of_stay": 0.8,
+     "clean_fp_rate": 0.3411,
+     "n": 768
+    },
+    {
+     "share_of_stay": 0.9,
+     "clean_fp_rate": 0.3362,
+     "n": 461
+    },
+    {
+     "share_of_stay": 1.0,
+     "clean_fp_rate": 0.0371,
+     "n": 890
+    }
+   ],
+   "at_discharge": 0.0371,
+   "at_discharge_by_hospital_class": {
+    "A": 0.04,
+    "B": 0.031,
+    "C": 0.0543,
+    "D": 0.0229
+   },
+   "worst_rate": 0.3688,
+   "best_rate": 0.0371,
+   "basis": "share of clean claims carrying at least one flag, binned by share of stay elapsed, on the held-out split at the `default` threshold set"
+  },
+  "latency": {
+   "seconds_per_run_mean": 0.018,
+   "hardware": "Apple silicon (MPS), local",
+   "llm_calls": 0,
+   "zero_llm_share": 1.0,
+   "note": "rules + cross-encoder only, by construction — the LLM layer writes prose and does not detect. Not a discovery; a design property, measured to substantiate the scalability argument."
+  },
+  "source": "results/detection_curve.json — full held-out split",
+  "operating_point": {
+   "active": "default",
+   "profiles": {
+    "default": {
+     "flag_at": 0.0015,
+     "code_false_positive_rate": 0.0983,
+     "recall": 0.9978,
+     "precision": 0.887
+    },
+    "high_precision": {
+     "flag_at": 0.0152,
+     "code_false_positive_rate": 0.02,
+     "recall": 0.9849,
+     "precision": 0.9744
+    }
+   },
+   "source": "results/cross_encoder.json — per coded diagnosis"
+  }
  },
  "generated": {
   "seed": 20260731,
@@ -15,6 +166,7 @@
   "model": "models/cross_encoder",
   "model_unavailable": null,
   "advisory": false,
+  "cohort_caveat": "kohort demo, dipilih berimbang agar semua kelas defect muncul — bukan sampel acak, bukan hasil terukur",
   "note": "Every figure is pipeline output. Rupiah come from the grouper (architectural rule 7); spans are verbatim and re-verified in the client (rule 6)."
  },
  "episodes": [
@@ -129,17 +281,17 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.2242,
+    "elapsed_seconds": 0.145,
     "tool_calls": [
      {
       "tool": "rules",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.004
+      "elapsed_seconds": 0.0041
      },
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.2202
+      "elapsed_seconds": 0.1408
      }
     ]
    }
@@ -186,6 +338,8 @@
     {
      "defect_class": "D3",
      "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "K30",
+     "suppression_key": "D3:K30:7d5f6ddc3201282f",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -285,7 +439,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0611,
+    "elapsed_seconds": 0.0691,
     "tool_calls": [
      {
       "tool": "rules",
@@ -295,7 +449,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0611
+      "elapsed_seconds": 0.0691
      }
     ]
    }
@@ -342,6 +496,8 @@
     {
      "defect_class": "D8",
      "defect_label": "Administrative mismatch (SEP, identity, dates)",
+     "subject": "tanggal_masuk",
+     "suppression_key": "D8:tanggal_masuk:371e81d657ecb794",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -411,7 +567,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0,
+    "elapsed_seconds": 0.0001,
     "tool_calls": [
      {
       "tool": "rules",
@@ -525,7 +681,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0221,
+    "elapsed_seconds": 0.0228,
     "tool_calls": [
      {
       "tool": "rules",
@@ -535,7 +691,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0221
+      "elapsed_seconds": 0.0228
      }
     ]
    }
@@ -582,6 +738,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "J96.0",
+     "suppression_key": "D4:J96.0:77ac23a4c786f897",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -657,7 +815,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0218,
+    "elapsed_seconds": 0.0226,
     "tool_calls": [
      {
       "tool": "rules",
@@ -667,7 +825,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0218
+      "elapsed_seconds": 0.0225
      }
     ]
    }
@@ -846,6 +1004,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:0add35f2d4416170",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -927,7 +1087,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0219,
+    "elapsed_seconds": 0.0227,
     "tool_calls": [
      {
       "tool": "rules",
@@ -937,7 +1097,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0218
+      "elapsed_seconds": 0.0227
      }
     ]
    }
@@ -984,6 +1144,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "N18.3",
+     "suppression_key": "D4:N18.3:1783513413b4e0ad",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -1001,6 +1163,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:2a5dd265024de824",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -1070,7 +1234,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.04,
+    "elapsed_seconds": 0.0411,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1080,7 +1244,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "2 flags",
-      "elapsed_seconds": 0.04
+      "elapsed_seconds": 0.0411
      }
     ]
    }
@@ -1196,7 +1360,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0401,
+    "elapsed_seconds": 0.0411,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1206,7 +1370,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0401
+      "elapsed_seconds": 0.0411
      }
     ]
    }
@@ -1253,6 +1417,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:0add35f2d4416170",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -1340,7 +1506,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0234,
+    "elapsed_seconds": 0.0228,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1350,7 +1516,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0234
+      "elapsed_seconds": 0.0227
      }
     ]
    }
@@ -1397,6 +1563,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:4ba2d509c815bf03",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -1454,7 +1622,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0218,
+    "elapsed_seconds": 0.0226,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1464,7 +1632,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0218
+      "elapsed_seconds": 0.0226
      }
     ]
    }
@@ -1511,6 +1679,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E44.0",
+     "suppression_key": "D4:E44.0:7ed24dd5fe021c2c",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -1592,7 +1762,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0219,
+    "elapsed_seconds": 0.0228,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1602,7 +1772,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0219
+      "elapsed_seconds": 0.0227
      }
     ]
    }
@@ -1649,6 +1819,8 @@
     {
      "defect_class": "D8",
      "defect_label": "Administrative mismatch (SEP, identity, dates)",
+     "subject": "tanggal_masuk",
+     "suppression_key": "D8:tanggal_masuk:92e993238a3d37c1",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -1718,7 +1890,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0232,
+    "elapsed_seconds": 0.0227,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1728,7 +1900,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0232
+      "elapsed_seconds": 0.0226
      }
     ]
    }
@@ -1775,6 +1947,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "E44.0",
+     "suppression_key": "D5:E44.0:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -1792,6 +1966,8 @@
     {
      "defect_class": "D3",
      "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E44.0",
+     "suppression_key": "D3:E44.0:c469caafb432f555",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -1879,7 +2055,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0218,
+    "elapsed_seconds": 0.0226,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1889,7 +2065,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0218
+      "elapsed_seconds": 0.0226
      }
     ]
    }
@@ -1936,6 +2112,8 @@
     {
      "defect_class": "D2",
      "defect_label": "Wrong code specificity (sibling code)",
+     "subject": "I11.9",
+     "suppression_key": "D2:I11.9:02a97080c8c4bceb",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -1987,7 +2165,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0218,
+    "elapsed_seconds": 0.0227,
     "tool_calls": [
      {
       "tool": "rules",
@@ -1997,7 +2175,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0218
+      "elapsed_seconds": 0.0227
      }
     ]
    }
@@ -2044,6 +2222,8 @@
     {
      "defect_class": "D1",
      "defect_label": "Berkas tidak lengkap",
+     "subject": "resume_medis",
+     "suppression_key": "D1:resume_medis:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -2061,6 +2241,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "N18.3",
+     "suppression_key": "D5:N18.3:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -2078,6 +2260,8 @@
     {
      "defect_class": "D3",
      "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "N18.3",
+     "suppression_key": "D3:N18.3:66a891e0367da5bb",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -2240,6 +2424,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "E11.9",
+     "suppression_key": "D5:E11.9:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -2257,6 +2443,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "N18.3",
+     "suppression_key": "D5:N18.3:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -2274,6 +2462,8 @@
     {
      "defect_class": "D7",
      "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "N18.3",
+     "suppression_key": "D7:N18.3:b7f36c2631e099bc",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -2291,6 +2481,8 @@
     {
      "defect_class": "D7",
      "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "E11.9",
+     "suppression_key": "D7:E11.9:b7f36c2631e099bc",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -2384,7 +2576,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0401,
+    "elapsed_seconds": 0.0412,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2394,7 +2586,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "2 flags",
-      "elapsed_seconds": 0.04
+      "elapsed_seconds": 0.0411
      }
     ]
    }
@@ -2522,7 +2714,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0219,
+    "elapsed_seconds": 0.0228,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2532,7 +2724,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0219
+      "elapsed_seconds": 0.0228
      }
     ]
    }
@@ -2579,6 +2771,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -2596,6 +2790,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "E11.9",
+     "suppression_key": "D5:E11.9:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -2613,6 +2809,8 @@
     {
      "defect_class": "D7",
      "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "A41.9",
+     "suppression_key": "D7:A41.9:09263839e32d1afb",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -2630,6 +2828,8 @@
     {
      "defect_class": "D3",
      "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "K30",
+     "suppression_key": "D3:K30:09263839e32d1afb",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -2647,6 +2847,8 @@
     {
      "defect_class": "D7",
      "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "E11.9",
+     "suppression_key": "D7:E11.9:09263839e32d1afb",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -2728,7 +2930,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0757,
+    "elapsed_seconds": 0.083,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2738,7 +2940,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "3 flags",
-      "elapsed_seconds": 0.0756
+      "elapsed_seconds": 0.0829
      }
     ]
    }
@@ -2785,6 +2987,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E44.0",
+     "suppression_key": "D4:E44.0:7e2ebae061f1a158",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -2848,7 +3052,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0218,
+    "elapsed_seconds": 0.0225,
     "tool_calls": [
      {
       "tool": "rules",
@@ -2858,7 +3062,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0218
+      "elapsed_seconds": 0.0225
      }
     ]
    }
@@ -2905,6 +3109,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:cbbdacc6bf6a3ea4",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -2922,6 +3128,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -2939,6 +3147,8 @@
     {
      "defect_class": "D3",
      "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "A41.9",
+     "suppression_key": "D3:A41.9:e1ccc9fd8a308586",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -3014,7 +3224,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.067,
+    "elapsed_seconds": 0.0628,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3024,7 +3234,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "2 flags",
-      "elapsed_seconds": 0.067
+      "elapsed_seconds": 0.0627
      }
     ]
    }
@@ -3098,7 +3308,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0,
+    "elapsed_seconds": 0.0001,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3155,6 +3365,8 @@
     {
      "defect_class": "D6",
      "defect_label": "Procedure-diagnosis incoherence",
+     "subject": "69.02",
+     "suppression_key": "D6:69.02:2a7fa366828821b2",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -3224,7 +3436,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.022,
+    "elapsed_seconds": 0.0228,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3234,7 +3446,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0219
+      "elapsed_seconds": 0.0227
      }
     ]
    }
@@ -3356,7 +3568,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0218,
+    "elapsed_seconds": 0.0228,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3366,7 +3578,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "0 flags",
-      "elapsed_seconds": 0.0218
+      "elapsed_seconds": 0.0228
      }
     ]
    }
@@ -3413,6 +3625,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "N18.3",
+     "suppression_key": "D4:N18.3:e46ce67dc8fc6ed0",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -3430,6 +3644,8 @@
     {
      "defect_class": "D8",
      "defect_label": "Administrative mismatch (SEP, identity, dates)",
+     "subject": "sep_number",
+     "suppression_key": "D8:sep_number:19cb659d0a166095",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -3447,6 +3663,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "J96.0",
+     "suppression_key": "D5:J96.0:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -3464,6 +3682,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -3481,6 +3701,8 @@
     {
      "defect_class": "D7",
      "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "A41.9",
+     "suppression_key": "D7:A41.9:7d5f6ddc3201282f",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -3498,6 +3720,8 @@
     {
      "defect_class": "D7",
      "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "J96.0",
+     "suppression_key": "D7:J96.0:7d5f6ddc3201282f",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -3567,7 +3791,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0913,
+    "elapsed_seconds": 0.1005,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3577,7 +3801,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "3 flags",
-      "elapsed_seconds": 0.0913
+      "elapsed_seconds": 0.1004
      }
     ]
    }
@@ -3624,6 +3848,8 @@
     {
      "defect_class": "D2",
      "defect_label": "Wrong code specificity (sibling code)",
+     "subject": "E87.0",
+     "suppression_key": "D2:E87.0:763762e0c3943271",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -3681,7 +3907,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0219,
+    "elapsed_seconds": 0.0227,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3691,7 +3917,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0219
+      "elapsed_seconds": 0.0227
      }
     ]
    }
@@ -3738,6 +3964,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:3e6325848c673b30",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -3755,6 +3983,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "E44.0",
+     "suppression_key": "D5:E44.0:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -3772,6 +4002,8 @@
     {
      "defect_class": "D3",
      "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E44.0",
+     "suppression_key": "D3:E44.0:f1609c7c1cc357ad",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -3823,7 +4055,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0397,
+    "elapsed_seconds": 0.0414,
     "tool_calls": [
      {
       "tool": "rules",
@@ -3833,7 +4065,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "2 flags",
-      "elapsed_seconds": 0.0396
+      "elapsed_seconds": 0.0414
      }
     ]
    }
@@ -4222,6 +4454,8 @@
     {
      "defect_class": "D2",
      "defect_label": "Wrong code specificity (sibling code)",
+     "subject": "E14.9",
+     "suppression_key": "D2:E14.9:e1ccc9fd8a308586",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -4327,7 +4561,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0218,
+    "elapsed_seconds": 0.023,
     "tool_calls": [
      {
       "tool": "rules",
@@ -4337,7 +4571,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "1 flags",
-      "elapsed_seconds": 0.0218
+      "elapsed_seconds": 0.023
      }
     ]
    }
@@ -4516,6 +4750,8 @@
     {
      "defect_class": "D1",
      "defect_label": "Berkas tidak lengkap",
+     "subject": "resume_medis",
+     "suppression_key": "D1:resume_medis:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -4666,6 +4902,8 @@
     {
      "defect_class": "D6",
      "defect_label": "Procedure-diagnosis incoherence",
+     "subject": "45.73",
+     "suppression_key": "D6:45.73:5b116370e88520dc",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -4792,6 +5030,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E87.6",
+     "suppression_key": "D4:E87.6:7cd6b225dc3bf920",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -4809,6 +5049,8 @@
     {
      "defect_class": "D4",
      "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E44.0",
+     "suppression_key": "D4:E44.0:4473be1e44274f39",
      "remedy": "QUERY",
      "actor": "DPJP",
      "decay_rank": 0,
@@ -4826,6 +5068,8 @@
     {
      "defect_class": "D5",
      "defect_label": "Missing required supporting examination",
+     "subject": "A41.9",
+     "suppression_key": "D5:A41.9:b2c56ee3e9511f0b",
      "remedy": "OBTAIN",
      "actor": "Petugas berkas",
      "decay_rank": 1,
@@ -4843,6 +5087,8 @@
     {
      "defect_class": "D3",
      "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "A41.9",
+     "suppression_key": "D3:A41.9:119e6297c075152f",
      "remedy": "RECODE",
      "actor": "Koder",
      "decay_rank": 2,
@@ -4900,7 +5146,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0791,
+    "elapsed_seconds": 0.0825,
     "tool_calls": [
      {
       "tool": "rules",
@@ -4910,7 +5156,7 @@
      {
       "tool": "cross_encoder",
       "result_digest": "3 flags",
-      "elapsed_seconds": 0.0791
+      "elapsed_seconds": 0.0824
      }
     ]
    }
@@ -5008,7 +5254,7 @@
    "trace": {
     "llm_calls": 0,
     "budget_breach": null,
-    "elapsed_seconds": 0.0,
+    "elapsed_seconds": 0.0001,
     "tool_calls": [
      {
       "tool": "rules",
@@ -5032,6 +5278,7 @@
     "episode_id": "EP000227",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5048,6 +5295,7 @@
     "episode_id": "EP000227",
     "d": 1,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5064,6 +5312,7 @@
     "episode_id": "EP000227",
     "d": 2,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5080,6 +5329,7 @@
     "episode_id": "EP000227",
     "d": 3,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -5095,6 +5345,7 @@
     "episode_id": "EP000227",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -5110,6 +5361,7 @@
     "episode_id": "EP000227",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -5125,6 +5377,7 @@
     "episode_id": "EP000227",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -5140,6 +5393,7 @@
     "episode_id": "EP000227",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -5155,6 +5409,7 @@
     "episode_id": "EP000227",
     "d": 8,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5166,6 +5421,7 @@
     "episode_id": "EP000323",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -5183,6 +5439,7 @@
     "episode_id": "EP000323",
     "d": 1,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -5200,6 +5457,7 @@
     "episode_id": "EP000323",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5215,6 +5473,7 @@
     "episode_id": "EP000323",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5230,6 +5489,7 @@
     "episode_id": "EP000323",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5245,6 +5505,7 @@
     "episode_id": "EP000323",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5260,6 +5521,7 @@
     "episode_id": "EP000323",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5275,6 +5537,7 @@
     "episode_id": "EP000323",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5290,6 +5553,7 @@
     "episode_id": "EP000323",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5305,6 +5569,7 @@
     "episode_id": "EP000323",
     "d": 9,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5320,6 +5585,7 @@
     "episode_id": "EP000323",
     "d": 10,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -5335,6 +5601,7 @@
     "episode_id": "EP000417",
     "d": 0,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5348,6 +5615,7 @@
     "episode_id": "EP000417",
     "d": 1,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5361,6 +5629,7 @@
     "episode_id": "EP000417",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5374,6 +5643,7 @@
     "episode_id": "EP000417",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5387,6 +5657,7 @@
     "episode_id": "EP000417",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5400,6 +5671,7 @@
     "episode_id": "EP000417",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5413,6 +5685,7 @@
     "episode_id": "EP000417",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5426,6 +5699,7 @@
     "episode_id": "EP000417",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5439,6 +5713,7 @@
     "episode_id": "EP000418",
     "d": 0,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -5454,6 +5729,7 @@
     "episode_id": "EP000418",
     "d": 1,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -5469,6 +5745,7 @@
     "episode_id": "EP000418",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -5484,6 +5761,7 @@
     "episode_id": "EP000418",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -5499,6 +5777,7 @@
     "episode_id": "EP000418",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -5514,6 +5793,7 @@
     "episode_id": "EP000418",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -5529,6 +5809,7 @@
     "episode_id": "EP000418",
     "d": 6,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5540,6 +5821,7 @@
     "episode_id": "EP000466",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5556,6 +5838,7 @@
     "episode_id": "EP000466",
     "d": 1,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5572,6 +5855,7 @@
     "episode_id": "EP000466",
     "d": 2,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5588,6 +5872,7 @@
     "episode_id": "EP000466",
     "d": 3,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5604,6 +5889,7 @@
     "episode_id": "EP000466",
     "d": 4,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5619,6 +5905,7 @@
     "episode_id": "EP000466",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5634,6 +5921,7 @@
     "episode_id": "EP000466",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5649,6 +5937,7 @@
     "episode_id": "EP000466",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5664,6 +5953,7 @@
     "episode_id": "EP000466",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5679,6 +5969,7 @@
     "episode_id": "EP000466",
     "d": 9,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5694,6 +5985,7 @@
     "episode_id": "EP000526",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5705,6 +5997,7 @@
     "episode_id": "EP000526",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5716,6 +6009,7 @@
     "episode_id": "EP000526",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5727,6 +6021,7 @@
     "episode_id": "EP000526",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5738,6 +6033,7 @@
     "episode_id": "EP000526",
     "d": 4,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5749,6 +6045,7 @@
     "episode_id": "EP000526",
     "d": 5,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5760,6 +6057,7 @@
     "episode_id": "EP000526",
     "d": 6,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5771,6 +6069,7 @@
     "episode_id": "EP000526",
     "d": 7,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5782,6 +6081,7 @@
     "episode_id": "EP000526",
     "d": 8,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5793,6 +6093,7 @@
     "episode_id": "EP000526",
     "d": 9,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -5804,6 +6105,7 @@
     "episode_id": "EP000539",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -5820,6 +6122,7 @@
     "episode_id": "EP000539",
     "d": 1,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5835,6 +6138,7 @@
     "episode_id": "EP000539",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5850,6 +6154,7 @@
     "episode_id": "EP000539",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5865,6 +6170,7 @@
     "episode_id": "EP000539",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5880,6 +6186,7 @@
     "episode_id": "EP000539",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5895,6 +6202,7 @@
     "episode_id": "EP000539",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5910,6 +6218,7 @@
     "episode_id": "EP000539",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5925,6 +6234,7 @@
     "episode_id": "EP000539",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5940,6 +6250,7 @@
     "episode_id": "EP000539",
     "d": 9,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5955,6 +6266,7 @@
     "episode_id": "EP000539",
     "d": 10,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5970,6 +6282,7 @@
     "episode_id": "EP000539",
     "d": 11,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6820000,
     "remedy": "query",
@@ -5985,6 +6298,7 @@
     "episode_id": "EP000717",
     "d": 0,
     "flags": 3,
+    "new": 3,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6003,6 +6317,7 @@
     "episode_id": "EP000717",
     "d": 1,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6021,6 +6336,7 @@
     "episode_id": "EP000717",
     "d": 2,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6039,6 +6355,7 @@
     "episode_id": "EP000717",
     "d": 3,
     "flags": 2,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 18400000,
     "remedy": "query",
@@ -6055,6 +6372,7 @@
     "episode_id": "EP000717",
     "d": 4,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 18400000,
     "remedy": "query",
@@ -6071,6 +6389,7 @@
     "episode_id": "EP000717",
     "d": 5,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 18400000,
     "remedy": "query",
@@ -6087,6 +6406,7 @@
     "episode_id": "EP000717",
     "d": 6,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 18400000,
     "remedy": "query",
@@ -6103,6 +6423,7 @@
     "episode_id": "EP000717",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 12075000,
     "remedy": "query",
@@ -6118,6 +6439,7 @@
     "episode_id": "EP000874",
     "d": 0,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -6133,6 +6455,7 @@
     "episode_id": "EP000874",
     "d": 1,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -6148,6 +6471,7 @@
     "episode_id": "EP000874",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -6163,6 +6487,7 @@
     "episode_id": "EP000874",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -6178,6 +6503,7 @@
     "episode_id": "EP000874",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -6193,6 +6519,7 @@
     "episode_id": "EP000874",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -6208,6 +6535,7 @@
     "episode_id": "EP000874",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -6223,6 +6551,7 @@
     "episode_id": "EP000874",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -6238,6 +6567,7 @@
     "episode_id": "EP000874",
     "d": 8,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -6249,6 +6579,7 @@
     "episode_id": "EP000875",
     "d": 0,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6264,6 +6595,7 @@
     "episode_id": "EP000875",
     "d": 1,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6279,6 +6611,7 @@
     "episode_id": "EP000875",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6294,6 +6627,7 @@
     "episode_id": "EP000875",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6309,6 +6643,7 @@
     "episode_id": "EP000875",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6324,6 +6659,7 @@
     "episode_id": "EP000875",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6339,6 +6675,7 @@
     "episode_id": "EP000875",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6354,6 +6691,7 @@
     "episode_id": "EP000875",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6369,6 +6707,7 @@
     "episode_id": "EP000875",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 6325000,
     "remedy": "query",
@@ -6384,6 +6723,7 @@
     "episode_id": "EP001102",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6400,6 +6740,7 @@
     "episode_id": "EP001102",
     "d": 1,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 3905000,
     "remedy": "query",
@@ -6415,6 +6756,7 @@
     "episode_id": "EP001102",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3905000,
     "remedy": "query",
@@ -6430,6 +6772,7 @@
     "episode_id": "EP001102",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3905000,
     "remedy": "query",
@@ -6445,6 +6788,7 @@
     "episode_id": "EP001126",
     "d": 0,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6460,6 +6804,7 @@
     "episode_id": "EP001126",
     "d": 1,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6475,6 +6820,7 @@
     "episode_id": "EP001126",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6490,6 +6836,7 @@
     "episode_id": "EP001126",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6505,6 +6852,7 @@
     "episode_id": "EP001126",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6520,6 +6868,7 @@
     "episode_id": "EP001126",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6535,6 +6884,7 @@
     "episode_id": "EP001126",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6550,6 +6900,7 @@
     "episode_id": "EP001126",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6565,6 +6916,7 @@
     "episode_id": "EP001126",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6580,6 +6932,7 @@
     "episode_id": "EP001126",
     "d": 9,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6595,6 +6948,7 @@
     "episode_id": "EP001148",
     "d": 0,
     "flags": 3,
+    "new": 3,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6612,6 +6966,7 @@
     "episode_id": "EP001148",
     "d": 1,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6629,6 +6984,7 @@
     "episode_id": "EP001148",
     "d": 2,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6646,6 +7002,7 @@
     "episode_id": "EP001148",
     "d": 3,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6663,6 +7020,7 @@
     "episode_id": "EP001148",
     "d": 4,
     "flags": 2,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -6679,6 +7037,7 @@
     "episode_id": "EP001148",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6692,6 +7051,7 @@
     "episode_id": "EP001403",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6708,6 +7068,7 @@
     "episode_id": "EP001403",
     "d": 1,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6724,6 +7085,7 @@
     "episode_id": "EP001403",
     "d": 2,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6740,6 +7102,7 @@
     "episode_id": "EP001403",
     "d": 3,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6756,6 +7119,7 @@
     "episode_id": "EP001403",
     "d": 4,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6772,6 +7136,7 @@
     "episode_id": "EP001403",
     "d": 5,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6788,6 +7153,7 @@
     "episode_id": "EP001403",
     "d": 6,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6804,6 +7170,7 @@
     "episode_id": "EP001403",
     "d": 7,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6820,6 +7187,7 @@
     "episode_id": "EP001403",
     "d": 8,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6836,6 +7204,7 @@
     "episode_id": "EP001654",
     "d": 0,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -6851,6 +7220,7 @@
     "episode_id": "EP001654",
     "d": 1,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -6866,6 +7236,7 @@
     "episode_id": "EP001654",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -6881,6 +7252,7 @@
     "episode_id": "EP001654",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -6896,6 +7268,7 @@
     "episode_id": "EP001654",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -6911,6 +7284,7 @@
     "episode_id": "EP002099",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6927,6 +7301,7 @@
     "episode_id": "EP002099",
     "d": 1,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6943,6 +7318,7 @@
     "episode_id": "EP002099",
     "d": 2,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6959,6 +7335,7 @@
     "episode_id": "EP002099",
     "d": 3,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6975,6 +7352,7 @@
     "episode_id": "EP002099",
     "d": 4,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -6991,6 +7369,7 @@
     "episode_id": "EP002099",
     "d": 5,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7007,6 +7386,7 @@
     "episode_id": "EP002099",
     "d": 6,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7023,6 +7403,7 @@
     "episode_id": "EP002099",
     "d": 7,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7039,6 +7420,7 @@
     "episode_id": "EP002099",
     "d": 8,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7055,6 +7437,7 @@
     "episode_id": "EP002099",
     "d": 9,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7071,6 +7454,7 @@
     "episode_id": "EP002099",
     "d": 10,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7087,6 +7471,7 @@
     "episode_id": "EP002099",
     "d": 11,
     "flags": 3,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7104,6 +7489,7 @@
     "episode_id": "EP002276",
     "d": 0,
     "flags": 4,
+    "new": 4,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7121,6 +7507,7 @@
     "episode_id": "EP002276",
     "d": 1,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7138,6 +7525,7 @@
     "episode_id": "EP002276",
     "d": 2,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7155,6 +7543,7 @@
     "episode_id": "EP002276",
     "d": 3,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7172,6 +7561,7 @@
     "episode_id": "EP002276",
     "d": 4,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7189,6 +7579,7 @@
     "episode_id": "EP002276",
     "d": 5,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7206,6 +7597,7 @@
     "episode_id": "EP002276",
     "d": 6,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7223,6 +7615,7 @@
     "episode_id": "EP002276",
     "d": 7,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7240,6 +7633,7 @@
     "episode_id": "EP002276",
     "d": 8,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7257,6 +7651,7 @@
     "episode_id": "EP002276",
     "d": 9,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7274,6 +7669,7 @@
     "episode_id": "EP002588",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7290,6 +7686,7 @@
     "episode_id": "EP002588",
     "d": 1,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7306,6 +7703,7 @@
     "episode_id": "EP002588",
     "d": 2,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7322,6 +7720,7 @@
     "episode_id": "EP002588",
     "d": 3,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7338,6 +7737,7 @@
     "episode_id": "EP002588",
     "d": 4,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -7353,6 +7753,7 @@
     "episode_id": "EP002588",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -7368,6 +7769,7 @@
     "episode_id": "EP002588",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -7383,6 +7785,7 @@
     "episode_id": "EP002588",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -7398,6 +7801,7 @@
     "episode_id": "EP002588",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -7413,6 +7817,7 @@
     "episode_id": "EP002588",
     "d": 9,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -7428,6 +7833,7 @@
     "episode_id": "EP002588",
     "d": 10,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -7439,6 +7845,7 @@
     "episode_id": "EP002603",
     "d": 0,
     "flags": 5,
+    "new": 5,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7458,6 +7865,7 @@
     "episode_id": "EP002603",
     "d": 1,
     "flags": 5,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7477,6 +7885,7 @@
     "episode_id": "EP002603",
     "d": 2,
     "flags": 5,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7496,6 +7905,7 @@
     "episode_id": "EP002603",
     "d": 3,
     "flags": 5,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7515,6 +7925,7 @@
     "episode_id": "EP002603",
     "d": 4,
     "flags": 5,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7534,6 +7945,7 @@
     "episode_id": "EP002603",
     "d": 5,
     "flags": 5,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7553,6 +7965,7 @@
     "episode_id": "EP002603",
     "d": 6,
     "flags": 5,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7572,6 +7985,7 @@
     "episode_id": "EP002603",
     "d": 7,
     "flags": 5,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7591,6 +8005,7 @@
     "episode_id": "EP002686",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7607,6 +8022,7 @@
     "episode_id": "EP002686",
     "d": 1,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7622,6 +8038,7 @@
     "episode_id": "EP002686",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7637,6 +8054,7 @@
     "episode_id": "EP002686",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7652,6 +8070,7 @@
     "episode_id": "EP002686",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7667,6 +8086,7 @@
     "episode_id": "EP002686",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7682,6 +8102,7 @@
     "episode_id": "EP002686",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7697,6 +8118,7 @@
     "episode_id": "EP002686",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7712,6 +8134,7 @@
     "episode_id": "EP002686",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7727,6 +8150,7 @@
     "episode_id": "EP002794",
     "d": 0,
     "flags": 5,
+    "new": 5,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -7746,6 +8170,7 @@
     "episode_id": "EP002794",
     "d": 1,
     "flags": 3,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7764,6 +8189,7 @@
     "episode_id": "EP002794",
     "d": 2,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7782,6 +8208,7 @@
     "episode_id": "EP002794",
     "d": 3,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7800,6 +8227,7 @@
     "episode_id": "EP002794",
     "d": 4,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7818,6 +8246,7 @@
     "episode_id": "EP002794",
     "d": 5,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7836,6 +8265,7 @@
     "episode_id": "EP002794",
     "d": 6,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7854,6 +8284,7 @@
     "episode_id": "EP002794",
     "d": 7,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7872,6 +8303,7 @@
     "episode_id": "EP002794",
     "d": 8,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7890,6 +8322,7 @@
     "episode_id": "EP002794",
     "d": 9,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7908,6 +8341,7 @@
     "episode_id": "EP002794",
     "d": 10,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 5060000,
     "remedy": "query",
@@ -7926,6 +8360,7 @@
     "episode_id": "EP002927",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -7937,6 +8372,7 @@
     "episode_id": "EP002927",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -7948,6 +8384,7 @@
     "episode_id": "EP002927",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -7959,6 +8396,7 @@
     "episode_id": "EP002927",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -7970,6 +8408,7 @@
     "episode_id": "EP002927",
     "d": 4,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -7983,6 +8422,7 @@
     "episode_id": "EP003059",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -7999,6 +8439,7 @@
     "episode_id": "EP003059",
     "d": 1,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -8015,6 +8456,7 @@
     "episode_id": "EP003059",
     "d": 2,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -8030,6 +8472,7 @@
     "episode_id": "EP003059",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -8045,6 +8488,7 @@
     "episode_id": "EP003059",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -8060,6 +8504,7 @@
     "episode_id": "EP003059",
     "d": 5,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8073,6 +8518,7 @@
     "episode_id": "EP003080",
     "d": 0,
     "flags": 2,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -8089,6 +8535,7 @@
     "episode_id": "EP003080",
     "d": 1,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -8105,6 +8552,7 @@
     "episode_id": "EP003080",
     "d": 2,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -8121,6 +8569,7 @@
     "episode_id": "EP003080",
     "d": 3,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -8137,6 +8586,7 @@
     "episode_id": "EP003080",
     "d": 4,
     "flags": 2,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -8153,6 +8603,7 @@
     "episode_id": "EP003080",
     "d": 5,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -8168,6 +8619,7 @@
     "episode_id": "EP003080",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -8183,6 +8635,7 @@
     "episode_id": "EP003080",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -8198,6 +8651,7 @@
     "episode_id": "EP003080",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 3355000,
     "remedy": "query",
@@ -8213,6 +8667,7 @@
     "episode_id": "EP003080",
     "d": 9,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8224,6 +8679,7 @@
     "episode_id": "EP003104",
     "d": 0,
     "flags": 9,
+    "new": 9,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -8244,6 +8700,7 @@
     "episode_id": "EP003104",
     "d": 1,
     "flags": 8,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -8265,6 +8722,7 @@
     "episode_id": "EP003104",
     "d": 2,
     "flags": 8,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 7590000,
     "remedy": "query",
@@ -8286,6 +8744,7 @@
     "episode_id": "EP003104",
     "d": 3,
     "flags": 7,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 22080000,
     "remedy": "query",
@@ -8307,6 +8766,7 @@
     "episode_id": "EP003104",
     "d": 4,
     "flags": 7,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 22080000,
     "remedy": "query",
@@ -8328,6 +8788,7 @@
     "episode_id": "EP003104",
     "d": 5,
     "flags": 6,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 14490000,
     "remedy": "query",
@@ -8348,6 +8809,7 @@
     "episode_id": "EP003178",
     "d": 0,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8363,6 +8825,7 @@
     "episode_id": "EP003178",
     "d": 1,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8378,6 +8841,7 @@
     "episode_id": "EP003178",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8393,6 +8857,7 @@
     "episode_id": "EP003178",
     "d": 3,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8408,6 +8873,7 @@
     "episode_id": "EP003190",
     "d": 0,
     "flags": 4,
+    "new": 4,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -8425,6 +8891,7 @@
     "episode_id": "EP003190",
     "d": 1,
     "flags": 3,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 2970000,
     "remedy": "query",
@@ -8443,6 +8910,7 @@
     "episode_id": "EP003190",
     "d": 2,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 2970000,
     "remedy": "query",
@@ -8461,6 +8929,7 @@
     "episode_id": "EP003190",
     "d": 3,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 2970000,
     "remedy": "query",
@@ -8479,6 +8948,7 @@
     "episode_id": "EP003190",
     "d": 4,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 2970000,
     "remedy": "query",
@@ -8497,6 +8967,7 @@
     "episode_id": "EP003190",
     "d": 5,
     "flags": 4,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 2970000,
     "remedy": "query",
@@ -8516,6 +8987,7 @@
     "episode_id": "EP003261",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8527,6 +8999,7 @@
     "episode_id": "EP003261",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8538,6 +9011,7 @@
     "episode_id": "EP003261",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8549,6 +9023,7 @@
     "episode_id": "EP003261",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8560,6 +9035,7 @@
     "episode_id": "EP003261",
     "d": 4,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8571,6 +9047,7 @@
     "episode_id": "EP003261",
     "d": 5,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8582,6 +9059,7 @@
     "episode_id": "EP003261",
     "d": 6,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8593,6 +9071,7 @@
     "episode_id": "EP003261",
     "d": 7,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8604,6 +9083,7 @@
     "episode_id": "EP003299",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8615,6 +9095,7 @@
     "episode_id": "EP003299",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8626,6 +9107,7 @@
     "episode_id": "EP003299",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8637,6 +9119,7 @@
     "episode_id": "EP003299",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8648,6 +9131,7 @@
     "episode_id": "EP003299",
     "d": 4,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8659,6 +9143,7 @@
     "episode_id": "EP003299",
     "d": 5,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8670,6 +9155,7 @@
     "episode_id": "EP003299",
     "d": 6,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8681,6 +9167,7 @@
     "episode_id": "EP003299",
     "d": 7,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8692,6 +9179,7 @@
     "episode_id": "EP003299",
     "d": 8,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8703,6 +9191,7 @@
     "episode_id": "EP003299",
     "d": 9,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8714,6 +9203,7 @@
     "episode_id": "EP003381",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8725,6 +9215,7 @@
     "episode_id": "EP003381",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8736,6 +9227,7 @@
     "episode_id": "EP003381",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8747,6 +9239,7 @@
     "episode_id": "EP003381",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8758,6 +9251,7 @@
     "episode_id": "EP003381",
     "d": 4,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8769,6 +9263,7 @@
     "episode_id": "EP003381",
     "d": 5,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -8780,6 +9275,7 @@
     "episode_id": "EP003526",
     "d": 0,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8795,6 +9291,7 @@
     "episode_id": "EP003526",
     "d": 1,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8810,6 +9307,7 @@
     "episode_id": "EP003526",
     "d": 2,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8825,6 +9323,7 @@
     "episode_id": "EP003526",
     "d": 3,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8840,6 +9339,7 @@
     "episode_id": "EP003526",
     "d": 4,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8855,6 +9355,7 @@
     "episode_id": "EP003526",
     "d": 5,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8870,6 +9371,7 @@
     "episode_id": "EP003526",
     "d": 6,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8885,6 +9387,7 @@
     "episode_id": "EP003526",
     "d": 7,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8900,6 +9403,7 @@
     "episode_id": "EP003526",
     "d": 8,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8915,6 +9419,7 @@
     "episode_id": "EP003526",
     "d": 9,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8930,6 +9435,7 @@
     "episode_id": "EP003526",
     "d": 10,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8945,6 +9451,7 @@
     "episode_id": "EP003526",
     "d": 11,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8960,6 +9467,7 @@
     "episode_id": "EP003526",
     "d": 12,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8975,6 +9483,7 @@
     "episode_id": "EP003526",
     "d": 13,
     "flags": 1,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -8990,6 +9499,7 @@
     "episode_id": "EP003646",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9001,6 +9511,7 @@
     "episode_id": "EP003646",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9012,6 +9523,7 @@
     "episode_id": "EP003646",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9023,6 +9535,7 @@
     "episode_id": "EP003646",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9034,6 +9547,7 @@
     "episode_id": "EP003646",
     "d": 4,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9045,6 +9559,7 @@
     "episode_id": "EP003646",
     "d": 5,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9056,6 +9571,7 @@
     "episode_id": "EP003646",
     "d": 6,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9067,6 +9583,7 @@
     "episode_id": "EP003646",
     "d": 7,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9078,6 +9595,7 @@
     "episode_id": "EP003646",
     "d": 8,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9089,6 +9607,7 @@
     "episode_id": "EP003646",
     "d": 9,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9100,6 +9619,7 @@
     "episode_id": "EP003717",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9111,6 +9631,7 @@
     "episode_id": "EP003717",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9122,6 +9643,7 @@
     "episode_id": "EP003717",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9133,6 +9655,7 @@
     "episode_id": "EP003717",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9144,6 +9667,7 @@
     "episode_id": "EP003717",
     "d": 4,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9155,6 +9679,7 @@
     "episode_id": "EP003717",
     "d": 5,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9166,6 +9691,7 @@
     "episode_id": "EP003717",
     "d": 6,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9177,6 +9703,7 @@
     "episode_id": "EP003717",
     "d": 7,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9188,6 +9715,7 @@
     "episode_id": "EP003717",
     "d": 8,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9199,6 +9727,7 @@
     "episode_id": "EP003717",
     "d": 9,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -9212,6 +9741,7 @@
     "episode_id": "EP003728",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -9223,6 +9753,7 @@
     "episode_id": "EP003728",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -9234,6 +9765,7 @@
     "episode_id": "EP003728",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -9245,6 +9777,7 @@
     "episode_id": "EP003728",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -9256,6 +9789,7 @@
     "episode_id": "EP003728",
     "d": 4,
     "flags": 0,
+    "new": 0,
     "verdict": "abstain",
     "value_idr": 0,
     "remedy": null,
@@ -9267,6 +9801,7 @@
     "episode_id": "EP003728",
     "d": 5,
     "flags": 1,
+    "new": 1,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "recode",
@@ -9280,6 +9815,7 @@
     "episode_id": "EP003861",
     "d": 0,
     "flags": 8,
+    "new": 8,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -9299,6 +9835,7 @@
     "episode_id": "EP003861",
     "d": 1,
     "flags": 8,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "obtain",
@@ -9318,6 +9855,7 @@
     "episode_id": "EP003861",
     "d": 2,
     "flags": 4,
+    "new": 2,
     "verdict": "flagged",
     "value_idr": 4345000,
     "remedy": "query",
@@ -9337,6 +9875,7 @@
     "episode_id": "EP003861",
     "d": 3,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 4345000,
     "remedy": "query",
@@ -9356,6 +9895,7 @@
     "episode_id": "EP003861",
     "d": 4,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 4345000,
     "remedy": "query",
@@ -9375,6 +9915,7 @@
     "episode_id": "EP003861",
     "d": 5,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 4345000,
     "remedy": "query",
@@ -9394,6 +9935,7 @@
     "episode_id": "EP003861",
     "d": 6,
     "flags": 4,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 4345000,
     "remedy": "query",
@@ -9413,6 +9955,7 @@
     "episode_id": "EP003861",
     "d": 7,
     "flags": 3,
+    "new": 0,
     "verdict": "flagged",
     "value_idr": 0,
     "remedy": "query",
@@ -9431,6 +9974,7 @@
     "episode_id": "EP003994",
     "d": 0,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9442,6 +9986,7 @@
     "episode_id": "EP003994",
     "d": 1,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9453,6 +9998,7 @@
     "episode_id": "EP003994",
     "d": 2,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9464,6 +10010,7 @@
     "episode_id": "EP003994",
     "d": 3,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9475,6 +10022,7 @@
     "episode_id": "EP003994",
     "d": 4,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,
@@ -9486,6 +10034,7 @@
     "episode_id": "EP003994",
     "d": 5,
     "flags": 0,
+    "new": 0,
     "verdict": "clean",
     "value_idr": 0,
     "remedy": null,

@@ -86,16 +86,18 @@ current as you go** — a number that cannot be reproduced does not go in the pa
 | T3 | Cross-encoder vs. BM25, per class | `make train && make baselines` | 8 | **done** |
 | N4 | Shortcut controls + code-conditional AUC | `make baselines` | 8 | **done** |
 | T3b | Zero-shot LLM arm | `make baselines` | 8, 9 | provider wired; arm not yet run |
-| F2 | Calibration curve (bins in `results/cross_encoder.json`) | `make figures` | 8 | data done, plot not started |
-| T4 | Three arms, bootstrap CIs across 3 seeds | `make eval` | 10 | not started |
-| N2 | Clean-claim false positive rate | `make eval` | 10 | not started |
-| F3 | Detection rate by day of stay | `make detection` | 10 | **done** (data in `results/detection_curve.json`) |
+| F2 | Calibration curve (bins in `results/cross_encoder.json`) | `make figures` | 8 | **done** — `results/figures/f2_calibration.png` |
+| T4 | Three arms, paired bootstrap CIs at a matched FP budget | `make eval` | 10 | **done** — macro recall A 0.399 → B 0.700 → C 0.875, every step separated |
+| F6 | Three arms, per defect class | `make eval && make figures` | 10 | **done** |
+| N2 | Clean-claim false positive rate | `make eval` · `make detection` | 10 | **done** — 3.7% at discharge (arm C), 0.0% arm A, 6.2% arm B |
+| F3 | Detection rate by share of stay | `make detection` | 10 | **done** — rises 63.9% → 86.7% |
 | F4 | Detection lead time distribution | `make detection` | 10 | **done** — median 5 days, 86.7% detected |
+| F7 | Clean-claim FPR by share of stay | `make detection && make figures` | 10 | **done** — 36.6% on admission → 3.7% at discharge |
 | T5 | Fairness by hospital class | `make detection` | 10 | **done** (rules+CE; region pending) |
 | N3 | Latency, cost/claim, % zero-LLM episodes | `make demo` | 9 | **done** — 30 ms/episode offline, ~Rp 0.68/claim prose-only |
 | E1 | End-to-end run, 20 cases, no crash | `make demo-offline` | 9 | **done** — `results/demo_run.json`, asserted in `tests/test_demo.py` |
 | T6 | Adversarial set results | `make eval` | 11 | not started |
-| F5 | Sweep: alerts/episode/day and churn | `make sweep-demo` | 13 | not started |
+| F5 | Sweep: alerts/episode/day and churn | `make sweep-demo && make figures` | 13 | **done** — 0.34 alerts/episode/day (ceiling 3.0); **churn 0.214 BREACHES its 0.15 ceiling**, reported as a defect |
 | P1 | FPK OCR intake: cell accuracy per scan profile | `make intake-eval` | 14 | **done** — office 0.994, photocopy 0.990, phone 0.863 (`results/intake_ocr.json`) |
 | P2 | Paper round trip: scan in, corrected DRAF out | `make intake` | 14 | **done** — 47 episodes, gate passes, `results/intake/fpk_draf_perbaikan.pdf` |
 | U1 | Coder workbench: queue, verdict, span highlighting | `make ui-data && make ui` | 12 | **done** |
@@ -114,6 +116,40 @@ experiments/ arm_a · arm_b · arm_c · ablations · leakage_check
 results/     committed figures + metrics JSON
 docs/        ARCHITECTURE · DATA_CARD · MODEL_CARD · CLAIMS
 ```
+
+### The sweep
+
+`src/vitera/sweep/` is the automation layer, and it is deliberately the dumbest
+component in the system: it selects a cohort, calls the existing `run_pipeline`
+once per episode, diffs each result against that episode's last successful run,
+orders the diffs and writes them to a draft workspace. Cohort, diff, order,
+retry — that is the whole surface. No inference lives here, and nothing leaves
+the system: there is no transport imported anywhere in the package, and a test
+asserts it by parsing the imports rather than by trusting the prose.
+
+```bash
+make sweep-demo   # 7 nights over a seeded cohort, ~5s, no clock involved
+```
+
+Three things it measures that a discharge-time product cannot:
+
+- **The queue is a diff, not a standing list.** Night one carries the whole
+  backlog; after that the koder gets what changed. Re-presenting yesterday's
+  findings every morning is how a monitoring product gets switched off in
+  week two.
+- **A finding that goes away is split in two.** `documented` — a note arrived
+  that names what the finding was about, which is the outcome the product
+  exists to produce — and `resolved`, which is the model saying something
+  different about unchanged evidence. Reported as one number, the successes
+  were indistinguishable from the defects.
+- **`flag_churn_rate` currently BREACHES its ceiling: 0.214 against 0.15.** It
+  is on the screen, in `results/`, and in F5. Most of the remainder is an
+  attribution blind spot — a D3 or D5 that resolves because the narrative or a
+  lab result arrived is not matched by code, so it counts as unexplained and
+  the figure is an upper bound. Closing that needs code-to-signal reference
+  lookup, which belongs in the pipeline and not in a scheduler. `make sweep`
+  passes `--strict` and exits non-zero on a breach; `make sweep-demo` does not,
+  so a judge can watch the replay finish with the breach on screen.
 
 ### Workbench
 

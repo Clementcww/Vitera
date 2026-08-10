@@ -1,6 +1,6 @@
 import { Component, Suspense, lazy, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { Payload } from '../types'
+import type { Payload, SweepPayload } from '../types'
 import { webglAvailable } from '../three/webgl'
 import { jt } from '../format'
 import { Dashboard } from './Dashboard'
@@ -35,9 +35,11 @@ class Boundary extends Component<{ children: ReactNode }, { dead: boolean }> {
 
 export function HeroCards({
   payload,
+  sweep,
   onEnter,
 }: {
   payload: Payload
+  sweep?: SweepPayload | null
   onEnter: () => void
 }) {
   const [open, setOpen] = useState(false)
@@ -92,6 +94,11 @@ export function HeroCards({
             <span>dapat dipulihkan</span>
           </div>
         </div>
+        {/* These three figures describe the demo cohort, which is stratified
+            so every defect class appears. Unlabelled, the rupiah figure reads
+            as a measured result — which it is not, and `results/` never
+            computes one from here. */}
+        <p className="mainnote">{payload.generated.cohort_caveat}</p>
       </section>
 
       <section
@@ -157,7 +164,7 @@ export function HeroCards({
                 {payload.surface.cells.length} pemeriksaan harian. Satu batang
                 di belakang, satu kali pipeline.
               </p>
-              <Dashboard payload={payload} variant="surface" />
+              <Dashboard payload={payload} sweep={sweep} variant="surface" />
             </div>
           </div>
         )}

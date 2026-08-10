@@ -1,0 +1,191 @@
+{
+ "sweep_date": "2026-01-07",
+ "status": "complete",
+ "episodes_run": 65,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP000152",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 4,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 8580000,
+   "queue_weight": 8580000.0,
+   "citation_moved": 1,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E86",
+     "suppression_key": "D4:E86:c81490f52a3889dc",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.7598,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E86 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_4",
+      "start": 136,
+      "end": 167,
+      "text": "  - Infus Ringer Laktat loading",
+      "evidence_hash": "c81490f52a3889dc"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E86",
+     "suppression_key": "D3:E86:66a891e0367da5bb",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8383,
+     "source": "cross_encoder",
+     "rationale": "kode E86 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 133,
+      "text": "Diagnosis masuk: Prosedur fraktur femur (S72.0)",
+      "evidence_hash": "66a891e0367da5bb"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP001965",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 4,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "D64.9",
+     "suppression_key": "D4:D64.9:2237dbce741f2045",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.002,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk D64.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_4",
+      "start": 56,
+      "end": 82,
+      "text": "  - Hemoglobin ↓ (10 g/dL)",
+      "evidence_hash": "2237dbce741f2045"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "D64.9",
+     "suppression_key": "D5:D64.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis D64.9 dikode, hasil pemeriksaan penunjang (Hemoglobin, Hematokrit) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 128,
+      "end": 207,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "D64.9",
+     "suppression_key": "D3:D64.9:c8f581f9ce6d907b",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8877,
+     "source": "cross_encoder",
+     "rationale": "kode D64.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 127,
+      "text": "Diagnosis masuk: Stroke hemoragik (I61.9)",
+      "evidence_hash": "c8f581f9ce6d907b"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP002576",
+   "sweep_date": "2026-01-07",
+   "day_of_stay": 4,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-06",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "D64.9",
+     "suppression_key": "D5:D64.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis D64.9 dikode, hasil pemeriksaan penunjang (Hemoglobin, Hematokrit) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 135,
+      "end": 214,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "D64.9",
+     "suppression_key": "D3:D64.9:f1609c7c1cc357ad",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8881,
+     "source": "cross_encoder",
+     "rationale": "kode D64.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 134,
+      "text": "Diagnosis masuk: Pneumonia dan influenza (J18.9)",
+      "evidence_hash": "f1609c7c1cc357ad"
+     }
+    }
+   ],
+   "documented": []
+  }
+ ]
+}

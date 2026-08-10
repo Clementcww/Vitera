@@ -371,9 +371,24 @@ class GroupResult:
 class Flag:
     """A finding. ``span`` is non-optional by design — rule 6.
 
+    ``subject`` is WHAT the finding is about, as a stable machine token: the
+    ICD-10 code for a diagnosis finding, the ICD-9-CM code for a procedure, the
+    ``doc_id`` for a missing document, the field name for an administrative
+    mismatch. It exists for two reasons, both of which were live bugs:
+
+    1. **Identity.** Without it, two findings about *different codes* that cite
+       the same anchor line collide on ``suppression_key`` — which D5 and D7 do
+       constantly, because an absence-based finding cites the berkas cover
+       sheet. Colliding keys mean staging or dismissing one silently applies to
+       the other, and the queue shows two rows a reader cannot tell apart.
+    2. **Durability.** The subject used to be recovered by regex over
+       ``rationale``. But ``rationale`` is prose and rule 2 lets the LLM rewrite
+       it, so every consumer of that regex broke the moment prose was switched
+       on — silently, by returning fewer codes rather than by raising.
+
     ``rationale`` is prose and may be LLM-written. It explains a determination
     already made by the cross-encoder, rules or grouper; it never makes one
-    (rule 2).
+    (rule 2). Nothing may be parsed back out of it.
     """
 
     defect_class: DefectClass
@@ -382,14 +397,44 @@ class Flag:
     score: float  # calibrated, [0, 1]
     source: FlagSource
     rationale: str = ""
+    subject: str = ""
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.score <= 1.0:
             raise ValueError(f"score out of range: {self.score}")
 
     @property
+    def finding_key(self) -> str:
+        """**Is this the same finding as yesterday's?** — sweep rule 3.
+
+        Class and subject only. Deliberately NOT the evidence hash, and the
+        distinction is not academic: a comorbidity visible in the record is
+        re-cited from a newer CPPT every night as the notes accumulate, so a
+        diff keyed on evidence reports the identical finding as `resolved` plus
+        `new` every single morning. Measured on a 7-night replay before this
+        split existed, that alone drove `flag_churn_rate` to 0.79 against a
+        0.15 ceiling — the koder would have been shown the same D4 on the same
+        code seven times, each with a different quotation.
+
+        Rule 3 is what forbids that: a flag that was true yesterday and is
+        still true today does not re-enter the queue.
+        """
+        return f"{self.defect_class.name}:{self.subject}"
+
+    @property
     def suppression_key(self) -> str:
-        return f"{self.defect_class.name}:{self.span.evidence_hash}"
+        """**Did the koder already dismiss this, on this evidence?** — rule 4.
+
+        Adds the evidence hash, because a dismissal is a judgement about a
+        specific quotation. "Not this, on this evidence" must not silence a
+        finding that later acquires *different* evidence. Same span, silent;
+        new span, new flag; never expired by a timer.
+
+        Two keys, two questions. Using this one for the diff conflates them and
+        floods the queue; using `finding_key` for dismissal makes a dismissal
+        permanent, which rule 4 forbids.
+        """
+        return f"{self.finding_key}:{self.span.evidence_hash}"
 
 
 @dataclass(frozen=True, slots=True)
@@ -492,18 +537,58 @@ class SweepDiff:
     resolved: tuple[Flag, ...]
     escalated: tuple[Flag, ...]
     previous_successful_sweep: date | None
+    # Findings that went away because the RECORD changed — a note arrived since
+    # the last sweep that mentions what the finding was about. Held apart from
+    # `resolved` because they are opposite signals wearing the same shape: this
+    # is documentation catching up, which is the outcome the product exists to
+    # produce, while `resolved` is a finding that vanished with nothing to
+    # explain it, which is model instability. Averaging them into one churn
+    # number makes the product's successes indistinguishable from its defects.
+    documented: tuple[Flag, ...] = ()
+    recoverable_idr: int = 0  # grouper output, copied — never computed here
+    still_admitted: bool = True
+    day_of_stay: int = 0
+    # Findings unchanged since the last sweep whose best citation moved to a
+    # newer note. Not queue work — reported so the number is visible rather
+    # than hidden inside the identity decision that suppresses it.
+    citation_moved: int = 0
 
     @property
     def is_empty(self) -> bool:
         return not (self.new or self.resolved or self.escalated)
 
+    @property
+    def actionable(self) -> tuple[Flag, ...]:
+        """What the koder is being asked to look at: what appeared and what got
+        worse. `resolved` is reported, but it is not work."""
+        return self.new + self.escalated
+
     def queue_weight(self) -> float:
         """Expected recoverable value weighted by remaining repair window.
 
-        Implemented in bucket 13. Ordering is by remedy decay first — a QUERY
-        needs the DPJP while the patient is still on the ward.
+        Deliberately arithmetic over fields the pipeline already produced, and
+        deliberately not a model — sweep rule 11 says the sweep schedules, diffs
+        and orders, and nothing else. Read it as: *how much value is here, and
+        how fast does the chance to collect it disappear?*
+
+        The decay term is what makes this an ordering and not a leaderboard. A
+        QUERY needs the DPJP while the patient is on the ward, so it loses value
+        every night; an OBTAIN survives discharge; a RECODE survives until
+        submission. A QUERY worth Rp 2 juta on a patient discharging tomorrow
+        outranks a RECODE worth Rp 5 juta that will still be there next week.
+
+        `queue.order_key` is the actual sort. This is its money term.
         """
-        raise NotImplementedError("bucket 13 — sweep")
+        if not self.actionable:
+            return 0.0
+        decay = min(f.remedy.decay_rank for f in self.actionable)
+        # A window that has already shut cannot be traded against one that has
+        # not, so a QUERY on a discharged patient drops to the OBTAIN horizon
+        # rather than staying at the top of the queue forever.
+        if decay == 0 and not self.still_admitted:
+            decay = 1
+        urgency = 1.0 / (1.0 + decay)
+        return round(self.recoverable_idr * urgency, 2)
 
 
 # ---------------------------------------------------------------------------

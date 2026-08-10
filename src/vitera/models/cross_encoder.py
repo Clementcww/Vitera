@@ -233,6 +233,7 @@ class CrossEncoderScorer:
                     score=round(prob, 4),
                     source=FlagSource.CROSS_ENCODER,
                     rationale=_RATIONALE[defect].format(code=pair.code),
+                    subject=pair.code,
                 )
             )
         return tuple(out)

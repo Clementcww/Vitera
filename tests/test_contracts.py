@@ -58,6 +58,53 @@ def test_suppression_key_combines_defect_and_evidence() -> None:
     assert f1.suppression_key != f2.suppression_key
 
 
+def test_two_findings_on_one_line_are_not_the_same_finding() -> None:
+    """Without `subject` these collided, and D5/D7 collide constantly because
+    an absence-based finding cites the berkas cover sheet. A collision means
+    staging or dismissing one silently applies to the other, and the queue
+    renders two rows a reader cannot tell apart."""
+    span = Span("berkas_klaim", 0, 14, "Dokumen wajib")
+    a = Flag(
+        DefectClass.D5, Remedy.OBTAIN, span, 1.0, FlagSource.RULES, subject="E11.9"
+    )
+    b = Flag(
+        DefectClass.D5, Remedy.OBTAIN, span, 1.0, FlagSource.RULES, subject="N18.3"
+    )
+    assert a.finding_key != b.finding_key
+    assert a.suppression_key != b.suppression_key
+
+
+def test_finding_key_ignores_evidence_and_suppression_key_does_not() -> None:
+    """Two keys, two questions.
+
+    `finding_key` — is this the same problem as yesterday? Class and subject.
+    `suppression_key` — did the koder dismiss this, on this evidence? Adds the
+    hash. Using the second for the diff floods the queue every time a citation
+    moves to a newer note; using the first for dismissal makes a dismissal
+    permanent, which sweep rule 4 forbids.
+    """
+    monday = Span("cppt_hari_2", 0, 13, "GDS 240 mg/dL")
+    tuesday = Span("cppt_hari_3", 0, 13, "GDS 251 mg/dL")
+    a = Flag(
+        DefectClass.D4,
+        Remedy.QUERY,
+        monday,
+        0.8,
+        FlagSource.CROSS_ENCODER,
+        subject="E11.9",
+    )
+    b = Flag(
+        DefectClass.D4,
+        Remedy.QUERY,
+        tuesday,
+        0.8,
+        FlagSource.CROSS_ENCODER,
+        subject="E11.9",
+    )
+    assert a.finding_key == b.finding_key
+    assert a.suppression_key != b.suppression_key
+
+
 # --- rule 7: the grouper is authoritative, and never estimates --------------
 
 

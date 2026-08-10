@@ -169,24 +169,125 @@
       "clean_claims": 218
     }
   },
+  "clean_fp_rate_at_discharge": 0.0371,
+  "clean_fp_rate_by_share_of_stay": [
+    {
+      "share_of_stay": 0.0,
+      "clean_fp_rate": 0.3663,
+      "n": 890
+    },
+    {
+      "share_of_stay": 0.1,
+      "clean_fp_rate": 0.3557,
+      "n": 461
+    },
+    {
+      "share_of_stay": 0.2,
+      "clean_fp_rate": 0.3607,
+      "n": 768
+    },
+    {
+      "share_of_stay": 0.3,
+      "clean_fp_rate": 0.3459,
+      "n": 532
+    },
+    {
+      "share_of_stay": 0.4,
+      "clean_fp_rate": 0.35,
+      "n": 600
+    },
+    {
+      "share_of_stay": 0.5,
+      "clean_fp_rate": 0.3688,
+      "n": 564
+    },
+    {
+      "share_of_stay": 0.6,
+      "clean_fp_rate": 0.3417,
+      "n": 600
+    },
+    {
+      "share_of_stay": 0.7,
+      "clean_fp_rate": 0.3327,
+      "n": 532
+    },
+    {
+      "share_of_stay": 0.8,
+      "clean_fp_rate": 0.3411,
+      "n": 768
+    },
+    {
+      "share_of_stay": 0.9,
+      "clean_fp_rate": 0.3362,
+      "n": 461
+    },
+    {
+      "share_of_stay": 1.0,
+      "clean_fp_rate": 0.0371,
+      "n": 890
+    }
+  ],
   "clean_fp_rate_by_day": {
-    "0": 0.3663,
-    "1": 0.3618,
-    "2": 0.3483,
-    "3": 0.3265,
-    "4": 0.2891,
-    "5": 0.2667,
-    "6": 0.2774,
-    "7": 0.2742,
-    "8": 0.2667,
-    "9": 0.2746,
-    "10": 0.2759,
-    "11": 0.252,
-    "12": 0.2326,
-    "13": 0.2273
+    "0": {
+      "rate": 0.3663,
+      "n": 890
+    },
+    "1": {
+      "rate": 0.3618,
+      "n": 890
+    },
+    "2": {
+      "rate": 0.3483,
+      "n": 890
+    },
+    "3": {
+      "rate": 0.3265,
+      "n": 873
+    },
+    "4": {
+      "rate": 0.2891,
+      "n": 806
+    },
+    "5": {
+      "rate": 0.2667,
+      "n": 690
+    },
+    "6": {
+      "rate": 0.2774,
+      "n": 548
+    },
+    "7": {
+      "rate": 0.2742,
+      "n": 434
+    },
+    "8": {
+      "rate": 0.2667,
+      "n": 330
+    },
+    "9": {
+      "rate": 0.2746,
+      "n": 244
+    },
+    "10": {
+      "rate": 0.2759,
+      "n": 174
+    },
+    "11": {
+      "rate": 0.252,
+      "n": 123
+    },
+    "12": {
+      "rate": 0.2326,
+      "n": 86
+    },
+    "13": {
+      "rate": 0.2273,
+      "n": 44
+    }
   },
+  "clean_fp_by_day_caveat": "Not a trend. The cohort at day d is only the episodes that stayed at least d days, so its composition changes along the axis. Read `clean_fp_rate_by_share_of_stay` for the trend and `clean_fp_rate_at_discharge` for the comparable point estimate.",
   "latency": {
-    "seconds_per_run_mean": 0.0174,
+    "seconds_per_run_mean": 0.018,
     "hardware": "Apple silicon (MPS), local",
     "llm_calls": 0,
     "zero_llm_share": 1.0,

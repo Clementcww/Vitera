@@ -49,7 +49,7 @@ detection:  ## Detection lead time + rate-by-day + fairness    [criteria 1,3,4]
 	$(PY) experiments/detection_curve.py --data data/generated
 
 eval:  ## Three-arm experiment + per-component baselines     [bucket 10]
-	$(PY) -m experiments.run_arms --data data/generated --seeds 3 --out results/
+	$(PY) -m experiments.run_arms --data data/generated --seeds 3 --out results/three_arms.json
 
 ## --- running ---------------------------------------------------------------
 
@@ -60,10 +60,10 @@ demo-offline:  ## Same path, replayed from the LLM cache      [bucket 9]
 	VITERA_LLM_MODE=cache $(PY) -m vitera.api.demo --offline
 
 sweep:  ## One night against the configured cohort           [bucket 13]
-	$(PY) -m vitera.sweep.runner --config config/sweep.yaml
+	$(PY) -m vitera.sweep.runner --strict
 
 sweep-demo:  ## Replay 7 seeded days in under a minute       [bucket 13]
-	VITERA_LLM_MODE=cache $(PY) -m vitera.sweep.runner --replay 7 --seed $(SEED)
+	VITERA_LLM_MODE=cache $(PY) -m vitera.sweep.runner --replay 7 --cohort 36 --stratify --seed $(SEED)
 
 ## --- paper intake (FPK OCR) ------------------------------------------------
 

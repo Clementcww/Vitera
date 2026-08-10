@@ -1,0 +1,284 @@
+{
+ "sweep_date": "2026-01-11",
+ "status": "complete",
+ "episodes_run": 36,
+ "skipped": [],
+ "ceiling_hit": null,
+ "advisory": false,
+ "llm_calls": 0,
+ "queue": [
+  {
+   "episode_id": "EP003104",
+   "sweep_date": "2026-01-11",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-10",
+   "recoverable_idr": 22080000,
+   "queue_weight": 22080000.0,
+   "citation_moved": 1,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:3e6325848c673b30",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8168,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 59,
+      "end": 95,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "3e6325848c673b30"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "E11.9",
+     "suppression_key": "D5:E11.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis E11.9 dikode, hasil pemeriksaan penunjang (Gula darah sewaktu, HbA1c) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 131,
+      "end": 210,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D7",
+     "defect_label": "Upcoding pattern (valid individually, inflates CBG)",
+     "subject": "E11.9",
+     "suppression_key": "D7:E11.9:ae840866459de4bf",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.7984,
+     "source": "cross_encoder",
+     "rationale": "kode E11.9 termasuk pola penambahan komorbiditas berat tanpa bukti penunjang",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 130,
+      "text": "Diagnosis masuk: Infark miokard akut (I21.0)",
+      "evidence_hash": "ae840866459de4bf"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP000717",
+   "sweep_date": "2026-01-11",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-10",
+   "recoverable_idr": 18400000,
+   "queue_weight": 18400000.0,
+   "citation_moved": 1,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "N18.3",
+     "suppression_key": "D4:N18.3:2a1c8e41b75f1a67",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8489,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk N18.3 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 149,
+      "end": 182,
+      "text": "  - Kreatinin serum ↑ (1.5 mg/dL)",
+      "evidence_hash": "2a1c8e41b75f1a67"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "N18.3",
+     "suppression_key": "D5:N18.3:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis N18.3 dikode, hasil pemeriksaan penunjang (Kreatinin serum, Ureum, eGFR) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 118,
+      "end": 197,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "N18.3",
+     "suppression_key": "D3:N18.3:d3b76c24c235ee6a",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8552,
+     "source": "cross_encoder",
+     "rationale": "kode N18.3 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 117,
+      "text": "Diagnosis masuk: Sepsis (A41.9)",
+      "evidence_hash": "d3b76c24c235ee6a"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP000227",
+   "sweep_date": "2026-01-11",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-10",
+   "recoverable_idr": 3355000,
+   "queue_weight": 3355000.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D4",
+     "defect_label": "Severity unsupported by comorbidity documentation",
+     "subject": "E11.9",
+     "suppression_key": "D4:E11.9:3e6325848c673b30",
+     "remedy": "QUERY",
+     "actor": "DPJP",
+     "decay_rank": 0,
+     "score": 0.8241,
+     "source": "cross_encoder",
+     "rationale": "bukti klinis untuk E11.9 ada pada catatan, namun diagnosis tidak tertulis pada dokumentasi DPJP",
+     "span": {
+      "doc_id": "cppt_hari_3",
+      "start": 57,
+      "end": 93,
+      "text": "  - Gula darah sewaktu ↑ (200 mg/dL)",
+      "evidence_hash": "3e6325848c673b30"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D5",
+     "defect_label": "Missing required supporting examination",
+     "subject": "E11.9",
+     "suppression_key": "D5:E11.9:b2c56ee3e9511f0b",
+     "remedy": "OBTAIN",
+     "actor": "Petugas berkas",
+     "decay_rank": 1,
+     "score": 1.0,
+     "source": "rules",
+     "rationale": "diagnosis E11.9 dikode, hasil pemeriksaan penunjang (Gula darah sewaktu, HbA1c) tidak dilampirkan",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 129,
+      "end": 208,
+      "text": "Dokumen wajib: resume medis, catatan perkembangan, hasil pemeriksaan penunjang.",
+      "evidence_hash": "b2c56ee3e9511f0b"
+     }
+    },
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E11.9",
+     "suppression_key": "D3:E11.9:7199bd9819818c8a",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8532,
+     "source": "cross_encoder",
+     "rationale": "kode E11.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 128,
+      "text": "Diagnosis masuk: Tuberkulosis paru (A15.0)",
+      "evidence_hash": "7199bd9819818c8a"
+     }
+    }
+   ],
+   "documented": []
+  },
+  {
+   "episode_id": "EP003526",
+   "sweep_date": "2026-01-11",
+   "day_of_stay": 3,
+   "still_admitted": true,
+   "previous_successful_sweep": "2026-01-10",
+   "recoverable_idr": 0,
+   "queue_weight": 0.0,
+   "citation_moved": 0,
+   "new": [
+    {
+     "defect_class": "D2",
+     "defect_label": "Wrong code specificity (sibling code)",
+     "subject": "E14.9",
+     "suppression_key": "D2:E14.9:e1ccc9fd8a308586",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8829,
+     "source": "cross_encoder",
+     "rationale": "kode E14.9 kemungkinan salah spesifisitas — rekam medis mendukung kode lain pada kelompok yang sama",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 124,
+      "text": "Diagnosis masuk: Stroke infark (I63.9)",
+      "evidence_hash": "e1ccc9fd8a308586"
+     }
+    }
+   ],
+   "escalated": [],
+   "resolved": [
+    {
+     "defect_class": "D3",
+     "defect_label": "Diagnosis unsupported by narrative",
+     "subject": "E14.9",
+     "suppression_key": "D3:E14.9:e1ccc9fd8a308586",
+     "remedy": "RECODE",
+     "actor": "Koder",
+     "decay_rank": 2,
+     "score": 0.8812,
+     "source": "cross_encoder",
+     "rationale": "kode E14.9 tidak didukung bukti apa pun pada rekam medis yang tersedia",
+     "span": {
+      "doc_id": "berkas_klaim",
+      "start": 86,
+      "end": 124,
+      "text": "Diagnosis masuk: Stroke infark (I63.9)",
+      "evidence_hash": "e1ccc9fd8a308586"
+     }
+    }
+   ],
+   "documented": []
+  }
+ ]
+}

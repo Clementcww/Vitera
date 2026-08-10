@@ -152,6 +152,7 @@ def _r_d1_berkas_tidak_lengkap(ctx: RuleContext) -> list[Flag]:
                 score=1.0,
                 source=FlagSource.RULES,
                 rationale=f"{doc_id} tidak dilampirkan pada berkas klaim",
+                subject=doc_id,
             )
         )
     return out
@@ -175,6 +176,7 @@ def _r_d8_administrasi(ctx: RuleContext) -> list[Flag]:
                         f"nomor SEP pada klaim ({ctx.claim.sep_number}) "
                         "tidak sesuai dengan berkas"
                     ),
+                    subject="sep_number",
                 )
             )
 
@@ -190,6 +192,7 @@ def _r_d8_administrasi(ctx: RuleContext) -> list[Flag]:
                     score=1.0,
                     source=FlagSource.RULES,
                     rationale=f"tanggal masuk pada klaim ({claimed}) tidak sesuai SEP",
+                    subject="tanggal_masuk",
                 )
             )
     return out
@@ -216,6 +219,7 @@ def _r_d6_prosedur_tidak_koheren(ctx: RuleContext) -> list[Flag]:
                     f"prosedur {proc} dikode namun tidak tercatat dilakukan "
                     "pada rekam medis"
                 ),
+                subject=proc,
             )
         )
     return out
@@ -255,6 +259,7 @@ def _r_d5_penunjang_tidak_lengkap(ctx: RuleContext) -> list[Flag]:
                     f"diagnosis {code} dikode, hasil pemeriksaan penunjang "
                     f"({', '.join(s.label for s in lab_signals)}) tidak dilampirkan"
                 ),
+                subject=code,
             )
         )
     return out

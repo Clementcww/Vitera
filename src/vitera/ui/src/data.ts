@@ -1,4 +1,4 @@
-import type { EpisodeView, Flag, Loaded, Payload } from './types'
+import type { EpisodeView, Flag, Loaded, Payload, SweepPayload } from './types'
 
 /* Loading, and the client half of architectural rule 6.
  *
@@ -64,4 +64,38 @@ export async function load(url = './data/demo.json'): Promise<Loaded> {
   }
   payload.episodes.sort(queueOrder)
   return { payload, droppedFlags }
+}
+
+/** The sweep's output, written by `make sweep-demo`.
+ *
+ * Optional on purpose and deliberately not awaited with the main payload: the
+ * workbench must still open when no sweep has run. What it must NOT do is
+ * invent a timestamp — a missing file means the header says the queue has no
+ * sweep behind it, which is honest, rather than rendering as fresh. */
+export async function loadSweep(
+  url = './data/sweep.json',
+): Promise<SweepPayload | null> {
+  try {
+    const res = await fetch(url)
+    if (!res.ok) return null
+    return (await res.json()) as SweepPayload
+  } catch {
+    return null
+  }
+}
+
+/** Hours since the last SUCCESSFUL sweep — sweep rule 5's `queue_staleness`.
+ *
+ * Measured against `last_successful_sweep`, never `last_attempted_sweep`. A
+ * night that ran and failed leaves the queue exactly as stale as a night that
+ * never ran, and the screen has to say the same thing about both.
+ *
+ * In replay mode the dates are synthetic (derived from the corpus, not from a
+ * clock), so staleness is not meaningful and returns null rather than a large
+ * scary number the demo would have to explain away. */
+export function staleHours(s: SweepPayload | null): number | null {
+  if (!s || !s.last_successful_sweep || s.generated.mode === 'replay') return null
+  const then = Date.parse(s.last_successful_sweep + 'T02:00:00Z')
+  if (Number.isNaN(then)) return null
+  return Math.max(0, (Date.now() - then) / 3_600_000)
 }
